@@ -1,6 +1,6 @@
-update=Mi 28 Jan 2015 23:53:07 CET
+update=So 15 Feb 2015 01:41:48 CET
 version=1
-last_client=eeschema
+last_client=kicad
 [cvpcb]
 version=1
 NetIExt=net
@@ -48,10 +48,12 @@ version=1
 [eeschema]
 version=1
 LibDir=library
-NetFmtName=
-RptD_X=0
-RptD_Y=100
-RptLab=1
-LabSize=60
 [eeschema/libraries]
-LibName1=discret
+LibName1=library/supply
+LibName2=library/default
+LibName3=library/logic
+LibName4=library/transistor
+LibName5=power
+LibName6=library/voltage_regulator
+LibName7=library/connector_stift
+LibName8=library/connector_phoenix
