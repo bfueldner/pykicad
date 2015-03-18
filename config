@@ -28,6 +28,21 @@ symbol_reference_size=0.06
 drill_through=1.5
 rest_ring=0.2
 
+# Directories
+ROOT_DIR=$(pwd)
+DATA_DIR=$ROOT_DIR/data
+SCRIPT_DIR=$ROOT_DIR/script
+SYMBOL_DIR=$ROOT_DIR/library
+FOOTPRINT_DIR=$ROOT_DIR/modules
+
+# Symbol
+SYMBOL_START="EESchema-LIBRARY Version 2.3
+#encoding utf-8"
+SYMBOL_END="#
+#End Library"
+
+# Resistor
+
 # Footprint
 FOOTPRINT_TIMESTAMP=$(gawk "BEGIN { printf(\"%.8X\n\", $(date +\"%s\") ) }")
 FOOTPRINT_PRECISION=3
