@@ -18,24 +18,30 @@ do
 
 		echo "$SYMBOL_START"
 
+		COLUMN=()
 		SYMBOL_COUNT=0
 		ERROR_COUNT=0
-		SKIP_FIRST_LINE=1
+		FIRST_LINE=1
+
 		while read -r LINE && [[ -n $LINE ]]
 		do
-			if [ $SKIP_FIRST_LINE -ne "1" ]
+			if [ $FIRST_LINE -ne "1" ]
 			then
 				eval "declare -a DATA=($(echo $LINE | awk -v FPAT='[^,]*|(\"[^\"]+\")' '{ for (i = 1; i <= NF; i++) { gsub("^\"|\"$","",$i); printf("\"%s\" ", $i) } }'))"
 		
 				SYMBOL=${DATA[0]}
-				NAME=${DATA[1]}
-
 				SYMBOL_FILE=$DATA_DIR/$SYMBOL.lib
 				if [ -f $SYMBOL_FILE ]
 				then
 					SYM=$(head -n -2 $SYMBOL_FILE | tail -n +3 -)
-					SYM="${SYM//\$SYMBOL/$SYMBOL}"
-					SYM="${SYM//\$NAME/$NAME}"
+
+					INDEX=0
+					for COL in ${COLUMN[*]}
+					do
+						echo ${COL^^*} $INDEX ${DATA[$INDEX]}
+						SYM="${SYM//\$${COL^^*}/${DATA[$INDEX]}}"
+						INDEX=$((INDEX+1))
+					done
 					echo "$SYM"
 
 				# TODO: Generate meta file with description and keywords!
@@ -44,8 +50,11 @@ do
 				else
 					ERROR_COUNT=$((ERROR_COUNT+1))
 				fi
+			else
+				eval "declare -a COLUMN=($(echo $LINE | awk -v FPAT='[^,]*|(\"[^\"]+\")' '{ for (i = 1; i <= NF; i++) { gsub("^\"|\"$","",$i); printf("\"%s\" ", $i) } }'))"
+				echo ${COLUMN[*]^^*}
 			fi
-			SKIP_FIRST_LINE=0
+			FIRST_LINE=0
 		done < $CSV_FILE
 		echo "$SYMBOL_END"
 
