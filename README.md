@@ -50,7 +50,10 @@ Transistors
 - SMD
 74xx
 - Nach bedarf!
-
+MCUs
+- STM32F030C8T6TR
+RF Transcievers
+- CC1121
 ###Generator
 * Footprint
     * TQFP
