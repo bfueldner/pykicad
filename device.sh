@@ -17,9 +17,8 @@ do
 
 		LIBRARY_NAME=$(basename -s .csv "$CSV_FILE")
 		echo "Library name: $LIBRARY_NAME"
+		echo
 	#	mkdir $SYMBOL_DIR/$LIBRARY_NAME
-
-		echo "$SYMBOL_START"
 
 		COLUMN=()
 		SYMBOL_COUNT=0
@@ -77,7 +76,6 @@ do
 
 			else
 				eval "declare -a COLUMN=($(echo $LINE | awk -v FPAT='[^,]*|(\"[^\"]+\")' '{ for (i = 1; i <= NF; i++) { gsub("^\"|\"$","",$i); printf("\"%s\" ", $i) } }'))"
-				echo ${COLUMN[*]^^*}
 
 				INDEX=0
 				for COL in ${COLUMN[*]}
@@ -96,12 +94,35 @@ do
 #SYMBOL_PIN_NAME_SIZE=50
 #SYMBOL_PIN_NUMBER_SIZE=50
 
-		if [ ${#LEFT[*]} -lt ${#RIGHT[*]} ]
+		echo "$SYMBOL_LIB_START"
+		echo "#"
+		echo "# ${LIBRARY_NAME^^*}"
+		echo "#"
+
+# DEF $NAME #PWR 0 0 Y Y 1 F P
+#F0 "#PWR" 0 50 60 H I C CNN
+#F1 "$NAME" 0 -150 60 H V C CNN
+#F2 "" 0 0 60 H V C CNN
+#F3 "" 0 0 60 H V C CNN
+
+		HEIGHT=${#LEFT[*]}
+		if [ $HEIGHT -lt ${#RIGHT[*]} ]
 		then
-			HEIGHT=$(gawk "BEGIN { printf(\"%d\n\", ((${#RIGHT[*]} / 2) + 1) * $SYMBOL_PIN_DISTANCE + $SYMBOL_PIN_SPACE ) }")
-		else
-			HEIGHT=$(gawk "BEGIN { printf(\"%d\n\", ((${#LEFT[*]} / 2) + 1) * $SYMBOL_PIN_DISTANCE + $SYMBOL_PIN_SPACE ) }")
+			HEIGHT=${#RIGHT[*]}
 		fi
+
+		echo $HEIGHT
+		if [ $((HEIGHT%2)) -eq 0 ]
+		then
+			echo "even";
+		else
+			echo "odd";
+		fi
+
+	#		HEIGHT=$(gawk "BEGIN { printf(\"%d\n\", ((${#RIGHT[*]} / 2) + 1) * $SYMBOL_PIN_DISTANCE + $SYMBOL_PIN_SPACE ) }")
+	#	else
+	#		HEIGHT=$(gawk "BEGIN { printf(\"%d\n\", ((${#LEFT[*]} / 2) + 1) * $SYMBOL_PIN_DISTANCE + $SYMBOL_PIN_SPACE ) }")
+	#	fi
 		WIDTH=$(gawk "BEGIN { printf(\"%d\n\", ($MAX_TEXT + 1) * $SYMBOL_PIN_NAME_SIZE ) }")
 
 		echo "DRAW"
@@ -120,6 +141,7 @@ do
 			POSY=$((POSY - $SYMBOL_PIN_DISTANCE))
 		done
 
+		INDEX=0
 		POSY=$HEIGHT
 		POSY=$((POSY - $SYMBOL_PIN_SPACE))
 		for ROW in "${RIGHT[@]}"
@@ -128,13 +150,19 @@ do
 			if [ ${ITEM[0]} != "-" ]
 			then
 				echo "X ${ITEM[0]} ${ITEM[1]} $POSX $POSY $SYMBOL_PIN_LENGTH L $SYMBOL_PIN_NAME_SIZE $SYMBOL_PIN_NUMBER_SIZE 1 1 U"
+			else
+				ITEM_LEFT=(${LEFT[$INDEX]})
+				if [ ${ITEM_LEFT[0]} == "-" ]
+				then
+					echo "P 2 0 1 $SYMBOL_LINE_WIDTH -$POSX $POSY $POSX $POSY N"
+				fi
 			fi
 			POSY=$((POSY - $SYMBOL_PIN_DISTANCE))
+			INDEX=$((INDEX + 1))
 		done
 
-#		X 1 1 -250 0 100 R 50 50 1 1 P
-#		X 2 2 250 0 100 L 50 50 1 1 P
 		echo "ENDDRAW"
+		echo "ENDDEF"
 
 #		echo $HEIGHT
 #		echo $WIDTH
@@ -148,7 +176,7 @@ do
 #		#	echo $PIN
 #		done
 
-		echo "$SYMBOL_END"
+		echo "$SYMBOL_LIB_END"
 	fi
 done
 

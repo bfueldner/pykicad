@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO: Generate controller like symbols another way
+# TODO; How to generate this logic gatter stuff?
+
 . config
 . $SCRIPT_DIR/tools.sh
 
