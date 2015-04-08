@@ -1,13 +1,9 @@
 #!/bin/bash
 
-. ../config
-. tools.sh
+. config
+. $SCRIPT_DIR/tools.sh
 
 # Generate all footprints from CSV table
-
-DATA_PATH=$(pwd)/data
-echo $DATA_PATH
-
 
 #input=$1
 #delimiter=$2
@@ -24,16 +20,16 @@ echo $DATA_PATH
 #	exit 99
 #fi
 
-rm -rf $FOOTPRINT_PATH
-mkdir $FOOTPRINT_PATH
+mkdir -p $FOOTPRINT_DIR
+rm -rf $FOOTPRINT_DIR/*
 
 #cd $DATA_PATH
-for CSV_FILE in ../data/footprint/*.csv
+for CSV_FILE in $FOOTPRINT_DATA_DIR/*.csv
 do
 	echo $CSV_FILE
 
 	LIBRARY=$(basename -s .csv $CSV_FILE)
-	mkdir $FOOTPRINT_PATH/$LIBRARY
+	mkdir $FOOTPRINT_DIR/$LIBRARY
 
 	SKIP_FIRST_LINE=1
 	while read -r line && [[ -n $line ]]
@@ -44,7 +40,7 @@ do
 		
 			# Generate footprint according to first column
 			# TODO: Check, if 3d footprint file exists
-			eval "footprint_${data[0]} ${data[1]} ${data[3]} ${data[4]} ${data[5]} ${data[6]} ${data[7]}" > $FOOTPRINT_PATH/$LIBRARY/${data[1]}$FOOTPRINT_EXTENSION
+			eval "footprint_${data[0]} ${data[1]} ${data[3]} ${data[4]} ${data[5]} ${data[6]} ${data[7]}" > $FOOTPRINT_DIR/$LIBRARY/${data[1]}$FOOTPRINT_EXTENSION
 		fi
 		SKIP_FIRST_LINE=0
 	done < $CSV_FILE
