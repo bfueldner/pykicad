@@ -59,6 +59,9 @@ SYMBOL_DOC_START="EESchema-DOCLIB  Version 2.0"
 SYMBOL_DOC_END="#
 #End Doc Library"
 
+SYMBOL_TEMPLATE_PATH="data/template/"
+SYMBOL_TEMPLATE_EXTENSION=".lib"
+
 # Resistor
 
 # Footprint
