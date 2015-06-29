@@ -1,4 +1,4 @@
-update = Wed 17 Jun 2015 11:59:28 
+update = Mon 29 Jun 2015 14:29:45 
 version = 1
 last_client = kicad
 
@@ -41,16 +41,17 @@ libname1 = capacitor
 libname2 = connector_phoenix
 libname3 = connector_stift
 libname4 = default
-libname5 = driver
-libname6 = inductor
-libname7 = led
-libname8 = logic
-libname9 = mcu
-libname10 = resistor
-libname11 = rf
-libname12 = supply
-libname13 = transistor
-libname14 = voltage_regulator
+libname5 = diode
+libname6 = driver
+libname7 = inductor
+libname8 = led
+libname9 = logic
+libname10 = mcu
+libname11 = resistor
+libname12 = rf
+libname13 = supply
+libname14 = transistor
+libname15 = voltage_regulator
 
 [pcbnew/libraries]
 libdir = modules
