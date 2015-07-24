@@ -1,4 +1,4 @@
-update = Thu 16 Jul 2015 23:21:50 
+update = Fri 24 Jul 2015 11:59:52 
 version = 1
 last_client = kicad
 
@@ -34,7 +34,7 @@ moduleoutlinethickness = 0.150000000000
 
 [eeschema]
 version = 1
-libdir = /home/benjamin/kicad/library
+libdir = ~/kicad/library
 
 [eeschema/libraries]
 libname1 = capacitor
@@ -56,15 +56,14 @@ libname16 = transistor
 libname17 = voltage_regulator
 
 [pcbnew/libraries]
-libdir = /home/benjamin/kicad/modules
-libname1 = dip
-libname2 = kxo
-libname3 = models
-libname4 = packages3d
-libname5 = plcc
-libname6 = pqfp
-libname7 = soic
-libname8 = sot
-libname9 = sqfp
-libname10 = to
+libdir = ~/kicad/modules
+libname1 = dimm
+libname2 = dip
+libname3 = kxo
+libname4 = plcc
+libname5 = pqfp
+libname6 = soic
+libname7 = sot
+libname8 = sqfp
+libname9 = to
 
