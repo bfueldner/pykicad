@@ -1,0 +1,9 @@
+Symbole
+o If reference == #PWR, render symbol as power symbol automatically
+o Detect PinName visible automatic (if all names set to ~, nothing is visible)
+o Change inner text to vertical, if there is no space?
+o Handle min symbol width or margin?
+o Fix pin decoration
+o Remove document field (already set in dcm-files)
+o Symbol constructor with name and reference field instead of later adding these fields
+o Enable CSV loading for subunits (should work easily)

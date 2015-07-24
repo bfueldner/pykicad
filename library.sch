@@ -1,7 +1,20 @@
 EESchema Schematic File Version 2
+LIBS:library-rescue
+LIBS:capacitor
+LIBS:connector_phoenix
+LIBS:connector_stift
+LIBS:default
+LIBS:diode
+LIBS:driver
+LIBS:inductor
+LIBS:led
 LIBS:logic
-LIBS:discret
+LIBS:mcu
+LIBS:resistor
+LIBS:rf
+LIBS:supply
 LIBS:transistor
+LIBS:voltage_regulator
 LIBS:library-cache
 EELAYER 25 0
 EELAYER END
@@ -26,17 +39,6 @@ F 1 "capacitor_bipolar" H 5200 1950 60  0000 L CNN
 F 2 "footprint" V 5050 2050 60  0000 C CNN
 F 3 "" H 5150 2050 60  0000 C CNN
 	1    5150 2050
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74*05 IC2
-U 1 1 54D3F0BF
-P 4650 2900
-F 0 "IC2" H 4800 3050 60  0000 C CNN
-F 1 "74*05" H 4800 2750 60  0000 C CNN
-F 2 "" H 4650 2900 60  0000 C CNN
-F 3 "" H 4650 2900 60  0000 C CNN
-	1    4650 2900
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -69,47 +71,14 @@ Wire Wire Line
 	4400 2550 4250 2550
 Connection ~ 4250 3200
 $Comp
-L 74*05 IC3
-U 1 1 54D3FB70
-P 6100 2750
-F 0 "IC3" H 6250 2900 60  0000 C CNN
-F 1 "74*05" H 6250 2600 60  0000 C CNN
-F 2 "" H 6100 2750 60  0000 C CNN
-F 3 "" H 6100 2750 60  0000 C CNN
-	1    6100 2750
-	1    0    0    -1  
-$EndComp
-$Comp
-L 74HC14 IC?
-U 1 1 54D404BB
-P 2950 2050
-F 0 "IC?" H 3000 2200 60  0000 L CNN
-F 1 "74HC14" H 3000 1900 60  0000 L CNN
-F 2 "" H 2950 2050 60  0000 C CNN
-F 3 "" H 2950 2050 60  0000 C CNN
-	1    2950 2050
-	1    0    0    -1  
-$EndComp
-$Comp
-L transistor_npn T?
-U 1 1 54D56254
-P 5350 3600
-F 0 "T?" H 5250 3750 60  0000 C CNN
-F 1 "transistor_npn" H 5250 3450 60  0000 C CNN
-F 2 "" H 5350 3600 60  0000 C CNN
-F 3 "" H 5350 3600 60  0000 C CNN
-	1    5350 3600
-	1    0    0    -1  
-$EndComp
-$Comp
-L fet_n_channel T?
-U 1 1 54D562AC
-P 6200 3450
-F 0 "T?" H 6100 3650 60  0000 C CNN
-F 1 "fet_n_channel" H 5950 3250 60  0000 C CNN
-F 2 "" H 6200 3450 60  0000 C CNN
-F 3 "" H 6200 3450 60  0000 C CNN
-	1    6200 3450
+L BC557 T1
+U 1 1 55912965
+P 4600 3200
+F 0 "T1" H 4400 3350 60  0000 L CNN
+F 1 "BC557" H 4400 3050 60  0000 L CNN
+F 2 "to_92" H 4500 2950 60  0001 C CNN
+F 3 "doc/transistor/BC556_560.pdf" H 4500 2850 60  0001 C CNN
+	1    4600 3200
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

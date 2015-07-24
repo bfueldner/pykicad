@@ -1,4 +1,4 @@
-update = Wed 15 Jul 2015 15:11:47 
+update = Thu 16 Jul 2015 23:21:50 
 version = 1
 last_client = kicad
 
@@ -39,26 +39,32 @@ libdir = /home/benjamin/kicad/library
 [eeschema/libraries]
 libname1 = capacitor
 libname2 = connector
-libname3 = default
-libname4 = diode
-libname5 = driver
-libname6 = inductor
-libname7 = led
-libname8 = logic
-libname9 = mcu
-libname10 = oscillator
-libname11 = resistor
-libname12 = rf
-libname13 = supply
-libname14 = transistor
-libname15 = voltage_regulator
+libname3 = connector_phoenix
+libname4 = connector_stift
+libname5 = default
+libname6 = diode
+libname7 = driver
+libname8 = inductor
+libname9 = led
+libname10 = logic
+libname11 = mcu
+libname12 = oscillator
+libname13 = resistor
+libname14 = rf
+libname15 = supply
+libname16 = transistor
+libname17 = voltage_regulator
 
 [pcbnew/libraries]
 libdir = /home/benjamin/kicad/modules
 libname1 = dip
 libname2 = kxo
-libname3 = plcc
-libname4 = pqfp
-libname5 = soic
-libname6 = sqfp
+libname3 = models
+libname4 = packages3d
+libname5 = plcc
+libname6 = pqfp
+libname7 = soic
+libname8 = sot
+libname9 = sqfp
+libname10 = to
 
