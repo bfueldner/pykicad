@@ -1,0 +1,53 @@
+[article PiWARE Kicad Library Tutorial
+[quickbook 1.6]
+[version 1.0]
+[id AddingPartsTutorial]
+[lang en]
+[copyright 2015 Thomas Bernard]
+[authors [Bernard, Thomas]]
+[license Artistic License]
+[source-mode c++]
+]
+[section Introduction]
+This document will guide you through the steps necessary to add new parts to the PiWARE Kicad Library.
+The parts are generated using a mixed template and table based approach which should make it rather simple to add parts to the library.
+[endsect]
+
+[section Directory structure overview]
+The directory layout is summurized in the following table:
+
+[table:id Directory layout
+[[Directory][Description]]
+[[doc][Component data sheets]]
+[[data][Input data for the kicad library]]
+[[script][Generation scripts]]
+[[template][kicad project file templates]]
+]
+[endsect]
+
+[section Generation strategies]
+There are two possible methodologies to produce KiCAD symbols, either using an overlay of KiCAD symbol files which are used as templates, or by completely defining a symbol through a table definition.
+The template overlay are meant to define symbols which have a more complex graphical representation with different characteristics such as value, packaging, tolerance etc...
+The table based approach is meant to define symbols representing chips such as MCU or CPU modules. The following paragraphs will guide you through adding a new symbol with each methodology.
+[h1 Kicad symbol template overlays]
+[h1 CSV table module descriptions]
+
+For this part of the tutorial will be adding a PIC16F14 to the library.
+
+Step 1 - Datasheet
+
+The first step is to download and store the datasheet to your symbol in the appropriate documentation directory.
+
+Step 2 - Define symbol modules
+
+Now open in the data/device directory the csv file corresponding to your symbol type. If no csv file exists corresponding to your device type, you can create one from an existing file
+and you will need to add it to the Makefile in the root directory.
+
+In our case we are looking for the mcu.csv file. You can edit this file in your favorite csv file editor (for example OpenOffice.org Calc).
+
+
+
+For MCU or CPU modules some module functions are available through several pins which can be configured per software. In order to handle this elegantly and prevent layout mistakes, 
+we prefer to split the functionalities accross kicad symbol modules. For example on one chip you will define the  
+
+[endsect]
