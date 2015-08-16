@@ -63,6 +63,56 @@ Let’s add the PIC16F87XA to the kicad library together. This will hopefully gi
 #### Component documentation ####
 First we will need to get a copy of the PIC16F87XA datasheet. The file should be stored here: doc/mcu/microchip/PIC16F87XA.pdf.
 
+#### Adding the master component file to the Makefile ####
+In our case, just for demonstration purpose we’ll add a master component file name pic.csv. Before creating the file, open the Makefile in the root directory of the project and look for the line:
+
+```
+SYMBOL_LIBRARIES := $(LIBRARY_ROOT)/supply.lib \
+    $(LIBRARY_ROOT)/led.lib \
+    $(LIBRARY_ROOT)/transistor.lib \
+    $(LIBRARY_ROOT)/logic.lib \
+    $(LIBRARY_ROOT)/diode.lib \
+    $(LIBRARY_ROOT)/driver.lib \
+    $(LIBRARY_ROOT)/connector.lib \
+    $(LIBRARY_ROOT)/mcu.lib \
+    $(LIBRARY_ROOT)/resistor.lib \
+    $(LIBRARY_ROOT)/inductor.lib \
+    $(LIBRARY_ROOT)/capacitor.lib \
+    $(LIBRARY_ROOT)/rf.lib
+
+```
+
+Now add $(LIBRARY_ROOT)/pic.lib to the `LIBRARY_SYMBOLS` variable. This will instruct the makefile to also process the pic.csv file.
+
+#### Creating the master component file ####
+
+Create a new file named pic.csv in the folder data/device, either as an empty file in which you can copy the header from above or by copying an existing table based master file such as mcu.csv or rf.csv.
+
+Most MCUs have a multiplexed pins, which means that a certain pin can be connected internally to different functional modules depending on the device configuration. To make clear which device functions are meant to be used in the schematic,
+we choose to group the different device functions in kicad modules. This will make a single pin available through different modules which might seem unusual at first but has the advantage of identifying directly the functions really going to be used.
+Should a single pin be referenced twice through two different functions, this will be detected while doing the layout. 
+
+The first line of the PIC file below the header must be filed out completely as this is the line used to fill the contents of the different fields belonging to our new component. The following lines only need to contain 
+- the unit file path
+- the name of the symbol the module belongs to
+- the modules name
+- the module index
+
+In the case of the PIC16F87XA, we can split the functionalities in the following modules:
+
+- Clock
+- GPIO
+- ADC
+- COMP
+- Timer
+- SPI
+- DEBUG
+- I2C
+- USART
+- POWER
+
+
+
 Step 1 - Datasheet
 
 The first step is to download and store the datasheet to your symbol in the appropriate documentation directory.
