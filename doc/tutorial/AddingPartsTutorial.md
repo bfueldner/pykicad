@@ -90,7 +90,7 @@ Now add $(LIBRARY_ROOT)/pic.lib to the `LIBRARY_SYMBOLS` variable. This will ins
 
 #### Creating the master component file ####
 
-Create a new file named `pic.csv` in the folder data/device, either as an empty file in which you can copy the header from above or by copying an existing table based master file such as mcu.csv or rf.csv.
+Create a new file named `pic.csv` in the folder `data/device`, either as an empty file in which you can copy the header from above or by copying an existing table based master file such as `mcu.csv` or `rf.csv`.
 
 Most MCUs have multiplexed pins, which means that a certain pin can be connected internally to different functional modules depending on the device configuration. To make clear which device functions are meant to be used in the schematic,
 we choose to group the different device functions in KiCad modules. This will make a single pin available through different modules which might seem unusual at first but has the advantage of identifying directly the functions really going to be used.
