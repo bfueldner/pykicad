@@ -21,7 +21,6 @@ script|Generation scripts
 
 The symbol generation process is controlled through a central Makefile located in the project root.
 
-
 ## Generation strategies ##
 There are two possible methodologies to produce KiCAD symbols, either using an overlay of KiCAD symbol files which are used as templates, or by completely defining a symbol through a table based definition.
 The template overlays are meant to define symbols which have a more complex graphical representation with different characteristics such as value, packaging, tolerance etc...
@@ -64,7 +63,7 @@ Let’s add the PIC16F87XA to the kicad library together. This will hopefully gi
 First we will need to get a copy of the PIC16F87XA datasheet. The file should be stored here: doc/mcu/microchip/PIC16F87XA.pdf.
 
 #### Adding the master component file to the Makefile ####
-In our case, just for demonstration purpose we’ll add a master component file name pic.csv. Before creating the file, open the Makefile in the root directory of the project and look for the line:
+In our case, just for demonstration purpose, we’ll add a master component file name pic.csv. Before creating the file, open the Makefile in the root directory of the project and look for the line:
 
 ```
 SYMBOL_LIBRARIES := $(LIBRARY_ROOT)/supply.lib \
@@ -88,45 +87,64 @@ Now add $(LIBRARY_ROOT)/pic.lib to the `LIBRARY_SYMBOLS` variable. This will ins
 
 Create a new file named pic.csv in the folder data/device, either as an empty file in which you can copy the header from above or by copying an existing table based master file such as mcu.csv or rf.csv.
 
-Most MCUs have a multiplexed pins, which means that a certain pin can be connected internally to different functional modules depending on the device configuration. To make clear which device functions are meant to be used in the schematic,
+Most MCUs have multiplexed pins, which means that a certain pin can be connected internally to different functional modules depending on the device configuration. To make clear which device functions are meant to be used in the schematic,
 we choose to group the different device functions in kicad modules. This will make a single pin available through different modules which might seem unusual at first but has the advantage of identifying directly the functions really going to be used.
 Should a single pin be referenced twice through two different functions, this will be detected while doing the layout. 
 
-The first line of the PIC file below the header must be filed out completely as this is the line used to fill the contents of the different fields belonging to our new component. The following lines only need to contain 
-- the unit file path
-- the name of the symbol the module belongs to
-- the modules name
-- the module index
+The first line of the PIC file below the header must be filed out completely as this is the line used to fill the contents of the different fields belonging to our new component.
+The following lines only need to contain only the first for columns.
 
-In the case of the PIC16F87XA, we can split the functionalities in the following modules:
+Column | Description
+-----------------------------------------------------------
+symbol|Path to the csv file describing the kicad unit
+name|Name of the symbol the unit belongs to
+section|Name of the unit (appears as legend in the symbol)
+unit|index of the unit the data is to be assigned to
+reference|Kicad symbol reference (usually IC)
+footprint|name of the package template
+alias|Other names of the chip which have the same pin out functions. (may be other temperature variants etc...)
+description|Short description of the symbol. Used as quick reference in KiCad.
+keywords|Keywords you would like to find your symbol under in KiCad.
+document|Path to the components datasheet.
 
-- Clock
+In the case of the PIC16F87XA, we can split the functionalities in the following units:
+
+- CLOCK
 - GPIO
 - ADC
 - COMP
-- Timer
+- TIMER
 - SPI
 - DEBUG
 - I2C
 - USART
 - POWER
 
+If you look in the file data/device/pic.csv you will find the corresponding entries.
 
+#### Creating the unit description files ####
 
-Step 1 - Datasheet
+The unit desciption files are lookup up under the data/symbol directory. So if you enter 
+microchip/PIC16F874A/PORTA_PDIP as the symbol source path, the scripts will look for the file in the directory:
+data/symbol/microchip/PIC16F874A/PORTA_PDIP.
 
-The first step is to download and store the datasheet to your symbol in the appropriate documentation directory.
+Taking PORTA as example, let’s create the file in data/symbol/microchip/PORTA_PDIP.csv
 
-Step 2 - Define symbol modules
+The columns present in the file are the following:
 
-Now open in the data/device directory the csv file corresponding to your symbol type. If no csv file exists corresponding to your device type, you can create one from an existing file
-and you will need to add it to the Makefile in the root directory.
+Column|Description
+-----------------------------------------
+number| This is the index of the pin being specified
+name|Name of the pin which is to appear in the schematic.
+type|input, output, bidirectional, tristate, passive, powerInput, powerOutput, openCollector, openEmitter, notConnected
+shape|line, invisible, clock, invertedClock, inputLow, clockLow, outputLow, fallingEdgeClock, nonLogic
+direction|The pin orientation : left,   right,  up or down
 
-In our case we are looking for the mcu.csv file. You can edit this file in your favorite csv file editor (for example OpenOffice.org Calc).
+Now this step is pretty straightforward but pretty tedious.
 
+#### Regenerating the libraries ####
 
+Last step to see your new symbol appear in KiCad, rebuild the library. Run make at the root of the library project.
 
-For MCU or CPU modules some module functions are available through several pins which can be configured per software. In order to handle this elegantly and prevent layout mistakes, 
-we prefer to split the functionalities accross kicad symbol modules. For example on one chip you will define the  
 
 ### Kicad symbol template overlays ###
