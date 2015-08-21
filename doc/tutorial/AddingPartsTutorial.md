@@ -19,10 +19,13 @@ script|Generation scripts
 
 ## Symbol generator ##
 
-The symbol generation process is controlled through a central Makefile located in the project root. To regenerate the library after modifying files, run ‘make’ in the root to regenerate the library.
+The symbol generation process is controlled through a central Makefile located in the project root. To regenerate the library after modifying files, run `make` in the root to regenerate the library.
 Please note that the makefile doesn’t correctly handle all dependencies, so you might need to use
-‘make clean
-make’
+```
+make clean
+make
+```
+
 to see your modifications appear in the library.
 
 ## Generation strategies ##
@@ -42,9 +45,10 @@ si/EZR32LG/PORTC|EZR32LG230FE55G|Port C|3||||||
 ...|...|...|...|...|...|...|...|...|...
 
 In this file we define the association of templates or tables used to create a symbol. Each line or set of lines are combined to produce a KiCad symbol inside the component library of the same name as the master device file.
-For example, the file rf.csv will produce a KiCad library rd.lib containing the symbols listed in the csv.
+For example, the file `rf.csv` will produce a KiCad library `rf.lib` containing the symbols listed in the csv.
 
 The columns listed in the table below are common to the two generation strategies and are mandatory:
+
 Column|Description
 ------|------------
 symbol|name relative to the data/template or data/symbol director of the source file to use for the symbol 
@@ -64,7 +68,7 @@ You will find the “results” of the tutorial in the tutorial/PIC16F874A branc
 First we will need to get a copy of the PIC16F87XA datasheet. The file should be stored here: doc/mcu/microchip/PIC16F87XA.pdf.
 
 #### Adding the master component file to the Makefile ####
-In our case, just for demonstration purpose, we’ll add a master component file name ‘pic.csv’. Before creating the file, open the ‘Makefile’ in the root directory of the project and look for the line:
+In our case, just for demonstration purpose, we’ll add a master component file name `pic.csv`. Before creating the file, open the `Makefile` in the root directory of the project and look for the line:
 
 ```
 SYMBOL_LIBRARIES := $(LIBRARY_ROOT)/supply.lib \
@@ -95,8 +99,8 @@ Should a single pin be referenced twice through two different functions, this wi
 The first line of the PIC file below the header must be filed out completely as this is the line used to fill the contents of the different fields belonging to our new component.
 The following lines only need to contain only the first for columns.
 
-Column         | Description
----------------|---------------------------------------------
+Column          | Description
+--------------- | ---------------------------------------------
 symbol|Path to the csv file describing the KiCad unit
 name|Name of the symbol the unit belongs to
 section|Name of the unit (appears as legend in the symbol)
@@ -125,11 +129,11 @@ If you look in the file data/device/pic.csv you will find the corresponding entr
 
 #### Creating the unit description files ####
 
-The unit desciption files are lookup up under the data/symbol directory. So if you enter 
-‘microchip/PIC16F874A/PORTA_PDIP’ as the symbol source path, the scripts will look for the file:
-‘data/symbol/microchip/PIC16F874A/PORTA_PDIP.csv’.
+The unit desciption files are lookup up under the `data/symbol` directory. So if you enter 
+`microchip/PIC16F874A/PORTA_PDIP` as the symbol source path, the scripts will look for the file:
+`data/symbol/microchip/PIC16F874A/PORTA_PDIP.csv`.
 
-Taking PORTA as example, let’s create the file in ‘data/symbol/microchip/PORTA_PDIP.csv’
+Taking PORTA as example, let’s create the file in `data/symbol/microchip/PORTA_PDIP.csv`
 
 The columns present in the file are the following:
 
@@ -141,7 +145,9 @@ type|input, output, bidirectional, tristate, passive, powerInput, powerOutput, o
 shape|line, invisible, clock, invertedClock, inputLow, clockLow, outputLow, fallingEdgeClock, nonLogic
 direction|The pin orientation : left,   right,  up or down
 
-Now this step is pretty straightforward but pretty tedious.
+Reading the chip’s datasheet you will have to copy the contents of the pin table in the corresponding csv files.
+
+This step is straightforward but requires a lot of attention. Stay concentrated !
 
 #### Regenerating the libraries ####
 
