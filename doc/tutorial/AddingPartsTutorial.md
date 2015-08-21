@@ -34,7 +34,7 @@ The template overlays are meant to define symbols which have a more complex grap
 The table based approach is meant to define symbols representing chips such as MCU or CPU modules. The following paragraphs will guide you through adding a new symbol with each methodology.
 
 ### Common steps ###
-The generation of all symbols is controlled by a “master” component list csv file. This file is located in the ‘data/device’ folder and is referenced in the central Makefile.
+The generation of all symbols is controlled by a “master” component list csv file. This file is located in the `data/device` folder and is referenced in the central Makefile.
 A master component file has the following layout:
 
 symbol|name|section|unit|reference|footprint|alias|description|keywords|document
@@ -65,7 +65,7 @@ Right now we don’t have the PIC16F874A in the main branch, just so you have a 
 You will find the “results” of the tutorial in the tutorial/PIC16F874A branch, it’s there as reference to help you out.
 
 #### Component documentation ####
-First we will need to get a copy of the PIC16F87XA datasheet. The file should be stored here: doc/mcu/microchip/PIC16F87XA.pdf.
+First we will need to get a copy of the PIC16F87XA datasheet. The file should be stored here: `doc/mcu/microchip/PIC16F87XA.pdf`.
 
 #### Adding the master component file to the Makefile ####
 In our case, just for demonstration purpose, we’ll add a master component file name `pic.csv`. Before creating the file, open the `Makefile` in the root directory of the project and look for the line:
@@ -90,7 +90,7 @@ Now add $(LIBRARY_ROOT)/pic.lib to the `LIBRARY_SYMBOLS` variable. This will ins
 
 #### Creating the master component file ####
 
-Create a new file named pic.csv in the folder data/device, either as an empty file in which you can copy the header from above or by copying an existing table based master file such as mcu.csv or rf.csv.
+Create a new file named `pic.csv` in the folder data/device, either as an empty file in which you can copy the header from above or by copying an existing table based master file such as mcu.csv or rf.csv.
 
 Most MCUs have multiplexed pins, which means that a certain pin can be connected internally to different functional modules depending on the device configuration. To make clear which device functions are meant to be used in the schematic,
 we choose to group the different device functions in KiCad modules. This will make a single pin available through different modules which might seem unusual at first but has the advantage of identifying directly the functions really going to be used.
@@ -143,7 +143,7 @@ number| This is the index of the pin being specified
 name|Name of the pin which is to appear in the schematic.
 type|input, output, bidirectional, tristate, passive, powerInput, powerOutput, openCollector, openEmitter, notConnected
 shape|line, invisible, clock, invertedClock, inputLow, clockLow, outputLow, fallingEdgeClock, nonLogic
-direction|The pin orientation : left,   right,  up or down
+direction|The pin orientation : left, right, up or down
 
 Reading the chip’s datasheet you will have to copy the contents of the pin table in the corresponding csv files.
 
