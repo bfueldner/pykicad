@@ -1,4 +1,4 @@
-update = Thu 14 Jan 2016 23:05:28 
+update = Thu 21 Jan 2016 00:36:13 
 version = 1
 last_client = kicad
 
@@ -34,7 +34,7 @@ moduleoutlinethickness = 0.150000000000
 
 [eeschema]
 version = 1
-libdir = ~/Workspace/OpenHouse/kicad_github/library
+libdir = ~/kicad/library
 
 [eeschema/libraries]
 libname1 = capacitor
@@ -49,22 +49,25 @@ libname9 = led
 libname10 = logic
 libname11 = mcu
 libname12 = oscillator
-libname13 = pic
-libname14 = resistor
-libname15 = rf
-libname16 = supply
-libname17 = transistor
-libname18 = voltage_regulator
+libname13 = regulator
+libname14 = relais
+libname15 = resistor
+libname16 = rf
+libname17 = supply
+libname18 = transistor
+libname19 = voltage_regulator
 
 [pcbnew/libraries]
-libdir = ~/Workspace/OpenHouse/kicad_github/modules
+libdir = ~/kicad/modules
 libname1 = dip
 libname2 = kxo
-libname3 = plcc
-libname4 = pqfp
-libname5 = soic
-libname6 = sot
-libname7 = special
-libname8 = sqfp
-libname9 = to
+libname3 = models
+libname4 = packages3d
+libname5 = plcc
+libname6 = pqfp
+libname7 = soic
+libname8 = sot
+libname9 = special
+libname10 = sqfp
+libname11 = to
 

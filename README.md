@@ -28,10 +28,12 @@ F#-Field usage:
 * **F2**: Footprint
 * **F3**: Document
 * **F4**: Manufacturer
-* **F5**: Value
+* **F5**: ValueX
 * **F6**: Tolerance
 * **F7**: Temperature
 * **F8**: Model (Spice)
+* **F9**: Voltage
+* **F10**: Power
 * **SYMBOL_DIR**: $ROOT_DIR/library
 * **SYMBOL_DOC_END**: "#
 * **SYMBOL_DOC_START**: EESchema-DOCLIB  Version 2.0
