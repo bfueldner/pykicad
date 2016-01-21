@@ -1,4 +1,4 @@
-update = Thu 21 Jan 2016 00:36:13 
+update = Thu 21 Jan 2016 14:00:49 
 version = 1
 last_client = kicad
 
@@ -61,13 +61,11 @@ libname19 = voltage_regulator
 libdir = ~/kicad/modules
 libname1 = dip
 libname2 = kxo
-libname3 = models
-libname4 = packages3d
-libname5 = plcc
-libname6 = pqfp
-libname7 = soic
-libname8 = sot
-libname9 = special
-libname10 = sqfp
-libname11 = to
+libname3 = plcc
+libname4 = pqfp
+libname5 = soic
+libname6 = sot
+libname7 = special
+libname8 = sqfp
+libname9 = to
 
