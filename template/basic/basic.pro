@@ -1,4 +1,4 @@
-update = Wed 17 Feb 2016 22:57:23 
+update = Wed 24 Feb 2016 21:47:33 
 version = 1
 last_client = kicad
 
@@ -39,26 +39,27 @@ libdir = ~/Workspace/OpenHouse/kicad_github/library
 [eeschema/libraries]
 libname1 = capacitor
 libname2 = capacitor_c0g
-libname3 = capacitor_x7r
-libname4 = connector
-libname5 = connector_phoenix
-libname6 = connector_stift
-libname7 = default
-libname8 = diode
-libname9 = driver
-libname10 = inductor
-libname11 = led
-libname12 = logic
-libname13 = mcu
-libname14 = oscillator
-libname15 = pic
-libname16 = regulator
-libname17 = relais
-libname18 = resistor
-libname19 = rf
-libname20 = supply
-libname21 = transistor
-libname22 = voltage_regulator
+libname3 = capacitor_x5r
+libname4 = capacitor_x7r
+libname5 = connector
+libname6 = connector_phoenix
+libname7 = connector_stift
+libname8 = default
+libname9 = diode
+libname10 = driver
+libname11 = inductor
+libname12 = led
+libname13 = logic
+libname14 = mcu
+libname15 = oscillator
+libname16 = pic
+libname17 = regulator
+libname18 = relais
+libname19 = resistor
+libname20 = rf
+libname21 = supply
+libname22 = transistor
+libname23 = voltage_regulator
 
 [pcbnew/libraries]
 libdir = ~/Workspace/OpenHouse/kicad_github/modules
