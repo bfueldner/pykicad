@@ -91,29 +91,7 @@ class bold():
     off = "0"
     on = "1"
 
-class orientation():
-    horizontal = "H"
-    vertical = "V"
 
-class visibility():
-    visible = "V"
-    invisible = "I"
-
-class hjustify():
-    left = "L"
-    center = "C"
-    right = "R"
-
-class vjustify():
-    top = "T"
-    center = "C"
-    bottom = "B"
-
-class style():
-    none = "NN"
-    italic = "IN"
-    bolc = "NB"
-    italicBold = "IB"
 
 class direction():
     up = "U"

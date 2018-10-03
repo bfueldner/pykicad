@@ -1,5 +1,5 @@
 """Configuration parsing module, which generate a python namespace"""
-
+'''
 __all__ = ("Config")
 
 from collections import Mapping, Sequence
@@ -39,3 +39,4 @@ class Config(object):
 
     def dict(self):
         return self.__dict__
+'''

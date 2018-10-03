@@ -1,5 +1,8 @@
-# Fields in schematic/symbol files
-class field():
+from enum import Enum
+
+class field(Enum):
+    '''Schematic field type'''
+
     reference = 0
     name = 1
     footprint = 2
@@ -12,16 +15,96 @@ class field():
     voltage = 9
     power = 10
 
-field_name = [
-    "Reference",
-    "Name",
-    "Footprint",
-    "Document",
-    "Manufacturer",
-    "ValueX",
-    "Tolerance",
-    "Temperature",
-    "Model (Spice)",
-    "Voltage",
-    "Power"
-]
+    def __str__(self):
+        return self.name.title()
+
+    @staticmethod
+    def from_str(value):
+        for item in field:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'field'".format(value))
+
+class orientation(Enum):
+    '''Field orientation'''
+
+    horizontal = "H"
+    vertical = "V"
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in orientation:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'orientation'".format(value))
+
+class visibility(Enum):
+    '''Field visibility'''
+
+    visible = "V"
+    invisible = "I"
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in visibility:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'visibility'".format(value))
+
+class hjustify(Enum):
+    '''Field horizontal justify'''
+
+    left = "L"
+    center = "C"
+    right = "R"
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in hjustify:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'hjustify'".format(value))
+
+class vjustify(Enum):
+    '''Field vertical justify'''
+
+    top = "T"
+    center = "C"
+    bottom = "B"
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in vjustify:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'vjustify'".format(value))
+
+class style(Enum):
+    '''Field style'''
+
+    none = "NN"
+    italic = "IN"
+    bolc = "NB"
+    italic_bold = "IB"
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in style:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'style'".format(value))
