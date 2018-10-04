@@ -71,17 +71,7 @@ class cfg():
 #    def dict(self):
 #        return self.__dict__
 
-class fill():
-    none = "N"
-    foreground = "F"
-    background = "f"
 
-class representation():
-    """Symbol representation"""
-
-    both = 0
-    normal = 1
-    morgan = 2
 
 class italic():
     off = "Normal"

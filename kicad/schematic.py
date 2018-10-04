@@ -57,6 +57,15 @@ class field(object):
             self.style,
             self.type)
 
+class element(object):
+    '''Component element'''
+
+    def __init__(self):
+        pass
+
+
+
+
 class fields(object):
     '''Component fields'''
 

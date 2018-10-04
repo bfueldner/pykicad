@@ -132,3 +132,37 @@ class case(unittest.TestCase):
     def test_style_raise(self):
         with self.assertRaises(NotImplementedError):
             kicad.type.style.from_str('')
+
+
+    def test_fill_none(self):
+        test = kicad.type.fill.from_str('N')
+        self.assertEqual(test, kicad.type.fill.none)
+
+    def test_fill_foreground(self):
+        test = kicad.type.fill.from_str('F')
+        self.assertEqual(test, kicad.type.fill.foreground)
+
+    def test_fill_background(self):
+        test = kicad.type.fill.from_str('f')
+        self.assertEqual(test, kicad.type.fill.background)
+
+    def test_fill_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.type.fill.from_str('X')
+
+
+    def test_representation_both(self):
+        test = kicad.type.representation.from_str(0)
+        self.assertEqual(test, kicad.type.representation.both)
+
+    def test_representation_normal(self):
+        test = kicad.type.representation.from_str(1)
+        self.assertEqual(test, kicad.type.representation.normal)
+
+    def test_representation_morgan(self):
+        test = kicad.type.representation.from_str(2)
+        self.assertEqual(test, kicad.type.representation.morgan)
+
+    def test_representation_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.type.representation.from_str(-1)

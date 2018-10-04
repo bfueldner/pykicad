@@ -108,3 +108,37 @@ class style(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'style'".format(value))
+
+class fill(Enum):
+    '''Element fill'''
+
+    none = "N"
+    foreground = "F"
+    background = "f"
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in fill:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'fill'".format(value))
+
+class representation(Enum):
+    '''Symbol representation'''
+
+    both = 0
+    normal = 1
+    morgan = 2
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in representation:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'representation'".format(value))
