@@ -119,8 +119,18 @@ def from_str(string):
     char = string[0]
     part = string[1:].split()
     if char == 'F':
-    #    return field()
-        return None
+        return field(
+            kicad.type.field.from_str(int(part[0])),
+            str(part[1]),
+            int(part[2]),
+            int(part[3]),
+            int(part[4]),
+            kicad.type.orientation.from_str(part[5]),
+            kicad.type.visibility.from_str(part[6]),
+            kicad.type.hjustify.from_str(part[7]),
+            kicad.type.vjustify.from_str(part[8][:1]),
+            kicad.type.style.from_str(part[8][1:])
+        )
     else:
         raise KeyError
     return None
