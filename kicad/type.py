@@ -134,7 +134,7 @@ class representation(Enum):
     morgan = 2
 
     def __str__(self):
-        return self.value
+        return str(self.value)
 
     @staticmethod
     def from_str(value):

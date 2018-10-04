@@ -4,6 +4,7 @@ import unittest
 import test.type
 
 import test.schematic.field
+import test.schematic.rectangle
 import test.schematic.from_string
 #import test.symbol.field
 
@@ -12,6 +13,7 @@ if __name__ == '__main__':
     test_type = unittest.TestLoader().loadTestsFromTestCase(test.type.case)
 
     test_schematic_field = unittest.TestLoader().loadTestsFromTestCase(test.schematic.field.case)
+    test_schematic_rectangle = unittest.TestLoader().loadTestsFromTestCase(test.schematic.rectangle.case)
     test_schematic_from_string = unittest.TestLoader().loadTestsFromTestCase(test.schematic.from_string.case)
 
 #    symbol_field = unittest.TestLoader().loadTestsFromTestCase(test.symbol.field.case)
@@ -20,6 +22,7 @@ if __name__ == '__main__':
         test_type,
 
         test_schematic_field,
+        test_schematic_rectangle,
         test_schematic_from_string,
 
     #    symbol_field,

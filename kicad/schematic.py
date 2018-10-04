@@ -44,7 +44,7 @@ class field(object):
         self.style = style
 
     def render(self):
-        return self.fmt.format(
+        return field.fmt.format(
             self.type.value,
             self.text,
             self.x,
@@ -60,10 +60,62 @@ class field(object):
 class element(object):
     '''Component element'''
 
-    def __init__(self):
-        pass
+    def __init__(self, unit, representation, order):
+        if not isinstance(unit, int) or not isinstance(order, int):
+            raise TypeError("unit and order must be instance of int")
+
+        if not isinstance(representation, kicad.type.representation):
+            raise TypeError("representation must be instance of kicad.type.representation")
+
+        self.unit = unit
+        self.representation = representation
+        self.order = order
+
+    @property
+    def priority(self):
+        return self.unit * 65536 + self.order * 256
 
 
+
+class rectangle(element):
+    '''Element rectangle'''
+
+    fmt = 'S {} {} {} {} {} {} {} {}'
+    order = 1
+
+    def __init__(self, x1, y1, x2, y2, width, fill, unit = 0, representation = kicad.type.representation.normal):
+        element.__init__(self, unit, representation, rectangle.order)
+        if not isinstance(x1, int) or not isinstance(y1, int) or not isinstance(x2, int) or not isinstance(y2, int) or not isinstance(width, int):
+            raise TypeError("x1, y1, x2, y2 and width must be instance of int")
+
+        if not isinstance(fill, kicad.type.fill):
+            raise TypeError("fill must be instance of kicad.type.fill")
+
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+        self.width = width
+        self.fill = fill
+
+    def equal(self, rhs):
+        '''Compare only same instances'''
+        if not isinstance(rhs, rectangle):
+            return False
+
+        return self.x1 == rhs.x1 and self.y1 == rhs.y1 and self.x2 == rhs.x2 and self.y2 == rhs.y2
+
+    def render(self):
+        return rectangle.fmt.format(
+            self.x1,
+            self.y1,
+            self.x2,
+            self.y2,
+            self.unit,
+            self.representation,
+            self.width,
+            self.fill
+        )
 
 
 class fields(object):
