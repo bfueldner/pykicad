@@ -125,7 +125,7 @@ class case(unittest.TestCase):
         test = kicad.type.style.from_str('NB')
         self.assertEqual(test, kicad.type.style.bold)
 
-    def test_style_none(self):
+    def test_style_italic_bold(self):
         test = kicad.type.style.from_str('IB')
         self.assertEqual(test, kicad.type.style.italic_bold)
 

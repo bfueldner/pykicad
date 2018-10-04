@@ -96,7 +96,7 @@ class style(Enum):
 
     none = "NN"
     italic = "IN"
-    bolc = "NB"
+    bold = "NB"
     italic_bold = "IB"
 
     def __str__(self):
