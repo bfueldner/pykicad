@@ -64,3 +64,71 @@ class case(unittest.TestCase):
     def test_orientation_raise(self):
         with self.assertRaises(NotImplementedError):
             kicad.type.orientation.from_str('X')
+
+
+    def test_visibility_visible(self):
+        test = kicad.type.visibility.from_str('V')
+        self.assertEqual(test, kicad.type.visibility.visible)
+
+    def test_visibility_invisible(self):
+        test = kicad.type.visibility.from_str('I')
+        self.assertEqual(test, kicad.type.visibility.invisible)
+
+    def test_visibility_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.type.visibility.from_str('X')
+
+
+    def test_hjustify_left(self):
+        test = kicad.type.hjustify.from_str('L')
+        self.assertEqual(test, kicad.type.hjustify.left)
+
+    def test_hjustify_center(self):
+        test = kicad.type.hjustify.from_str('C')
+        self.assertEqual(test, kicad.type.hjustify.center)
+
+    def test_hjustify_right(self):
+        test = kicad.type.hjustify.from_str('R')
+        self.assertEqual(test, kicad.type.hjustify.right)
+
+    def test_hjustify_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.type.hjustify.from_str('X')
+
+
+    def test_vjustify_top(self):
+        test = kicad.type.vjustify.from_str('T')
+        self.assertEqual(test, kicad.type.vjustify.top)
+
+    def test_vjustify_center(self):
+        test = kicad.type.vjustify.from_str('C')
+        self.assertEqual(test, kicad.type.vjustify.center)
+
+    def test_vjustify_bottom(self):
+        test = kicad.type.vjustify.from_str('B')
+        self.assertEqual(test, kicad.type.vjustify.bottom)
+
+    def test_vjustify_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.type.vjustify.from_str('X')
+
+
+    def test_style_none(self):
+        test = kicad.type.style.from_str('NN')
+        self.assertEqual(test, kicad.type.style.none)
+
+    def test_style_italic(self):
+        test = kicad.type.style.from_str('IN')
+        self.assertEqual(test, kicad.type.style.italic)
+
+    def test_style_bold(self):
+        test = kicad.type.style.from_str('NB')
+        self.assertEqual(test, kicad.type.style.bold)
+
+    def test_style_none(self):
+        test = kicad.type.style.from_str('IB')
+        self.assertEqual(test, kicad.type.style.italic_bold)
+
+    def test_style_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.type.style.from_str('')
