@@ -1,6 +1,8 @@
 from enum import Enum
 
 class position(Enum):
+    '''4.5.1 Layer capacity'''
+
     all = '*'
     top = 'F'
     bottom = 'B'
@@ -21,6 +23,8 @@ class position(Enum):
         return self.value
 
 class type(Enum):
+    '''4.5.2 Layer names'''
+
     copper = 'Cu'
     adhes = 'Adhes' # Glue
     paste = 'Paste' # Solderpaste
@@ -46,6 +50,7 @@ class usage(Enum):
     user = 'user'
 
 class set(object):
+    '''4.5 Layer representation'''
 
     def __init__(self, index, type, position, usage):
         self.index = index
@@ -53,7 +58,7 @@ class set(object):
         self.position = position
         self.usage = usage
 
-    def render(self):
+    def __str__(self):
         return "{}.{}".format(self.position, self.type)
 
 copper_top = set(1, type.copper, position.top, usage.signal)

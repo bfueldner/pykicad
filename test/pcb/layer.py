@@ -1,35 +1,35 @@
 import unittest
 
-import kicad.layer
+import kicad.pcb.layer
 
 class case(unittest.TestCase):
 
     def test_layer_set(self):
-        self.assertEqual(kicad.layer.copper_top.render(), "F.Cu")
-        self.assertEqual(kicad.layer.copper_all.render(), "*.Cu")
-        self.assertEqual(kicad.layer.copper_bottom.render(), "B.Cu")
+        self.assertEqual(str(kicad.pcb.layer.copper_top), "F.Cu")
+        self.assertEqual(str(kicad.pcb.layer.copper_all), "*.Cu")
+        self.assertEqual(str(kicad.pcb.layer.copper_bottom), "B.Cu")
 
-        self.assertEqual(kicad.layer.adhes_top.render(), "F.Adhes")
-        self.assertEqual(kicad.layer.adhes_bottom.render(), "B.Adhes")
+        self.assertEqual(str(kicad.pcb.layer.adhes_top), "F.Adhes")
+        self.assertEqual(str(kicad.pcb.layer.adhes_bottom), "B.Adhes")
 
-        self.assertEqual(kicad.layer.paste_top.render(), "F.Paste")
-        self.assertEqual(kicad.layer.paste_bottom.render(), "B.Paste")
+        self.assertEqual(str(kicad.pcb.layer.paste_top), "F.Paste")
+        self.assertEqual(str(kicad.pcb.layer.paste_bottom), "B.Paste")
 
-        self.assertEqual(kicad.layer.silkscreen_top.render(), "F.SilkS")
-        self.assertEqual(kicad.layer.silkscreen_bottom.render(), "B.SilkS")
+        self.assertEqual(str(kicad.pcb.layer.silkscreen_top), "F.SilkS")
+        self.assertEqual(str(kicad.pcb.layer.silkscreen_bottom), "B.SilkS")
 
-        self.assertEqual(kicad.layer.soldermask_top.render(), "F.Mask")
-        self.assertEqual(kicad.layer.soldermask_bottom.render(), "B.Mask")
+        self.assertEqual(str(kicad.pcb.layer.soldermask_top), "F.Mask")
+        self.assertEqual(str(kicad.pcb.layer.soldermask_bottom), "B.Mask")
 
-        self.assertEqual(kicad.layer.courtyard_top.render(), "F.CrtYd")
-        self.assertEqual(kicad.layer.courtyard_bottom.render(), "B.CrtYd")
+        self.assertEqual(str(kicad.pcb.layer.courtyard_top), "F.CrtYd")
+        self.assertEqual(str(kicad.pcb.layer.courtyard_bottom), "B.CrtYd")
 
-        self.assertEqual(kicad.layer.fabrication_top.render(), "F.Fab")
-        self.assertEqual(kicad.layer.fabrication_bottom.render(), "B.Fab")
+        self.assertEqual(str(kicad.pcb.layer.fabrication_top), "F.Fab")
+        self.assertEqual(str(kicad.pcb.layer.fabrication_bottom), "B.Fab")
 
-        self.assertEqual(kicad.layer.user_drawing.render(), "Dwgs.User")
-        self.assertEqual(kicad.layer.user_comment.render(), "Cmts.User")
-        self.assertEqual(kicad.layer.user_eco1.render(), "Eco1.User")
-        self.assertEqual(kicad.layer.user_eco2.render(), "Eco2.User")
-        self.assertEqual(kicad.layer.board_outline.render(), "Edge.Cuts")
-    #   self.assertEqual(kicad.layer.margin.render(), "Margin")
+        self.assertEqual(str(kicad.pcb.layer.user_drawing), "Dwgs.User")
+        self.assertEqual(str(kicad.pcb.layer.user_comment), "Cmts.User")
+        self.assertEqual(str(kicad.pcb.layer.user_eco1), "Eco1.User")
+        self.assertEqual(str(kicad.pcb.layer.user_eco2), "Eco2.User")
+        self.assertEqual(str(kicad.pcb.layer.board_outline), "Edge.Cuts")
+    #   self.assertEqual(str(kicad.pcb.layer.margin), "Margin")
