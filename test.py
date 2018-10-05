@@ -6,6 +6,9 @@ import test.type
 import test.schematic.field
 import test.schematic.rectangle
 import test.schematic.from_string
+
+import test.pcb.function
+import test.pcb.layer
 #import test.symbol.field
 
 if __name__ == '__main__':
@@ -16,16 +19,18 @@ if __name__ == '__main__':
     test_schematic_rectangle = unittest.TestLoader().loadTestsFromTestCase(test.schematic.rectangle.case)
     test_schematic_from_string = unittest.TestLoader().loadTestsFromTestCase(test.schematic.from_string.case)
 
-#    symbol_field = unittest.TestLoader().loadTestsFromTestCase(test.symbol.field.case)
+    test_pcb_function = unittest.TestLoader().loadTestsFromTestCase(test.pcb.function.case)
+    test_pcb_layer = unittest.TestLoader().loadTestsFromTestCase(test.pcb.layer.case)
 
     test_suites = [
         test_type,
 
         test_schematic_field,
         test_schematic_rectangle,
-        test_schematic_from_string,
+    #   test_schematic_from_string,
 
-    #    symbol_field,
+        test_pcb_function,
+        test_pcb_layer
     ]
     suite = unittest.TestSuite(test_suites)
     unittest.TextTestRunner(verbosity = 2).run(suite)

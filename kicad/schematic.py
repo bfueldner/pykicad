@@ -2,8 +2,12 @@ import datetime
 
 import kicad.type
 
+class alias(object):
+    '''2.3.1 Aliases'''
+    pass
+
 class field(object):
-    '''Component field'''
+    '''2.3.2 Component field'''
 
     fmt = 'F{} "{}" {} {} {} {} {} {} {}{} "{}"'
 
@@ -75,10 +79,12 @@ class element(object):
     def priority(self):
         return self.unit * 65536 + self.order * 256
 
-
+class polygon(element):
+    '''2.3.3.1 Polygon'''
+    pass
 
 class rectangle(element):
-    '''Element rectangle'''
+    '''2.3.3.2 Rectangle'''
 
     fmt = 'S {} {} {} {} {} {} {} {}'
     order = 1
@@ -117,6 +123,17 @@ class rectangle(element):
             self.fill
         )
 
+class circle(element):
+    '''2.3.3.3 Circle'''
+    pass
+
+class arc(element):
+    '''2.3.3.4 Arc'''
+    pass
+
+class text(element):
+    '''2.3.3.5 Text'''
+    pass
 
 class fields(object):
     '''Component fields'''
@@ -180,6 +197,7 @@ def from_str(string):
     char = string[0]
     part = string[1:].split()
     if char == 'F':
+        # NOTE: Optional name field is ignored!
         return field(
             kicad.type.field.from_str(int(part[0])),
             str(part[1]),
