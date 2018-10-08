@@ -8,6 +8,7 @@ import test.pcb.helper
 import test.pcb.type
 import test.pcb.layer
 import test.pcb.element
+import test.pcb.footprint
 
 if __name__ == '__main__':
     test_schematic_type = unittest.TestLoader().loadTestsFromTestCase(test.schematic.type.case)
@@ -18,6 +19,7 @@ if __name__ == '__main__':
     test_pcb_type = unittest.TestLoader().loadTestsFromTestCase(test.pcb.type.case)
     test_pcb_layer = unittest.TestLoader().loadTestsFromTestCase(test.pcb.layer.case)
     test_pcb_element = unittest.TestLoader().loadTestsFromTestCase(test.pcb.element.case)
+    test_pcb_footprint = unittest.TestLoader().loadTestsFromTestCase(test.pcb.footprint.case)
 
     test_suites = [
         test_schematic_type,
@@ -27,7 +29,8 @@ if __name__ == '__main__':
         test_pcb_helper,
         test_pcb_type,
         test_pcb_layer,
-        test_pcb_element
+        test_pcb_element,
+        test_pcb_footprint
     ]
     suite = unittest.TestSuite(test_suites)
     unittest.TextTestRunner(verbosity = 2).run(suite)

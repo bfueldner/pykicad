@@ -1,4 +1,17 @@
+from enum import Enum
+
 import kicad.pcb.helper
+
+class technology(Enum):
+    '''Footprint technology type'''
+
+    smd = 'smd'
+    connector = 'TBD'
+    through_hole = 'thru_hole'
+    non_plated = 'TBD'
+
+    def __str__(self):
+        return self.value
 
 class text(object):
     '''Text object'''
