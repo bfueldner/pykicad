@@ -1,7 +1,5 @@
 from enum import Enum
 
-# Schematic
-
 class field(Enum):
     '''Schematic field type'''
 
@@ -144,16 +142,3 @@ class representation(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'representation'".format(value))
-
-# PCB
-
-class copper_layer(Enum):
-    '''Copper layer name'''
-
-
-
-class layer(Enum):
-    '''Layer names'''
-
-
-#layer index!

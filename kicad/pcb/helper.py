@@ -17,17 +17,3 @@ def float_to_str(value):
         raise TypeError('value is not instance of float')
 
     return format(ctx.create_decimal(repr(value)), 'f')
-
-    x = """
-
-import kicad.pcb.layer
-
-#helper:
-#point(name x y)
-#layer(layer name.name)
-#dimension(name value)
-#
-#set of valid layers: index name.name signal/user
-
-
-"""

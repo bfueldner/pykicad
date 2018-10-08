@@ -4,7 +4,7 @@ import kicad.pcb.layer
 
 class case(unittest.TestCase):
 
-    def test_layer_set(self):
+    def test_pcb_layer_set(self):
         self.assertEqual(str(kicad.pcb.layer.copper_top), "F.Cu")
         self.assertEqual(str(kicad.pcb.layer.copper_all), "*.Cu")
         self.assertEqual(str(kicad.pcb.layer.copper_bottom), "B.Cu")
