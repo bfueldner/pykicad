@@ -68,8 +68,8 @@ copper_bottom = set(1, type.copper, position.bottom, usage.signal)
 adhes_top = set(1, type.adhes, position.top, usage.user)
 adhes_bottom = set(1, type.adhes, position.bottom, usage.user)
 
-paste_top = set(1, type.paste, position.top, usage.user)
-paste_bottom = set(1, type.paste, position.bottom, usage.user)
+solderpaste_top = set(1, type.paste, position.top, usage.user)
+solderpaste_bottom = set(1, type.paste, position.bottom, usage.user)
 
 silkscreen_top = set(1, type.silkscreen, position.top, usage.user)
 silkscreen_bottom = set(1, type.silkscreen, position.bottom, usage.user)
