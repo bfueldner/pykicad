@@ -33,10 +33,14 @@ class base(object):
         ]
 
         parts = [
-            str(kicad.pcb.type.key_data('attr', self.technology)),
+            str(kicad.pcb.type.key_data('layer', kicad.pcb.layer.copper_top)),
+            str(kicad.pcb.type.key_data('tedit', '{:8X}'.format(int(time.time())))),
             str(kicad.pcb.type.key_data('descr', kicad.pcb.type.text(self.description))),
             str(kicad.pcb.type.key_data('tags', self.tags))
         ]
+
+        if self.technology.value is not None:
+            parts += [ str(kicad.pcb.type.key_data('attr', self.technology)) ]
 
         return '\n'.join(parts)
 

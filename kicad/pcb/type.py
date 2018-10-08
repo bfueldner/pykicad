@@ -5,10 +5,13 @@ import kicad.pcb.helper
 class technology(Enum):
     '''Footprint technology type'''
 
+    thd = None
     smd = 'smd'
-    connector = 'TBD'
-    through_hole = 'thru_hole'
-    non_plated = 'TBD'
+    virtual = 'virtual'
+
+#    connector = 'TBD'
+#    through_hole = 'thru_hole'
+#    non_plated = 'TBD'
 
     def __str__(self):
         return self.value
