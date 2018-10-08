@@ -12,8 +12,8 @@ class case(unittest.TestCase):
         self.assertEqual(str(kicad.pcb.layer.adhes_top), "F.Adhes")
         self.assertEqual(str(kicad.pcb.layer.adhes_bottom), "B.Adhes")
 
-        self.assertEqual(str(kicad.pcb.layer.paste_top), "F.Paste")
-        self.assertEqual(str(kicad.pcb.layer.paste_bottom), "B.Paste")
+        self.assertEqual(str(kicad.pcb.layer.solderpaste_top), "F.Paste")
+        self.assertEqual(str(kicad.pcb.layer.solderpaste_bottom), "B.Paste")
 
         self.assertEqual(str(kicad.pcb.layer.silkscreen_top), "F.SilkS")
         self.assertEqual(str(kicad.pcb.layer.silkscreen_bottom), "B.SilkS")
