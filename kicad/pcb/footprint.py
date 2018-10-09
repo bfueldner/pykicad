@@ -26,23 +26,38 @@ class base(object):
         self.element.remove(index)
 
     def __str__(self):
-        model = [
-            str(kicad.pcb.type.key_data('xyz', kicad.pcb.type.point3d(0.0, 0.0, 0.0) )),
-            str(kicad.pcb.type.key_data('xyz', kicad.pcb.type.point3d(1.0, 1.0, 1.0) )),
-            str(kicad.pcb.type.key_data('xyz', kicad.pcb.type.point3d(0.0, 0.0, 0.0) )),
-        ]
+
+        x = '''
+  (model soic/soic_8_narrow.wrl
+    (at (xyz 0 0 0))
+    (scale (xyz 1 1 1))
+    (rotate (xyz 0 0 0))
+  )'''
 
         parts = [
-            str(kicad.pcb.type.key_data('layer', kicad.pcb.layer.copper_top)),
             str(kicad.pcb.type.key_data('tedit', '{:8X}'.format(int(time.time())))),
             str(kicad.pcb.type.key_data('descr', kicad.pcb.type.text(self.description))),
             str(kicad.pcb.type.key_data('tags', self.tags))
         ]
 
         if self.technology.value is not None:
-            parts += [ str(kicad.pcb.type.key_data('attr', self.technology)) ]
+            parts += [
+                str(kicad.pcb.type.key_data('attr', self.technology))
+            ]
 
-        return '\n'.join(parts)
+        if self.model is not None:
+            model = [
+                str(kicad.pcb.type.key_data('at', kicad.pcb.type.key_data('xyz', kicad.pcb.type.point3d(0.0, 0.0, 0.0) ) )),
+                str(kicad.pcb.type.key_data('scale', kicad.pcb.type.key_data('xyz', kicad.pcb.type.point3d(1.0, 1.0, 1.0) ) )),
+                str(kicad.pcb.type.key_data('rotate', kicad.pcb.type.key_data('xyz', kicad.pcb.type.point3d(0.0, 0.0, 0.0) ) ))
+            ]
+
+            model = '\n    '.join(model)
+            parts += [
+                str(kicad.pcb.type.key_data('model', [kicad.pcb.type.text(self.model), '\n    '+model+'\n']))
+            ]
+
+        return str(kicad.pcb.type.key_data('module', [kicad.pcb.type.text(self.name), kicad.pcb.type.key_data('layer', kicad.pcb.layer.copper_top), '\n  '.join(parts) ]))
 
         x = '''
         result = '(module {} (tedit {:8X})\n'.format(self.name, int(time.time()))
