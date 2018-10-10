@@ -26,14 +26,6 @@ class base(object):
         self.element.remove(index)
 
     def __str__(self):
-
-        x = '''
-  (model soic/soic_8_narrow.wrl
-    (at (xyz 0 0 0))
-    (scale (xyz 1 1 1))
-    (rotate (xyz 0 0 0))
-  )'''
-
         parts = [
             str(kicad.pcb.type.key_data('tedit', '{:8X}'.format(int(time.time())))),
             str(kicad.pcb.type.key_data('descr', kicad.pcb.type.text(self.description))),
