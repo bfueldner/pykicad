@@ -7,7 +7,7 @@ def quote_str(value):
     if not isinstance(value, str):
         raise TypeError('value is not instance of str')
 
-    if all(ord(char) > 127 for char in value):
+    if len(value) and all(ord(char) > 127 for char in value):
         raise ValueError('Only ASCII 7bit allowed!')
 
     return "\"{}\"".format(value.replace('"', '""'))

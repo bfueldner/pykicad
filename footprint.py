@@ -1,6 +1,6 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #
-# Copyright (c) 2015 Benjamin Fueldner
+# Copyright (c) 2015, 2018 Benjamin Fueldner <benjamin@fueldner.net>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,7 +21,8 @@ import os
 import csv
 import argparse
 
-import kicad.pcb.type
+import kicad.footprint.generator
+from kicad.footprint.generators import *
 
 string_keywords = ['generator', 'name', 'description', 'tags']
 
@@ -38,7 +39,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Footprint generator from csv table.')
     parser.add_argument('--csv', metavar = 'file', type = str, help = 'CSV formatted input table', required = True)
 #    parser.add_argument('--package-root', metavar = 'path', type = str, help = 'Root path for 3D models, searchpath will be root_path/csv_basename/symbol_name.wrl', required = True)
-#    parser.add_argument('--output-path', metavar = 'path', type = str, help = 'Output path for generated KiCAD footprint files', required = True)
+    parser.add_argument('--output-path', metavar = 'path', type = str, help = 'Output path for generated KiCAD footprint files', required = True)
     args = parser.parse_args()
 
     # Extract family name from csv file name
@@ -69,16 +70,17 @@ if __name__ == '__main__':
                 model_file = os.path.join(args.package_root, package_family, data['name'] + ".wrl" )
                 if os.path.isfile(model_file):
                     data['model'] = os.path.join(package_family, data['name'] + ".wrl" )
-                else:
-                    data['model'] = ''
+                else:'''
+                data['model'] = None
 
-                if generator in fp.registry.keys():
-                    gen = fp.registry[generator](**data)
+                if generator in kicad.footprint.generator.registry.keys():
+                    gen = kicad.footprint.generator.registry[generator](**data)
 
-                    output = open(args.output_path+'/'+data['name']+cfg.FOOTPRINT_EXTENSION, "w")
-                    output.write(gen.render())
+                    filename = data['name'] + kicad.config.footprint.EXTENSION
+                    print("Generate '{}'".format(filename))
+                    output = open(args.output_path + '/' + filename, "w")
+                    output.write(str(gen))
                     output.close()
                     del gen
                 else:
-                    print "Unknown footprint generator '"+generator+"'"
-'''
+                    print("Unknown footprint generator '{}'".format(generator))

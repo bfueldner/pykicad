@@ -68,20 +68,22 @@ copper_bottom = set(1, type.copper, position.bottom, usage.signal)
 adhes_top = set(1, type.adhes, position.top, usage.user)
 adhes_bottom = set(1, type.adhes, position.bottom, usage.user)
 
-solderpaste_top = set(1, type.paste, position.top, usage.user)
-solderpaste_bottom = set(1, type.paste, position.bottom, usage.user)
-
-silkscreen_top = set(1, type.silkscreen, position.top, usage.user)
-silkscreen_bottom = set(1, type.silkscreen, position.bottom, usage.user)
-
-soldermask_top = set(1, type.soldermask, position.top, usage.user)
-soldermask_bottom = set(1, type.soldermask, position.bottom, usage.user)
-
 courtyard_top = set(1, type.courtyard, position.top, usage.user)
 courtyard_bottom = set(1, type.courtyard, position.bottom, usage.user)
 
 fabrication_top = set(1, type.fabrication, position.top, usage.user)
 fabrication_bottom = set(1, type.fabrication, position.bottom, usage.user)
+
+silkscreen_top = set(1, type.silkscreen, position.top, usage.user)
+silkscreen_bottom = set(1, type.silkscreen, position.bottom, usage.user)
+
+solderpaste_top = set(1, type.paste, position.top, usage.user)
+solderpaste_all = set(1, type.paste, position.all, usage.user)
+solderpaste_bottom = set(1, type.paste, position.bottom, usage.user)
+
+soldermask_top = set(1, type.soldermask, position.top, usage.user)
+soldermask_all = set(1, type.soldermask, position.all, usage.user)
+soldermask_bottom = set(1, type.soldermask, position.bottom, usage.user)
 
 user_drawing = set(1, type.user, position.drawing, usage.user)
 user_comment = set(1, type.user, position.comment, usage.user)
