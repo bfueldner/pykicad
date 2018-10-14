@@ -24,8 +24,8 @@ class base(object, metaclass = register_generator):
         self.technology = technology
         self.name = name
         self.model = model
-        self.description = description
-        self.tags = tags
+        self.description = description if len(description) else None
+        self.tags = tags if len(tags) else None
         self.element = []
 
     #    if add_ref_value:
@@ -53,15 +53,26 @@ class base(object, metaclass = register_generator):
 
     def __str__(self):
         parts = [
-            str(kicad.footprint.type.key_data('tedit', '{:8X}'.format(int(time.time())))),
-            str(kicad.footprint.type.key_data('descr', kicad.footprint.type.text(self.description))),
-            str(kicad.footprint.type.key_data('tags', self.tags))
+            str(kicad.footprint.type.key_data('tedit', '{:8X}'.format(int(time.time()))))
         ]
+
+        if self.description is not None:
+            parts += [
+                str(kicad.footprint.type.key_data('descr', kicad.footprint.type.name(self.description)))
+            ]
+
+        if self.tags is not None:
+            parts += [
+                str(kicad.footprint.type.key_data('tags', self.tags))
+            ]
 
         if self.technology.value is not None:
             parts += [
                 str(kicad.footprint.type.key_data('attr', self.technology))
             ]
+
+        for element in self.element:
+            parts.append(str(element))
 
         if self.model is not None:
             model = [
@@ -72,10 +83,10 @@ class base(object, metaclass = register_generator):
 
             model = '\n    '.join(model)
             parts += [
-                str(kicad.footprint.type.key_data('model', [kicad.footprint.type.text(self.model), '\n    '+model+'\n']))
+                str(kicad.footprint.type.key_data('model', [kicad.footprint.type.name(self.model), '\n    '+model+'\n']))
             ]
 
-        return str(kicad.footprint.type.key_data('module', [kicad.footprint.type.text(self.name), kicad.footprint.type.key_data('layer', kicad.footprint.layer.copper_top), '\n  '.join(parts) ]))
+        return str(kicad.footprint.type.key_data('module', [kicad.footprint.type.name(self.name), kicad.footprint.type.key_data('layer', kicad.footprint.layer.copper_top), '\n  '.join(parts) ]))
 
         x = '''
         result = '(module {} (tedit {:8X})\n'.format(self.name, int(time.time()))

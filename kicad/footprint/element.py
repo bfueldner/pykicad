@@ -1,17 +1,17 @@
 import kicad.footprint.type
 
 class text(object):
-    '''Generate text at x/y'''
+    '''Text at x/y'''
 
     def __init__(self, layer, text, value, x, y, size, thickness, angle = 0.0, style = kicad.footprint.type.style.normal, visible = True):
         self.text = text
         if text == kicad.footprint.type.text.reference:
             if value is not None:
-                raise ValueError('Value is ignored when text is reference')
+                raise ValueError('Value has to be None when text is reference')
             self.value = 'REF**'
         elif text == kicad.footprint.type.text.value:
             if value is not None:
-                raise ValueError('Value is ignored when text is value')
+                raise ValueError('Value has to be None when text is value')
             self.value = 'VAL**'
         else:
             self.value = kicad.footprint.type.name(value)
@@ -75,27 +75,6 @@ class line(object):
         list = [str(self.start), str(self.end), str(self.layer), str(self.width)]
         return '(fp_line ' + ' '.join(list) +')'
 
-class rectangle(object):
-    '''Rectangle from x1/y1 to x2/y2'''
-
-    def __init__(self, layer, x1, y1, x2, y2, width):
-        self.element = []
-        self.element.append(line(layer, x1, y1, x2, y1, width))
-        self.element.append(line(layer, x2, y1, x2, y2, width))
-        self.element.append(line(layer, x2, y2, x1, y2, width))
-        self.element.append(line(layer, x1, y2, x1, y1, width))
-
-    def __str__(self):
-        result = ''
-        for element in self.elements:
-            result += str(element)
-        return result
-
-class centered_rectangle(object):
-    '''Centered rectangle at x/y with width/height'''
-
-    pass
-
 class pad(object):
     '''Pad at x/y with size width/height in given type/shap on layers'''
 
@@ -128,3 +107,44 @@ class pad(object):
         if self.shape == kicad.footprint.type.shape.round_rectangle:
             list += [str(self.round_rectangle)]
         return '(pad ' + ' '.join(list) +')'
+
+class multi_element(object):
+    '''Multiple elements'''
+
+    def __init__(self):
+        self.element = []
+
+    def add(self, element):
+        '''Add element to object'''
+
+        self.element.append(element)
+
+    def remove(self, index):
+        '''Remove element from object'''
+
+        self.element.remove(index)
+
+    def __str__(self):
+        result = ''
+        for element in self.element:
+            result += str(element)+'\n  '
+        return result
+
+class rectangle(multi_element):
+    '''Rectangle from x1/y1 to x2/y2'''
+
+    def __init__(self, layer, x1, y1, x2, y2, width):
+        super().__init__()
+        super().add(line(layer, x1, y1, x2, y1, width))
+        super().add(line(layer, x2, y1, x2, y2, width))
+        super().add(line(layer, x2, y2, x1, y2, width))
+        super().add(line(layer, x1, y2, x1, y1, width))
+
+class centered_rectangle(rectangle):
+    '''Centered rectangle at x/y with width/height'''
+
+    def __init__(self, layer, x, y, width, height, line_width):
+        x -= width / 2
+        y -= height / 2
+
+        super().__init__(layer, x, y, x + width, y + height, line_width)
