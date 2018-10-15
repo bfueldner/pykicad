@@ -4,7 +4,7 @@ class soic(kicad.footprint.generator.base):
     '''Generator for small outline ICs'''
 
     def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_grid, pad_distance, pad_count):
-        super().__init__(kicad.footprint.type.technology.smd, name, model, description, tags)
+        super().__init__(kicad.footprint.type.footprint.smd, name, model, description, tags)
 
         if pad_count % 2:
             raise ValueError("pad_count is odd")
@@ -37,7 +37,7 @@ class soic(kicad.footprint.generator.base):
         )
 
         pin = 1
-        x = pad_grid * -((float(pad_count) / 4.0) - 0.5)
+        x = pad_grid * -((pad_count / 4.0) - 0.5)
         line_x = package_width / 2.0
         line_y = package_height / 2.0 - 0.5
 
@@ -70,6 +70,7 @@ class soic(kicad.footprint.generator.base):
             )
         )
 
+        # Pads
         for i in range(pad_count // 2):
             super().add(
                 kicad.footprint.element.pad(

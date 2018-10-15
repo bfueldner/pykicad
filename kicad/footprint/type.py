@@ -2,7 +2,7 @@ from enum import Enum
 
 import kicad.footprint.helper
 
-class fp_technology(Enum):
+class footprint(Enum):
     '''Footprint technology type'''
 
     thd = None

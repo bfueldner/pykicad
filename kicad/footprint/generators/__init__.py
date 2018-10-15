@@ -2,7 +2,7 @@ __all__ = [
 #	"bga",
 #	"chip",
 #	"connector",
-#	"dip",
+	"dip",
 #	"dsub",
 #	"qfp",
 	"soic",
