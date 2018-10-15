@@ -148,3 +148,67 @@ class centered_rectangle(rectangle):
         y -= height / 2
 
         super().__init__(layer, x, y, x + width, y + height, line_width)
+
+class beveled_rectangle(multi_element):
+    '''Rectangle with beveled edges from x1/y1 to x2/y2'''
+
+    def __init__(self, layer, x1, y1, x2, y2, line_width, bevel):
+        super().__init__()
+        super().add(line(layer, x1 + bevel, y1, x2 - bevel, y1, line_width))    # -
+        super().add(line(layer, x2 - bevel, y1, x2, y1 + bevel, line_width))    # \
+        super().add(line(layer, x2, y1 + bevel, x2, y2 - bevel, line_width))    # |
+        super().add(line(layer, x2, y2 - bevel, x2 - bevel, y2, line_width))    # /
+        super().add(line(layer, x2 - bevel, y2, x1 + bevel, y2, line_width))    # -
+        super().add(line(layer, x1 + bevel, y2, x1, y2 - bevel, line_width))    # \
+        super().add(line(layer, x1, y2 - bevel, x1, y1 + bevel, line_width))    # |
+        super().add(line(layer, x1, y1 + bevel, x1 + bevel, y1, line_width))    # /
+
+class centered_beveled_rectangle(beveled_rectangle):
+    '''Centered rectangle with beveled edges at x/y with width/height'''
+
+    def __init__(self, layer, x, y, width, height, line_width, bevel):
+        x -= width / 2
+        y -= height / 2
+
+        super().__init__(layer, x, y, x + width, y + height, line_width, bevel)
+
+class beveled_outline(multi_element):
+    '''Outline with beveled corners every grid point from x1/y1 to x2/y2'''
+
+    def __init__(self, layer, x1, y1, x2, y2, line_width, bevel, grid):
+        super().__init__()
+        
+        x_rep = int((x2 - x1) / grid)
+        y_rep = int((y2 - y1) / grid)
+        for i in range(x_rep):
+            if i != 0:
+                super().add(line(layer, i * grid + x1, y1 + bevel, i * grid + x1 + bevel, y1, line_width))
+            super().add(line(layer, i * grid + x1 + bevel, y1, i * grid + x1 + grid - bevel, y1, line_width))
+            super().add(line(layer, i * grid + x1 + grid - bevel, y1, i * grid + x1 + grid, y1 + bevel, line_width))
+
+        for i in range(y_rep):
+            if i != 0:
+                super().add(line(layer, x2 - bevel, i * grid + y1, x2, i * grid + y1 + bevel, line_width))
+            super().add(line(layer, x2, i * grid + y1 + bevel, x2, i * grid + y1 + grid - bevel, line_width))
+            super().add(line(layer, x2, i * grid + y1 + grid - bevel, x2 - bevel, i * grid + y1 + grid, line_width))
+
+        for i in reversed(range(x_rep)):
+            if i != (x_rep - 1):
+                super().add(line(layer, i * grid + x1 + grid, y2 - bevel, i * grid + x1 + grid - bevel, y2, line_width))
+            super().add(line(layer, i * grid + x1 + grid - bevel, y2, i * grid + x1 + bevel, y2, line_width))
+            super().add(line(layer, i * grid + x1 + bevel, y2, i * grid + x1, y2 - bevel, line_width))
+
+        for i in reversed(range(y_rep)):
+            if i != (y_rep - 1):
+                super().add(line(layer, x1 + bevel, i * grid + y1 + grid, x1, i * grid + y1 + grid - bevel, line_width))
+            super().add(line(layer, x1, i * grid + y1 + grid - bevel, x1, i * grid + y1 + bevel, line_width))
+            super().add(line(layer, x1, i * grid + y1 + bevel, x1 + bevel, i * grid + y1, line_width))
+
+class centered_beveled_outline(beveled_outline):
+    '''Centered outline with beveled corners every grid point at x/y with width/height'''
+
+    def __init__(self, layer, x, y, width, height, line_width, bevel, grid):
+        x -= width / 2
+        y -= height / 2
+
+        super().__init__(layer, x, y, x + width, y + height, line_width, bevel, grid)

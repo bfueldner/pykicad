@@ -1,7 +1,7 @@
 __all__ = [
 #	"bga",
 	"chip",
-#	"connector",
+	"connector",
 	"dip",
 #	"dsub",
 #	"qfp",
