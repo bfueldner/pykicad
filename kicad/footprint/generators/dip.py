@@ -15,8 +15,7 @@ class dip(kicad.footprint.generator.base):
                 kicad.footprint.layer.silkscreen_top,
                 kicad.footprint.type.text.reference,
                 None,
-                -package_width / 2 - kicad.config.footprint.REFERENCE_FONT_SIZE,
-                0.0,
+                -package_width / 2 - kicad.config.footprint.REFERENCE_FONT_SIZE, 0.0,
                 kicad.config.footprint.REFERENCE_FONT_SIZE,
                 kicad.config.footprint.REFERENCE_FONT_THICKNESS,
                 90.0,
@@ -29,8 +28,7 @@ class dip(kicad.footprint.generator.base):
                 kicad.footprint.layer.fabrication_top,
                 kicad.footprint.type.text.value,
                 None,
-                0.0,
-                0.0,
+                0.0, 0.0,
                 kicad.config.footprint.VALUE_FONT_SIZE,
                 kicad.config.footprint.VALUE_FONT_THICKNESS
             )

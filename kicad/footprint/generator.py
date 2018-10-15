@@ -41,16 +41,7 @@ class base(object, metaclass = register_generator):
         '''Remove element from generator list'''
 
         self.element.remove(index)
-        x = '''
-
-    def __str__(self):
-        print("Render")
-
-        result = ''
-        for element in self.element:
-            result += str(element)
-        return result'''
-
+        
     def __str__(self):
         parts = [
             str(kicad.footprint.type.key_data('tedit', '{:8X}'.format(int(time.time()))))
@@ -63,7 +54,7 @@ class base(object, metaclass = register_generator):
 
         if self.tags is not None:
             parts += [
-                str(kicad.footprint.type.key_data('tags', self.tags))
+                str(kicad.footprint.type.key_data('tags', kicad.footprint.type.name(self.tags)))
             ]
 
         if self.technology.value is not None:
