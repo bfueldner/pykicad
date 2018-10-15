@@ -4,7 +4,7 @@ __all__ = [
 	"connector",
 	"dip",
 #	"dsub",
-#	"qfp",
+	"qfp",
 	"soic",
-#	"wired"
+	"wired"
 ]

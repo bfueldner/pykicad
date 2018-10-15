@@ -1,19 +1,74 @@
-import fp
-from fp import cfg
+import math
+import kicad.footprint.generator
 
-class wired(fp.base):
-	"""Generator for wired resistors, capacitors, ..."""
+class wired(kicad.footprint.generator.base):
+    '''Generator for wired resistors, capacitors, ...'''
 
-	def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_grid, pad_distance, count, drill):
-		super(wired, self).__init__(name, model, description, tags)
+    def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_grid, pad_distance, count, drill):
+        super().__init__(kicad.footprint.type.footprint.thd, name, model, description, tags)
 
-class wired_resistor(fp.base):
-	"""Wired resistor with beveled edges"""
+class wired_resistor(kicad.footprint.generator.base):
+    '''Wired resistor with beveled edges'''
 
-	def __init__(self, name, description, tags, package_width, package_height, pad_diameter, pad_distance, pad_drill):
-		super(wired_resistor, self).__init__(name, description, tags)
+    def __init__(self, name, model, description, tags, package_width, package_height, pad_diameter, pad_distance, pad_drill):
+        super().__init__(kicad.footprint.type.footprint.thd, name, model, description, tags)
 
-		bevel = math.sqrt(package_width * package_width + package_height * package_height) * 0.1
-		fp.base.add(self, fp.beveled_rectangle(cfg.FOOTPRINT_PACKAGE_LAYER, 0, 0, package_width, package_height, bevel, cfg.FOOTPRINT_PACKAGE_LINE_WIDTH, True))
-		fp.base.add(self, fp.pad(cfg.FOOTPRINT_THD_LAYERS, 1, fp.technology.thru_hole, fp.type.circle, -pad_distance / 2, 0, pad_diameter, pad_diameter, pad_drill))
-		fp.base.add(self, fp.pad(cfg.FOOTPRINT_THD_LAYERS, 2, fp.technology.thru_hole, fp.type.circle, pad_distance / 2, 0, pad_diameter, pad_diameter, pad_drill))
+        # Reference text
+        super().add(
+            kicad.footprint.element.text(
+                kicad.footprint.layer.silkscreen_top,
+                kicad.footprint.type.text.reference,
+                None,
+                0.0, 0.0,
+                kicad.config.footprint.REFERENCE_FONT_SIZE,
+                kicad.config.footprint.REFERENCE_FONT_THICKNESS
+            )
+        )
+
+        # Value text
+        super().add(
+            kicad.footprint.element.text(
+                kicad.footprint.layer.fabrication_top,
+                kicad.footprint.type.text.value,
+                None,
+                0.0, kicad.config.footprint.VALUE_FONT_SIZE + 2 * kicad.config.footprint.VALUE_FONT_THICKNESS,
+                kicad.config.footprint.VALUE_FONT_SIZE,
+                kicad.config.footprint.VALUE_FONT_THICKNESS
+            )
+        )
+
+        # Case
+        bevel = math.sqrt(package_width * package_width + package_height * package_height) * 0.1
+        super().add(
+            kicad.footprint.element.centered_beveled_rectangle(
+                kicad.footprint.layer.silkscreen_top,
+                0, 0, package_width, package_height,
+                kicad.config.footprint.PACKAGE_LINE_WIDTH,
+                bevel
+            )
+        )
+
+        # Pads
+        super().add(
+            kicad.footprint.element.pad(
+                kicad.footprint.layers.thru_hole,
+                '1',
+                kicad.footprint.type.technology.thru_hole,
+                kicad.footprint.type.shape.circle,
+                -pad_distance / 2, 0.0,
+                pad_diameter, pad_diameter,
+                pad_drill
+            )
+        )
+
+        super().add(
+            kicad.footprint.element.pad(
+                kicad.footprint.layers.thru_hole,
+                '2',
+                kicad.footprint.type.technology.thru_hole,
+                kicad.footprint.type.shape.circle,
+                +pad_distance / 2, 0.0,
+                pad_diameter, pad_diameter,
+                pad_drill
+            )
+        )
