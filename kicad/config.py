@@ -4,6 +4,7 @@ class footprint():
 
     # Footprint
     EXTENSION = '.kicad_mod'
+    PREFIX = '${KIPRJMOD}'
     #FOOTPRINT_PRECISION = 3
 
     #REFERENCE_LAYER = 'F.SilkS'

@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
                     filename = data['name'] + kicad.config.footprint.EXTENSION
                     print("Generate '{}'".format(filename))
-                    output = open(args.output_path + '/' + filename, "w")
+                    output = open(os.path.join(args.output_path, filename), "w")
                     output.write(str(gen))
                     output.close()
                     del gen
