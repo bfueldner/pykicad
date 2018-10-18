@@ -14,7 +14,7 @@ class register_generator(type):
         super().__init__(name, bases, namespace)
 
         if name != 'base':
-            print("Register '{}' footprint generator".format(name))
+        #   print("Register '{}' footprint generator".format(name))
             registry[name] = self
 
 class base(object, metaclass = register_generator):
@@ -41,7 +41,7 @@ class base(object, metaclass = register_generator):
         '''Remove element from generator list'''
 
         self.element.remove(index)
-        
+
     def __str__(self):
         parts = [
             str(kicad.footprint.type.key_data('tedit', '{:8X}'.format(int(time.time()))))

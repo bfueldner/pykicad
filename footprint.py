@@ -38,7 +38,7 @@ def string_to_int_or_float(value):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Footprint generator from csv table.')
     parser.add_argument('--csv', metavar = 'file', type = str, help = 'CSV formatted input table', required = True)
-#    parser.add_argument('--package-root', metavar = 'path', type = str, help = 'Root path for 3D models, searchpath will be root_path/csv_basename/symbol_name.wrl', required = True)
+    parser.add_argument('--package3d-root', metavar = 'path', type = str, help = 'Root path for 3D models, searchpath will be path/csv_basename/symbol_name.wrl', required = False)
     parser.add_argument('--output-path', metavar = 'path', type = str, help = 'Output path for generated KiCAD footprint files', required = True)
     args = parser.parse_args()
 
@@ -65,19 +65,23 @@ if __name__ == '__main__':
                 generator = data['generator']
                 del data['generator']
 
-                x = '''
-                # Search for 3D model
-                model_file = os.path.join(args.package_root, package_family, data['name'] + ".wrl" )
-                if os.path.isfile(model_file):
-                    data['model'] = os.path.join(package_family, data['name'] + ".wrl" )
-                else:'''
-                data['model'] = None
+                # Look for 3D model
+                if args.package3d_root is not None:
+                    model_file = os.path.join(args.package3d_root, package_family, data['name'] + ".wrl" )
+                    if os.path.isfile(model_file):
+                        data['model'] = os.path.join(package_family, data['name'] + ".wrl" )
+                else:
+                    data['model'] = None
 
                 if generator in kicad.footprint.generator.registry.keys():
                     gen = kicad.footprint.generator.registry[generator](**data)
 
                     filename = data['name'] + kicad.config.footprint.EXTENSION
-                    print("Generate '{}'".format(filename))
+                    if data['model'] is not None:
+                        print("Generate '{}' with package3d '{}'".format(filename, data['model']))
+                    else:
+                        print("Generate '{}'".format(filename))
+
                     output = open(os.path.join(args.output_path, filename), "w")
                     output.write(str(gen))
                     output.close()
