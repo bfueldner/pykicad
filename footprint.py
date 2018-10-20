@@ -66,12 +66,11 @@ if __name__ == '__main__':
                 del data['generator']
 
                 # Look for 3D model
+                data['model'] = None
                 if args.package3d_root is not None:
-                    model_file = os.path.join(args.package3d_root, package_family, data['name'] + ".wrl" )
+                    model_file = os.path.join(args.package3d_root, package_family + ".3dshapes", data['name'] + ".wrl" )
                     if os.path.isfile(model_file):
-                        data['model'] = os.path.join(package_family, data['name'] + ".wrl" )
-                else:
-                    data['model'] = None
+                        data['model'] = os.path.join('${KISYS3DMOD}', package_family + ".3dshapes", data['name'] + ".wrl" )
 
                 if generator in kicad.footprint.generator.registry.keys():
                     gen = kicad.footprint.generator.registry[generator](**data)
