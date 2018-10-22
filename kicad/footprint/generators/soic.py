@@ -1,7 +1,20 @@
 import kicad.footprint.generator
 
 class soic(kicad.footprint.generator.base):
-    '''Generator for small outline ICs'''
+    '''Generates footprint for small outline ICs with marker for pin one.
+
+* `name`: Name of footprint
+* `model`: Filename for 3D model. Be shure to use variable ${KISYS3DMOD} as starting point
+* `description`: Textual description of footprint details
+* `tags`: Space separated list of parameters with footprint details (searchable from within KiCAD)
+* `package_width`: Width of package body
+* `package_height`: Height of package body
+* `pad_width`: Width of pad
+* `pad_height`: Height of pad
+* `pad_grid`: Pad distance between pins of one side (Reference is pad center)
+* `pad_distance`: Pad distance between pins of opposite pins (Reference is pad center)
+* `pad_count`: Count of overall pins
+'''
 
     def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_grid, pad_distance, pad_count):
         super().__init__(kicad.footprint.type.footprint.smd, name, model, description, tags)
