@@ -88,3 +88,4 @@ F#-Field usage:
 
 ### Generators
 
+[Footprint generators](doc/footprint.md)
