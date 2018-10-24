@@ -56,3 +56,11 @@ For multiple devices with following numbers (BC546, BC547, BC548, BC549, BC550):
 ### Generators
 
 [Footprint generators](doc/footprint.md)
+
+# Tutorial
+
+[How to add new parts to library](doc/tutorial.md)
+
+# 2do
+
+[2do list](doc/2do.md)
