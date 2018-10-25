@@ -50,14 +50,6 @@ FOOTPRINT_3D_DIR=$FOOTPRINT_DIR/3d-package
 DOC_DIR=$ROOT_DIR/doc
 
 # Symbol
-SYMBOL_LIB_START="EESchema-LIBRARY Version 2.3
-#encoding utf-8"
-SYMBOL_LIB_END="#
-#End Library"
-
-SYMBOL_DOC_START="EESchema-DOCLIB  Version 2.0"
-SYMBOL_DOC_END="#
-#End Doc Library"
 
 SYMBOL_TEMPLATE_PATH="data/template/"
 SYMBOL_TEMPLATE_EXTENSION=".lib"

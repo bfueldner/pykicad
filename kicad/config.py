@@ -1,3 +1,11 @@
+class symbols(object):
+    '''Symbols configuration'''
+
+    LIBRARY_START = 'EESchema-LIBRARY Version 2.3\n# encoding utf-8\n'
+    LIBRARY_END = '# End Library\n'
+
+    DESCRIPTION_START = 'EESchema-DOCLIB Version 2.0\n'
+    DESCRIPTION_END = '# End Doc Library\n'
 
 class footprint():
     '''Footprint configuration'''
@@ -31,6 +39,7 @@ class footprint():
     # http://www.multi-circuit-boards.eu/leiterplatten-design-hilfe/design-parameter/restring.html
     DRILL = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
     ANNULAR_RING = 0.15
+
 
 """Configuration parsing module, which generate a python namespace"""
 '''
