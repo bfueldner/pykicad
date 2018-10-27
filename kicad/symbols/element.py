@@ -1,6 +1,6 @@
 import datetime
 
-import kicad.schematic.type
+import kicad.symbols.type
 
 class alias(object):
     '''2.3.1 Aliases'''
@@ -12,8 +12,8 @@ class field(object):
     fmt = 'F{} "{}" {} {} {} {} {} {} {}{} "{}"'
 
     def __init__(self, type, text, x, y, dimension, orientation, visibility, hjustify, vjustify, style):
-        if not isinstance(type, kicad.schematic.type.field):
-            raise TypeError("type must be instance of kicad.schematic.type.field")
+        if not isinstance(type, kicad.symbols.type.field):
+            raise TypeError("type must be instance of kicad.symbols.type.field")
 
         if not isinstance(text, str):
             raise TypeError("text must be instance of str")
@@ -21,20 +21,20 @@ class field(object):
         if not isinstance(x, int) or not isinstance(y, int) or not isinstance(dimension, int):
             raise TypeError("x, y and dimension must be instance of int")
 
-        if not isinstance(orientation, kicad.schematic.type.orientation):
-            raise TypeError("orientation must be instance of kicad.schematic.type.orientation")
+        if not isinstance(orientation, kicad.symbols.type.orientation):
+            raise TypeError("orientation must be instance of kicad.symbols.type.orientation")
 
-        if not isinstance(visibility, kicad.schematic.type.visibility):
-            raise TypeError("visibility must be instance of kicad.schematic.type.visibility")
+        if not isinstance(visibility, kicad.symbols.type.visibility):
+            raise TypeError("visibility must be instance of kicad.symbols.type.visibility")
 
-        if not isinstance(hjustify, kicad.schematic.type.hjustify):
-            raise TypeError("hjustify must be instance of kicad.schematic.type.hjustify")
+        if not isinstance(hjustify, kicad.symbols.type.hjustify):
+            raise TypeError("hjustify must be instance of kicad.symbols.type.hjustify")
 
-        if not isinstance(vjustify, kicad.schematic.type.vjustify):
-            raise TypeError("vjustify must be instance of kicad.schematic.type.vjustify")
+        if not isinstance(vjustify, kicad.symbols.type.vjustify):
+            raise TypeError("vjustify must be instance of kicad.symbols.type.vjustify")
 
-        if not isinstance(style, kicad.schematic.type.style):
-            raise TypeError("style must be instance of kicad.schematic.type.style")
+        if not isinstance(style, kicad.symbols.type.style):
+            raise TypeError("style must be instance of kicad.symbols.type.style")
 
         self.type = type
         self.text = text
@@ -68,8 +68,8 @@ class element(object):
         if not isinstance(unit, int) or not isinstance(order, int):
             raise TypeError("unit and order must be instance of int")
 
-        if not isinstance(representation, kicad.schematic.type.representation):
-            raise TypeError("representation must be instance of kicad.schematic.type.representation")
+        if not isinstance(representation, kicad.symbols.type.representation):
+            raise TypeError("representation must be instance of kicad.symbols.type.representation")
 
         self.unit = unit
         self.representation = representation
@@ -89,13 +89,13 @@ class rectangle(element):
     fmt = 'S {} {} {} {} {} {} {} {}'
     order = 1
 
-    def __init__(self, x1, y1, x2, y2, width, fill, unit = 0, representation = kicad.schematic.type.representation.normal):
+    def __init__(self, x1, y1, x2, y2, width, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
         element.__init__(self, unit, representation, rectangle.order)
         if not isinstance(x1, int) or not isinstance(y1, int) or not isinstance(x2, int) or not isinstance(y2, int) or not isinstance(width, int):
             raise TypeError("x1, y1, x2, y2 and width must be instance of int")
 
-        if not isinstance(fill, kicad.schematic.type.fill):
-            raise TypeError("fill must be instance of kicad.schematic.type.fill")
+        if not isinstance(fill, kicad.symbols.type.fill):
+            raise TypeError("fill must be instance of kicad.symbols.type.fill")
 
         self.x1 = x1
         self.y1 = y1
@@ -151,7 +151,7 @@ class elements(object):
 
 
 class component(object):
-    '''Schematic component'''
+    '''symbols component'''
 
     def __init__(self):
         self.name = ''
@@ -177,8 +177,8 @@ class component(object):
     def save(self, file):
         pass
 
-class schematic(object):
-    '''Schematic class'''
+class symbols(object):
+    '''symbols class'''
 
     version_major = 2
     version_minor = 0
@@ -194,23 +194,23 @@ class schematic(object):
 
 def from_str(string):
     '''Generate elements out of string lines. Used to load a symbol file'''
-    
+
     string = string.strip()
     char = string[0]
     part = string[1:].split()
     if char == 'F':
         # NOTE: Optional name field is ignored!
         return field(
-            kicad.schematic.type.field.from_str(int(part[0])),
+            kicad.symbols.type.field.from_str(int(part[0])),
             str(part[1]),
             int(part[2]),
             int(part[3]),
             int(part[4]),
-            kicad.schematic.type.orientation.from_str(part[5]),
-            kicad.schematic.type.visibility.from_str(part[6]),
-            kicad.schematic.type.hjustify.from_str(part[7]),
-            kicad.schematic.type.vjustify.from_str(part[8][:1]),
-            kicad.schematic.type.style.from_str(part[8][1:])
+            kicad.symbols.type.orientation.from_str(part[5]),
+            kicad.symbols.type.visibility.from_str(part[6]),
+            kicad.symbols.type.hjustify.from_str(part[7]),
+            kicad.symbols.type.vjustify.from_str(part[8][:1]),
+            kicad.symbols.type.style.from_str(part[8][1:])
         )
     else:
         raise KeyError

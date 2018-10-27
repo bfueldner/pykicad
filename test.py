@@ -6,9 +6,9 @@ import unittest
 if sys.version_info[0] < 3:
     raise Exception("Must be using Python 3")
 
-import test.schematic.type
-import test.schematic.element
-import test.schematic.from_str
+import test.symbols.type
+import test.symbols.element
+import test.symbols.from_str
 
 import test.footprint.helper
 import test.footprint.type
@@ -17,9 +17,9 @@ import test.footprint.element
 #import test.footprint.footprint
 
 if __name__ == '__main__':
-    test_schematic_type = unittest.TestLoader().loadTestsFromTestCase(test.schematic.type.case)
-    test_schematic_element = unittest.TestLoader().loadTestsFromTestCase(test.schematic.element.case)
-    test_schematic_from_str = unittest.TestLoader().loadTestsFromTestCase(test.schematic.from_str.case)
+    test_symbols_type = unittest.TestLoader().loadTestsFromTestCase(test.symbols.type.case)
+    test_symbols_element = unittest.TestLoader().loadTestsFromTestCase(test.symbols.element.case)
+    test_symbols_from_str = unittest.TestLoader().loadTestsFromTestCase(test.symbols.from_str.case)
 
     test_footprint_helper = unittest.TestLoader().loadTestsFromTestCase(test.footprint.helper.case)
     test_footprint_type = unittest.TestLoader().loadTestsFromTestCase(test.footprint.type.case)
@@ -28,9 +28,9 @@ if __name__ == '__main__':
 #    test_footprint_footprint = unittest.TestLoader().loadTestsFromTestCase(test.footprint.footprint.case)
 
     test_suites = [
-        test_schematic_type,
-        test_schematic_element,
-     #  test_schematic_from_str,
+        test_symbols_type,
+        test_symbols_element,
+        test_symbols_from_str,
 
         test_footprint_helper,
         test_footprint_type,

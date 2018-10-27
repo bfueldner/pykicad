@@ -20,8 +20,9 @@ class field(Enum):
 
     @staticmethod
     def from_str(value):
+        int_value = int(value)
         for item in field:
-            if item.value == value:
+            if item.value == int_value:
                 return item
         raise NotImplementedError("'{}' is no element of 'field'".format(value))
 
@@ -138,7 +139,8 @@ class representation(Enum):
 
     @staticmethod
     def from_str(value):
+        int_value = int(value)
         for item in representation:
-            if item.value == value:
+            if item.value == int_value:
                 return item
         raise NotImplementedError("'{}' is no element of 'representation'".format(value))
