@@ -16,7 +16,7 @@ class case(unittest.TestCase):
         test = kicad.symbols.element.from_str('P 2 0 1 0 50 50 50 -50 N')
         self.assertIsInstance(test, kicad.symbols.element.polygon)
 
-    def test_polygon(self):
+    def test_rectangle(self):
         test = kicad.symbols.element.from_str('S 0 50 900 900 0 1 0 f')
         self.assertIsInstance(test, kicad.symbols.element.rectangle)
 

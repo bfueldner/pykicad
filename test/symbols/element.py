@@ -19,157 +19,49 @@ class case(unittest.TestCase):
         )
         self.assertEqual(str(test), 'F1 "Text" 10 20 50 H V C CNN "Name"')
 
-    def test_symbols_element_field_error_type(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                0,
-                "Text",
-                10,
-                20,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
+        test.x = 100
+        test.y = 200
+        test.dimension = 25
+        self.assertEqual(str(test), 'F1 "Text" 100 200 25 H V C CNN "Name"')
 
-    def test_symbols_element_field_error_text(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                0,
-                10,
-                20,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
+    def test_symbols_element_point(self):
+        test = kicad.symbols.element.point(
+            -100,
+            100
+        )
+        self.assertEqual(str(test), '-100 100')
 
-    def test_symbols_element_field_error_x(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                0.1,
-                20,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
+        test.x = 10
+        test.y = 20
+        self.assertEqual(str(test), '10 20')
 
-    def test_symbols_element_field_error_y(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                10,
-                0.2,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
+        self.assertFalse(test == int)
+        self.assertFalse(test == kicad.symbols.element.point(0, 0))
+        self.assertTrue(test == kicad.symbols.element.point(10, 20))
 
-    def test_symbols_element_field_error_dimension(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                10,
-                20,
-                0.5,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
+    def test_symbols_element_polygon(self):
+        test = kicad.symbols.element.polygon(
+            0,
+            kicad.symbols.type.fill.foreground
+        )
+        test.add(kicad.symbols.element.point(-50, 50))
+        test.add(kicad.symbols.element.point(50, 0))
+        test.add(kicad.symbols.element.point(-50, -50))
+        self.assertEqual(str(test), 'P 3 0 1 0 -50 50 50 0 -50 -50 F')
 
-    def test_symbols_element_field_error_orientation(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                10,
-                20,
-                50,
-                0,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
+        test.fill = kicad.symbols.type.fill.none
+        test.remove(1)
+        test.points[0].x = 50
+        test.points[1].x = 50
+        self.assertEqual(str(test), 'P 2 0 1 0 50 50 50 -50 N')
 
+        self.assertFalse(test == int)
+        self.assertFalse(test == kicad.symbols.element.polygon(0, kicad.symbols.type.fill.none))
 
-    def test_symbols_element_field_error_visibility(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                10,
-                20,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                0,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
-
-    def test_symbols_element_field_error_hjustify(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                10,
-                20,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                0,
-                kicad.symbols.type.vjustify.center,
-                kicad.symbols.type.style.none
-            )
-
-
-    def test_symbols_element_field_error_vjustify(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                10,
-                20,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                0,
-                kicad.symbols.type.style.none
-            )
-
-    def test_symbols_element_field_error_style(self):
-        with self.assertRaises(TypeError):
-            kicad.symbols.element.field(
-                kicad.symbols.type.field.name,
-                "Text",
-                10,
-                20,
-                50,
-                kicad.symbols.type.orientation.horizontal,
-                kicad.symbols.type.visibility.visible,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
-                0
-            )
+        test2 = kicad.symbols.element.polygon(0, kicad.symbols.type.fill.none)
+        test2.add(kicad.symbols.element.point(50, 50))
+        test2.add(kicad.symbols.element.point(50, -50))
+        self.assertTrue(test == test2)
 
     def test_symbols_element_rectangle(self):
         test = kicad.symbols.element.rectangle(
@@ -181,3 +73,55 @@ class case(unittest.TestCase):
             kicad.symbols.type.fill.background
         )
         self.assertEqual(str(test), 'S -10 -20 10 20 0 1 50 f')
+
+        self.assertFalse(test == int)
+        self.assertFalse(test == kicad.symbols.element.rectangle(0, 0, 0, 0, 0, kicad.symbols.type.fill.none))
+        self.assertTrue(test == kicad.symbols.element.rectangle(-10, -20, 10, 20, 50, kicad.symbols.type.fill.none))
+
+    def test_symbols_element_circle(self):
+        test = kicad.symbols.element.circle(
+            0,
+            0,
+            70,
+            0,
+            kicad.symbols.type.fill.foreground
+        )
+        self.assertEqual(str(test), 'C 0 0 70 0 1 0 F')
+
+        test.radius = 20
+        test.fill = kicad.symbols.type.fill.none
+        self.assertEqual(str(test), 'C 0 0 20 0 1 0 N')
+
+        self.assertFalse(test == int)
+        self.assertFalse(test == kicad.symbols.element.circle(0, 0, 0, 0, kicad.symbols.type.fill.none))
+        self.assertTrue(test == kicad.symbols.element.circle(0, 0, 20, 0, kicad.symbols.type.fill.none))
+
+    def test_symbols_element_arc(self):
+        test = kicad.symbols.element.arc(
+            -1,
+            -200,
+            -50,
+            -200,
+            0,
+            -150,
+            90.0,
+            -1.1,
+            49,
+            0,
+            kicad.symbols.type.fill.none
+        )
+        self.assertEqual(str(test), 'A -1 -200 49 900 -11 0 1 0 N -50 -200 0 -150')
+
+        test.x = 0
+        test.y = -199
+        test.startAngle = 0.0
+        test.endAngle = -91.1
+        test.startX = 0
+        test.startY = -150
+        test.endX = 50
+        test.endY = -200
+        self.assertEqual(str(test), 'A 0 -199 49 0 -911 0 1 0 N 0 -150 50 -200')
+
+        self.assertFalse(test == int)
+        self.assertFalse(test == kicad.symbols.element.arc(0, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0, kicad.symbols.type.fill.none))
+        self.assertTrue(test == kicad.symbols.element.arc(0, -199, 0, -150, 50, -200, 0.0, -91.1, 49, 0, kicad.symbols.type.fill.none))

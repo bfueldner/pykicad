@@ -12,30 +12,6 @@ class field(object):
     fmt = 'F{} "{}" {} {} {} {} {} {} {}{} "{}"'
 
     def __init__(self, type, text, x, y, dimension, orientation, visibility, hjustify, vjustify, style):
-        if not isinstance(type, kicad.symbols.type.field):
-            raise TypeError("type must be instance of kicad.symbols.type.field")
-
-        if not isinstance(text, str):
-            raise TypeError("text must be instance of str")
-
-        if not isinstance(x, int) or not isinstance(y, int) or not isinstance(dimension, int):
-            raise TypeError("x, y and dimension must be instance of int")
-
-        if not isinstance(orientation, kicad.symbols.type.orientation):
-            raise TypeError("orientation must be instance of kicad.symbols.type.orientation")
-
-        if not isinstance(visibility, kicad.symbols.type.visibility):
-            raise TypeError("visibility must be instance of kicad.symbols.type.visibility")
-
-        if not isinstance(hjustify, kicad.symbols.type.hjustify):
-            raise TypeError("hjustify must be instance of kicad.symbols.type.hjustify")
-
-        if not isinstance(vjustify, kicad.symbols.type.vjustify):
-            raise TypeError("vjustify must be instance of kicad.symbols.type.vjustify")
-
-        if not isinstance(style, kicad.symbols.type.style):
-            raise TypeError("style must be instance of kicad.symbols.type.style")
-
         self.type = type
         self.text = text
         self.x = x
@@ -59,18 +35,36 @@ class field(object):
             self.hjustify,
             self.vjustify,
             self.style,
-            self.type)
+            self.type
+        )
+
+class point(object):
+    '''Point helper'''
+
+    fmt = "{:d} {:d}"
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def __eq__(self, other):
+        '''Compare only same instances'''
+
+        if not isinstance(other, point):
+            return False
+
+        return self.x == other.x and self.y == other.y
+
+    def __str__(self):
+        return point.fmt.format(
+            self.x,
+            self.y,
+        )
 
 class element(object):
     '''Component element'''
 
     def __init__(self, unit, representation, order):
-        if not isinstance(unit, int) or not isinstance(order, int):
-            raise TypeError("unit and order must be instance of int")
-
-        if not isinstance(representation, kicad.symbols.type.representation):
-            raise TypeError("representation must be instance of kicad.symbols.type.representation")
-
         self.unit = unit
         self.representation = representation
         self.order = order
@@ -81,35 +75,83 @@ class element(object):
 
 class polygon(element):
     '''2.3.3.1 Polygon'''
-    pass
+
+    fmt = "P {:d} {:d} {:s} {:d} {:s}{:s}"
+    order = 2
+
+    def __init__(self, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+        super().__init__(unit, representation, polygon.order)
+
+        self.thickness = thickness
+        self.fill = fill
+        self.points = []
+
+    def add(self, point):
+        '''Add point to polygon'''
+
+        self.points.append(point)
+
+    def remove(self, index):
+        '''Remove element from polygon'''
+
+        del self.points[index]
+    #    self.points.remove(index)
+
+    def __eq__(self, other):
+        '''Compare only same instances'''
+
+        if not isinstance(other, polygon):
+            return False
+
+        if len(self.points) != len(other.points):
+            return False
+
+        for point1, point2 in zip(self.points, other.points):
+            if point1 != point2:
+                return False
+        return True
+
+    @property
+    def priority(self):
+        return self.unit * 65536 + self.order * 256 + len(self.points)
+
+    def __str__(self):
+        points = ''
+        for point in self.points:
+            points += str(point) + ' '
+
+        return polygon.fmt.format(
+            len(self.points),
+            self.unit,
+            self.representation,
+            self.thickness,
+            points,
+            self.fill
+        )
 
 class rectangle(element):
     '''2.3.3.2 Rectangle'''
 
-    fmt = 'S {} {} {} {} {} {} {} {}'
+    fmt = 'S {:d} {:d} {:d} {:d} {:d} {:s} {:d} {:s}'
     order = 1
 
-    def __init__(self, x1, y1, x2, y2, width, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
-        element.__init__(self, unit, representation, rectangle.order)
-        if not isinstance(x1, int) or not isinstance(y1, int) or not isinstance(x2, int) or not isinstance(y2, int) or not isinstance(width, int):
-            raise TypeError("x1, y1, x2, y2 and width must be instance of int")
-
-        if not isinstance(fill, kicad.symbols.type.fill):
-            raise TypeError("fill must be instance of kicad.symbols.type.fill")
+    def __init__(self, x1, y1, x2, y2, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+        super().__init__(unit, representation, rectangle.order)
 
         self.x1 = x1
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
-        self.width = width
+        self.thickness = thickness
         self.fill = fill
 
-    def equal(self, rhs):
+    def __eq__(self, other):
         '''Compare only same instances'''
-        if not isinstance(rhs, rectangle):
+
+        if not isinstance(other, rectangle):
             return False
 
-        return self.x1 == rhs.x1 and self.y1 == rhs.y1 and self.x2 == rhs.x2 and self.y2 == rhs.y2
+        return self.x1 == other.x1 and self.y1 == other.y1 and self.x2 == other.x2 and self.y2 == other.y2
 
     def __str__(self):
         return rectangle.fmt.format(
@@ -119,17 +161,89 @@ class rectangle(element):
             self.y2,
             self.unit,
             self.representation,
-            self.width,
+            self.thickness,
             self.fill
         )
 
 class circle(element):
     '''2.3.3.3 Circle'''
-    pass
+
+    fmt = 'C {:d} {:d} {:d} {:d} {:s} {:d} {:s}'
+    order = 3
+
+    def __init__(self, x, y, radius, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+        super().__init__(unit, representation, circle.order)
+
+        self.x = x
+        self.y = y
+        self.radius = radius
+        self.thickness = thickness
+        self.fill = fill
+
+    def __eq__(self, other):
+        '''Compare only same instances'''
+
+        if not isinstance(other, circle):
+            return False
+
+        return self.x == other.x and self.y == other.y and self.radius == other.radius
+
+    def __str__(self):
+        return circle.fmt.format(
+            self.x,
+            self.y,
+            self.radius,
+            self.unit,
+            self.representation,
+            self.thickness,
+            self.fill
+        )
 
 class arc(element):
     '''2.3.3.4 Arc'''
-    pass
+
+    fmt = 'A {:d} {:d} {:d} {:.0f} {:.0f} {:d} {:s} {:d} {:s} {:d} {:d} {:d} {:d}'
+    order = 4
+
+    def __init__(self, x, y, startX, startY, endX, endY, startAngle, endAngle, radius, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+        super().__init__(unit, representation, arc.order)
+
+        self.x = x
+        self.y = y
+        self.startX = startX
+        self.startY = startY
+        self.endX = endX
+        self.endY = endY
+        self.startAngle = startAngle
+        self.endAngle = endAngle
+        self.radius = radius
+        self.thickness = thickness
+        self.fill = fill
+
+    def __eq__(self, other):
+        '''Compare only same instances'''
+
+        if not isinstance(other, arc):
+            return False
+
+        return self.x == other.x and self.y == other.y and self.startX == other.startX and self.startY == other.startY and self.endX == other.endX and self.endY == other.endY and self.startAngle == other.startAngle and self.endAngle == other.endAngle and self.radius == other.radius
+
+    def __str__(self):
+        return arc.fmt.format(
+            self.x,
+            self.y,
+            self.radius,
+            self.startAngle * 10,
+            self.endAngle * 10,
+            self.unit,
+            self.representation,
+            self.thickness,
+            self.fill,
+            self.startX,
+            self.startY,
+            self.endX,
+            self.endY
+        )
 
 class text(element):
     '''2.3.3.5 Text'''
