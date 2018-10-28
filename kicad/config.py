@@ -1,7 +1,7 @@
 class symbols(object):
     '''Symbols configuration'''
 
-    LIBRARY_START = 'EESchema-LIBRARY Version 2.3\n# encoding utf-8\n'
+    LIBRARY_START = 'EESchema-LIBRARY Version 2.4\n# encoding utf-8\n'
     LIBRARY_END = '# End Library\n'
 
     DESCRIPTION_START = 'EESchema-DOCLIB Version 2.0\n'
