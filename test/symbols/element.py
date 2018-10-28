@@ -125,3 +125,44 @@ class case(unittest.TestCase):
         self.assertFalse(test == int)
         self.assertFalse(test == kicad.symbols.element.arc(0, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0, kicad.symbols.type.fill.none))
         self.assertTrue(test == kicad.symbols.element.arc(0, -199, 0, -150, 50, -200, 0.0, -91.1, 49, 0, kicad.symbols.type.fill.none))
+
+    def test_symbols_element_text(self):
+        test = kicad.symbols.element.text(
+            200,
+            50,
+            'A B',
+            -200,
+            0,
+            -150,
+            90.0,
+            -1.1,
+            49,
+            0,
+            kicad.symbols.type.fill.none
+        )
+        self.assertEqual(str(test), 'T 0 0 400 50 0 0 0 "~A''B" Normal 0 C C')
+
+T 0 200 50 50 0 0 0 Fett Normal 1 C C
+T 0 250 -100 50 0 0 0 FettKursiv Italic 1 C C
+T 0 150 150 50 0 0 0 Kursiv Italic 0 C C
+T 0 -350 250 50 0 0 0 Links Normal 0 L C
+T 0 0 -100 50 0 0 0 Normal Normal 0 C C
+T 0 -250 50 50 0 0 0 Oben Normal 0 C T
+T 0 -150 150 50 0 0 0 Rechts Normal 0 R C
+T 0 -250 -100 50 0 0 0 Unten Normal 0 C B
+T 900 0 150 50 0 0 0 Vertikal Normal 0 C C
+T 0 0 400 50 0 0 0 "~A''B" Normal 0 C C
+
+        test.x = 0
+        test.y = -199
+        test.startAngle = 0.0
+        test.endAngle = -91.1
+        test.startX = 0
+        test.startY = -150
+        test.endX = 50
+        test.endY = -200
+        self.assertEqual(str(test), 'A 0 -199 49 0 -911 0 1 0 N 0 -150 50 -200')
+
+        self.assertFalse(test == int)
+        self.assertFalse(test == kicad.symbols.element.arc(0, 0, 0, 0, 0, 0, 0.0, 0.0, 0, 0, kicad.symbols.type.fill.none))
+        self.assertTrue(test == kicad.symbols.element.arc(0, -199, 0, -150, 50, -200, 0.0, -91.1, 49, 0, kicad.symbols.type.fill.none))

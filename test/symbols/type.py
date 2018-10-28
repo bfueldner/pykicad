@@ -67,7 +67,7 @@ class case(unittest.TestCase):
             kicad.symbols.type.field.from_str('A')
 
         with self.assertRaises(NotImplementedError):
-            kicad.symbols.type.field.from_str('11')   
+            kicad.symbols.type.field.from_str('11')
 
 
     def test_symbols_type_orientation_horizontal(self):
@@ -207,3 +207,85 @@ class case(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             kicad.symbols.type.representation.from_str('3')
+
+
+    def test_symbols_type_fill_none(self):
+        test = kicad.symbols.type.fill.from_str('N')
+        self.assertEqual(test, kicad.symbols.type.fill.none)
+        self.assertEqual(str(kicad.symbols.type.fill.none), 'N')
+
+    def test_symbols_type_fill_foreground(self):
+        test = kicad.symbols.type.fill.from_str('F')
+        self.assertEqual(test, kicad.symbols.type.fill.foreground)
+        self.assertEqual(str(kicad.symbols.type.fill.foreground), 'F')
+
+    def test_symbols_type_fill_background(self):
+        test = kicad.symbols.type.fill.from_str('f')
+        self.assertEqual(test, kicad.symbols.type.fill.background)
+        self.assertEqual(str(kicad.symbols.type.fill.background), 'f')
+
+    def test_symbols_type_fill_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.fill.from_str('')
+
+
+    def test_symbols_type_representation_both(self):
+        test = kicad.symbols.type.representation.from_str('0')
+        self.assertEqual(test, kicad.symbols.type.representation.both)
+        self.assertEqual(str(kicad.symbols.type.representation.both), '0')
+
+    def test_symbols_type_representation_normal(self):
+        test = kicad.symbols.type.representation.from_str('1')
+        self.assertEqual(test, kicad.symbols.type.representation.normal)
+        self.assertEqual(str(kicad.symbols.type.representation.normal), '1')
+
+    def test_symbols_type_representation_morgan(self):
+        test = kicad.symbols.type.representation.from_str('2')
+        self.assertEqual(test, kicad.symbols.type.representation.morgan)
+        self.assertEqual(str(kicad.symbols.type.representation.morgan), '2')
+
+    def test_symbols_type_representation_raise(self):
+        with self.assertRaises(ValueError):
+            kicad.symbols.type.representation.from_str('')
+
+        with self.assertRaises(ValueError):
+            kicad.symbols.type.representation.from_str('A')
+
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.representation.from_str('3')
+
+
+    def test_symbols_type_italic_off(self):
+        test = kicad.symbols.type.italic.from_str('Normal')
+        self.assertEqual(test, kicad.symbols.type.italic.off)
+        self.assertEqual(str(kicad.symbols.type.italic.off), 'Normal')
+
+    def test_symbols_type_italic_on(self):
+        test = kicad.symbols.type.italic.from_str('Italic')
+        self.assertEqual(test, kicad.symbols.type.italic.on)
+        self.assertEqual(str(kicad.symbols.type.italic.on), 'Italic')
+
+    def test_symbols_type_italic_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.italic.from_str('')
+
+
+    def test_symbols_type_bold_off(self):
+        test = kicad.symbols.type.bold.from_str('0')
+        self.assertEqual(test, kicad.symbols.type.bold.off)
+        self.assertEqual(str(kicad.symbols.type.bold.off), '0')
+
+    def test_symbols_type_bold_on(self):
+        test = kicad.symbols.type.bold.from_str('1')
+        self.assertEqual(test, kicad.symbols.type.bold.on)
+        self.assertEqual(str(kicad.symbols.type.bold.on), '1')
+
+    def test_symbols_type_bold_raise(self):
+        with self.assertRaises(ValueError):
+            kicad.symbols.type.bold.from_str('')
+
+        with self.assertRaises(ValueError):
+            kicad.symbols.type.bold.from_str('A')
+
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.bold.from_str('2')

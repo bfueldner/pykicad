@@ -246,8 +246,55 @@ class arc(element):
         )
 
 class text(element):
-    '''2.3.3.5 Text'''
-    pass
+    '''2.3.3.5 Text
+        New format since 2.4?
+
+        x, y - Position
+        text - Text
+        size - Size in mil
+        angle - Angle in centidegree (supported, but not documented!)
+        unit - Unit number
+        convert - Shape number
+    '''
+
+    fmt = 'T {:.0f} {:d} {:d} {:d} 0 {:d} {:s} "{:s}" {:s} {:s} {:s} {:s}'
+    order = 0
+
+    def __init__(self, x, y, text, size, angle = 0.0, unit = 0, representation = kicad.symbols.type.representation.normal, italic = kicad.symbols.type.italic.off, bold = kicad.symbols.type.bold.off, hjustify = kicad.symbols.type.hjustify.center, vjustify = kicad.symbols.type.vjustify.center):
+        super().__init__(unit, representation, text.order)
+
+        self.x = x
+        self.y = y
+        self.text = text
+        self.size = size
+        self.angle = angle
+        self.italic = italic
+        self.bold = bold
+        self.hjustify = hjustify
+        self.vjustify = vjustify
+
+    def __eq__(self, other):
+        '''Compare only same instances'''
+
+        if not isinstance(other, text):
+            return False
+
+        return self.x == other.x and self.y == other.y and self.text == other.text
+
+    def __str__(self):
+        return text.fmt.format(
+            self.angle * 10,
+            self.x,
+            self.y,
+            self.size,
+            self.unit,
+            self.representation,
+            self.text.replace('"', "''"),
+            self.italic,
+            self.bold,
+            self.hjustify,
+            self.vjustify
+        )
 
 class fields(object):
     '''Component fields'''

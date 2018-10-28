@@ -29,8 +29,8 @@ class field(Enum):
 class orientation(Enum):
     '''Field orientation'''
 
-    horizontal = "H"
-    vertical = "V"
+    horizontal = 'H'
+    vertical = 'V'
 
     def __str__(self):
         return self.value
@@ -45,8 +45,8 @@ class orientation(Enum):
 class visibility(Enum):
     '''Field visibility'''
 
-    visible = "V"
-    invisible = "I"
+    visible = 'V'
+    invisible = 'I'
 
     def __str__(self):
         return self.value
@@ -61,9 +61,9 @@ class visibility(Enum):
 class hjustify(Enum):
     '''Field horizontal justify'''
 
-    left = "L"
-    center = "C"
-    right = "R"
+    left = 'L'
+    center = 'C'
+    right = 'R'
 
     def __str__(self):
         return self.value
@@ -78,9 +78,9 @@ class hjustify(Enum):
 class vjustify(Enum):
     '''Field vertical justify'''
 
-    top = "T"
-    center = "C"
-    bottom = "B"
+    top = 'T'
+    center = 'C'
+    bottom = 'B'
 
     def __str__(self):
         return self.value
@@ -95,10 +95,10 @@ class vjustify(Enum):
 class style(Enum):
     '''Field style'''
 
-    none = "NN"
-    italic = "IN"
-    bold = "NB"
-    italic_bold = "IB"
+    none = 'NN'
+    italic = 'IN'
+    bold = 'NB'
+    italic_bold = 'IB'
 
     def __str__(self):
         return self.value
@@ -144,3 +144,36 @@ class representation(Enum):
             if item.value == int_value:
                 return item
         raise NotImplementedError("'{}' is no element of 'representation'".format(value))
+
+class italic(Enum):
+    '''Text element italic'''
+
+    off = 'Normal'
+    on = 'Italic'
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in italic:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'italic'".format(value))
+
+class bold(Enum):
+    '''Text element bold'''
+
+    off = 0
+    on = 1
+
+    def __str__(self):
+        return str(self.value)
+
+    @staticmethod
+    def from_str(value):
+        int_value = int(value)
+        for item in bold:
+            if item.value == int_value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'bold'".format(value))
