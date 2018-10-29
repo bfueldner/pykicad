@@ -5,7 +5,7 @@ import csv
 import argparse
 
 import kicad.config
-import kicad.schematic.type
+import kicad.symbols.type
 import kicad.footprint.generator
 from kicad.footprint.generators import *
 
@@ -21,7 +21,7 @@ if __name__ == '__main__':
         output.write("# Configuration\n\n")
 
         output.write("## Field usage\n\n")
-        for key in kicad.schematic.type.field:
+        for key in kicad.symbols.type.field:
             output.write("* **F{}:** {}\n".format(key.value, key))
         output.write("\n")
 
