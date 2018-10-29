@@ -1,6 +1,20 @@
+import re
+import shlex
 import datetime
 
 import kicad.symbols.type
+
+def pinValue(value):
+    '''Convert pin number into value (especially for BGA numbering scheme)'''
+
+    res = re.match(r"[0-9A-Z]+", value)
+    if res:
+        sum = 0
+        for c in res.group(0):
+            sum = sum * 128 + ord(c)
+        return sum
+    else:
+        raise ValueError('Value does not match!')
 
 class alias(object):
     '''2.3.1 Aliases'''
@@ -9,14 +23,14 @@ class alias(object):
 class field(object):
     '''2.3.2 Component field'''
 
-    fmt = 'F{} "{}" {} {} {} {} {} {} {}{} "{}"'
+    fmt = 'F{:d} "{:s}" {:d} {:d} {:d} {:s} {:s} {:s} {:s}{:s} "{:s}"'
 
-    def __init__(self, type, text, x, y, dimension, orientation, visibility, hjustify, vjustify, style):
+    def __init__(self, type, value, x, y, size, orientation, visibility, hjustify, vjustify, style):
         self.type = type
-        self.text = text
+        self.value = value
         self.x = x
         self.y = y
-        self.dimension = dimension
+        self.size = size
         self.orientation = orientation
         self.visibility = visibility
         self.hjustify = hjustify
@@ -26,10 +40,10 @@ class field(object):
     def __str__(self):
         return field.fmt.format(
             self.type.value,
-            self.text,
+            self.value,
             self.x,
             self.y,
-            self.dimension,
+            self.size,
             self.orientation,
             self.visibility,
             self.hjustify,
@@ -71,12 +85,12 @@ class element(object):
 
     @property
     def priority(self):
-        return self.unit * 65536 + self.order * 256
+        return self.unit * 1048576 + self.order * 65536
 
 class polygon(element):
     '''2.3.3.1 Polygon'''
 
-    fmt = "P {:d} {:d} {:s} {:d} {:s}{:s}"
+    fmt = "P {:d} {:d} {:d} {:d} {:s}{:s}"
     order = 2
 
     def __init__(self, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
@@ -113,7 +127,7 @@ class polygon(element):
 
     @property
     def priority(self):
-        return self.unit * 65536 + self.order * 256 + len(self.points)
+        return self.unit * 1048576 + self.order * 65536 + len(self.points)
 
     def __str__(self):
         points = ''
@@ -123,7 +137,7 @@ class polygon(element):
         return polygon.fmt.format(
             len(self.points),
             self.unit,
-            self.representation,
+            self.representation.value,
             self.thickness,
             points,
             self.fill
@@ -132,7 +146,7 @@ class polygon(element):
 class rectangle(element):
     '''2.3.3.2 Rectangle'''
 
-    fmt = 'S {:d} {:d} {:d} {:d} {:d} {:s} {:d} {:s}'
+    fmt = 'S {:d} {:d} {:d} {:d} {:d} {:d} {:d} {:s}'
     order = 1
 
     def __init__(self, x1, y1, x2, y2, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
@@ -160,7 +174,7 @@ class rectangle(element):
             self.x2,
             self.y2,
             self.unit,
-            self.representation,
+            self.representation.value,
             self.thickness,
             self.fill
         )
@@ -168,7 +182,7 @@ class rectangle(element):
 class circle(element):
     '''2.3.3.3 Circle'''
 
-    fmt = 'C {:d} {:d} {:d} {:d} {:s} {:d} {:s}'
+    fmt = 'C {:d} {:d} {:d} {:d} {:d} {:d} {:s}'
     order = 3
 
     def __init__(self, x, y, radius, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
@@ -194,7 +208,7 @@ class circle(element):
             self.y,
             self.radius,
             self.unit,
-            self.representation,
+            self.representation.value,
             self.thickness,
             self.fill
         )
@@ -202,7 +216,7 @@ class circle(element):
 class arc(element):
     '''2.3.3.4 Arc'''
 
-    fmt = 'A {:d} {:d} {:d} {:.0f} {:.0f} {:d} {:s} {:d} {:s} {:d} {:d} {:d} {:d}'
+    fmt = 'A {:d} {:d} {:d} {:.0f} {:.0f} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d}'
     order = 4
 
     def __init__(self, x, y, startX, startY, endX, endY, startAngle, endAngle, radius, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
@@ -236,7 +250,7 @@ class arc(element):
             self.startAngle * 10,
             self.endAngle * 10,
             self.unit,
-            self.representation,
+            self.representation.value,
             self.thickness,
             self.fill,
             self.startX,
@@ -257,15 +271,15 @@ class text(element):
         convert - Shape number
     '''
 
-    fmt = 'T {:.0f} {:d} {:d} {:d} 0 {:d} {:s} "{:s}" {:s} {:s} {:s} {:s}'
+    fmt = 'T {:.0f} {:d} {:d} {:d} 0 {:d} {:d} "{:s}" {:s} {:d} {:s} {:s}'
     order = 0
 
-    def __init__(self, x, y, text, size, angle = 0.0, unit = 0, representation = kicad.symbols.type.representation.normal, italic = kicad.symbols.type.italic.off, bold = kicad.symbols.type.bold.off, hjustify = kicad.symbols.type.hjustify.center, vjustify = kicad.symbols.type.vjustify.center):
+    def __init__(self, x, y, value, size, angle, italic = kicad.symbols.type.italic.off, bold = kicad.symbols.type.bold.off, hjustify = kicad.symbols.type.hjustify.center, vjustify = kicad.symbols.type.vjustify.center, unit = 0, representation = kicad.symbols.type.representation.normal):
         super().__init__(unit, representation, text.order)
 
         self.x = x
         self.y = y
-        self.text = text
+        self.value = value
         self.size = size
         self.angle = angle
         self.italic = italic
@@ -279,7 +293,7 @@ class text(element):
         if not isinstance(other, text):
             return False
 
-        return self.x == other.x and self.y == other.y and self.text == other.text
+        return self.x == other.x and self.y == other.y and self.value == other.value
 
     def __str__(self):
         return text.fmt.format(
@@ -288,13 +302,64 @@ class text(element):
             self.y,
             self.size,
             self.unit,
-            self.representation,
-            self.text.replace('"', "''"),
+            self.representation.value,
+            self.value.replace('"', "''"),
             self.italic,
-            self.bold,
+            self.bold.value,
             self.hjustify,
             self.vjustify
         )
+
+class pin(element):
+    '''2.3.4 Pin'''
+
+    fmt = 'X {:s} {:s} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d} {:s} {:s}{:s}'
+    order = 10
+
+    def __init__(self, x, y, name, number, length, direction, nameSize, numberSize, electric = kicad.symbols.type.electric.input, shape = kicad.symbols.type.shape.line, visible = True, unit = 0, representation = kicad.symbols.type.representation.normal):
+        super().__init__(unit, representation, pin.order)
+
+        self.x = x
+        self.y = y
+        self.name = name
+        self.number = number
+        self.length = length
+        self.direction = direction
+        self.nameSize = nameSize
+        self.numberSize = numberSize
+        self.electric = electric
+        self.shape = shape
+        self.visible = visible
+
+    def __eq__(self, other):
+        '''Compare only same instances'''
+
+        if not isinstance(other, pin):
+            return False
+
+    #   return self.x == other.x and self.y == other.y and self.length == other.length and self.name == other.name and self.number == other.number
+        return False
+
+    @property
+    def priority(self):
+        return self.unit * 1048576 + self.order * 65536 + pinValue(self.number)
+
+    def __str__(self):
+        return pin.fmt.format(
+            self.name,
+            self.number,
+            self.x,
+            self.y,
+            self.length,
+            self.direction,
+            self.nameSize,
+            self.numberSize,
+            self.unit,
+            self.representation.value,
+            self.electric,
+            'N' if not self.visible else '',
+            self.shape
+        ).rstrip()
 
 class fields(object):
     '''Component fields'''
@@ -358,7 +423,10 @@ def from_str(string):
 
     string = string.strip()
     char = string[0]
-    part = string[1:].split()
+#   part = string[1:].split()
+#   part = re.findall(r'[^"\s]\S*|".+?"', string[1:])
+    part = shlex.split(string[1:])
+
     if char == 'F':
         # NOTE: Optional name field is ignored!
         return field(
@@ -373,6 +441,111 @@ def from_str(string):
             kicad.symbols.type.vjustify.from_str(part[8][:1]),
             kicad.symbols.type.style.from_str(part[8][1:])
         )
+    elif char == 'P':
+        count = int(part[0])
+        result = polygon(
+            int(part[3]),
+            kicad.symbols.type.fill.from_str(part[-1]),
+            int(part[1]),
+            kicad.symbols.type.representation.from_str(part[2])
+        )
+
+        for index in range(count):
+            result.add(point(int(part[index * 2 + 4]), int(part[index * 2 + 5])))
+        return result
+    elif char == 'S':
+        return rectangle(
+            int(part[0]),
+            int(part[1]),
+            int(part[2]),
+            int(part[3]),
+            int(part[6]),
+            kicad.symbols.type.fill.from_str(part[7]),
+            int(part[4]),
+            kicad.symbols.type.representation.from_str(part[5])
+        )
+    elif char == 'C':
+        return circle(
+            int(part[0]),
+            int(part[1]),
+            int(part[2]),
+            int(part[5]),
+            kicad.symbols.type.fill.from_str(part[6]),
+            int(part[3]),
+            kicad.symbols.type.representation.from_str(part[4])
+        )
+    elif char == 'A':
+        return arc(
+            int(part[0]), # x
+            int(part[1]), # y
+            int(part[9]), # startX
+            int(part[10]), # startY
+            int(part[11]), # endX
+            int(part[12]), # endY
+            int(part[3]) / 10, # startAngle
+            int(part[4]) / 10, # endAngle
+            int(part[2]), # radius
+            int(part[7]), # thickness
+            kicad.symbols.type.fill.from_str(part[8]), # fill
+            int(part[5]), # unit
+            kicad.symbols.type.representation.from_str(part[6]) # representation
+        )
+    elif char == 'T':
+        # Old format
+        if len(part) == 8:
+            return text(
+                int(part[1]), # x
+                int(part[2]), # y
+                part[7].replace('~', ' '), # value
+                int(part[3]), # size
+                int(part[0]) * 90.0, # angle
+                kicad.symbols.type.italic.off,
+                kicad.symbols.type.bold.off,
+                kicad.symbols.type.hjustify.center,
+                kicad.symbols.type.vjustify.center,
+                int(part[5]), # unit
+                kicad.symbols.type.representation.from_str(part[6]) # representation
+            )
+        # New format
+        else:
+            return text(
+                int(part[1]), # x
+                int(part[2]), # y
+                part[7].replace("''", '"'), # value
+                int(part[3]), # size
+                int(part[0]) / 10, # angle
+                kicad.symbols.type.italic.from_str(part[8]), # italic
+                kicad.symbols.type.bold.from_str(part[9]), # bold
+                kicad.symbols.type.hjustify.from_str(part[10]), # horizontal justify
+                kicad.symbols.type.vjustify.from_str(part[11]), # vertical justify
+                int(part[5]), # unit
+                kicad.symbols.type.representation.from_str(part[6]) # representation
+            )
+    elif char == 'X':
+        if len(part) == 12:
+            visible = True
+            if part[11][0] == 'N':
+                visible = False
+                part[11] = part[11][1:]
+            shape = kicad.symbols.type.shape.line.from_str(part[11])
+        else:
+            visible = True
+            shape = kicad.symbols.type.shape.line
+
+        return pin(
+            int(part[2]), # x
+            int(part[3]), # y
+            part[0], # name
+            part[1], # number
+            int(part[4]), # length
+            kicad.symbols.type.direction.from_str(part[5]), # direction
+            int(part[6]), # nameSize
+            int(part[7]), # numberSize
+            kicad.symbols.type.electric.from_str(part[10]), # electric
+            shape,
+            visible,
+            int(part[8]), # unit
+            kicad.symbols.type.representation.from_str(part[9]), # representation
+        )
     else:
         raise KeyError
-    return None

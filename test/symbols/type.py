@@ -289,3 +289,144 @@ class case(unittest.TestCase):
 
         with self.assertRaises(NotImplementedError):
             kicad.symbols.type.bold.from_str('2')
+
+
+    def test_symbols_type_direction_up(self):
+        # NOTE: Definition of directions in KiCAD is flipped! We test against corrected definition!
+        test = kicad.symbols.type.direction.from_str('D')
+        self.assertEqual(test, kicad.symbols.type.direction.up)
+        self.assertEqual(str(kicad.symbols.type.direction.up), 'D')
+
+    def test_symbols_type_direction_down(self):
+        test = kicad.symbols.type.direction.from_str('U')
+        self.assertEqual(test, kicad.symbols.type.direction.down)
+        self.assertEqual(str(kicad.symbols.type.direction.down), 'U')
+
+    def test_symbols_type_direction_left(self):
+        test = kicad.symbols.type.direction.from_str('R')
+        self.assertEqual(test, kicad.symbols.type.direction.left)
+        self.assertEqual(str(kicad.symbols.type.direction.left), 'R')
+
+    def test_symbols_type_direction_right(self):
+        test = kicad.symbols.type.direction.from_str('L')
+        self.assertEqual(test, kicad.symbols.type.direction.right)
+        self.assertEqual(str(kicad.symbols.type.direction.right), 'L')
+
+    def test_symbols_type_direction_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.direction.from_str('')
+
+
+    def test_symbols_type_electric_input(self):
+        test = kicad.symbols.type.electric.from_str('I')
+        self.assertEqual(test, kicad.symbols.type.electric.input)
+        self.assertEqual(str(kicad.symbols.type.electric.input), 'I')
+
+    def test_symbols_type_electric_output(self):
+        test = kicad.symbols.type.electric.from_str('O')
+        self.assertEqual(test, kicad.symbols.type.electric.output)
+        self.assertEqual(str(kicad.symbols.type.electric.output), 'O')
+
+    def test_symbols_type_electric_bidirectional(self):
+        test = kicad.symbols.type.electric.from_str('B')
+        self.assertEqual(test, kicad.symbols.type.electric.bidirectional)
+        self.assertEqual(str(kicad.symbols.type.electric.bidirectional), 'B')
+
+    def test_symbols_type_electric_tristate(self):
+        test = kicad.symbols.type.electric.from_str('T')
+        self.assertEqual(test, kicad.symbols.type.electric.tristate)
+        self.assertEqual(str(kicad.symbols.type.electric.tristate), 'T')
+
+    def test_symbols_type_electric_passive(self):
+        test = kicad.symbols.type.electric.from_str('P')
+        self.assertEqual(test, kicad.symbols.type.electric.passive)
+        self.assertEqual(str(kicad.symbols.type.electric.passive), 'P')
+
+    def test_symbols_type_electric_unspecified(self):
+        test = kicad.symbols.type.electric.from_str('U')
+        self.assertEqual(test, kicad.symbols.type.electric.unspecified)
+        self.assertEqual(str(kicad.symbols.type.electric.unspecified), 'U')
+
+    def test_symbols_type_electric_power_input(self):
+        test = kicad.symbols.type.electric.from_str('W')
+        self.assertEqual(test, kicad.symbols.type.electric.power_input)
+        self.assertEqual(str(kicad.symbols.type.electric.power_input), 'W')
+
+    def test_symbols_type_electric_power_output(self):
+        test = kicad.symbols.type.electric.from_str('w')
+        self.assertEqual(test, kicad.symbols.type.electric.power_output)
+        self.assertEqual(str(kicad.symbols.type.electric.power_output), 'w')
+
+    def test_symbols_type_electric_open_collector(self):
+        test = kicad.symbols.type.electric.from_str('C')
+        self.assertEqual(test, kicad.symbols.type.electric.open_collector)
+        self.assertEqual(str(kicad.symbols.type.electric.open_collector), 'C')
+
+    def test_symbols_type_electric_open_emitter(self):
+        test = kicad.symbols.type.electric.from_str('E')
+        self.assertEqual(test, kicad.symbols.type.electric.open_emitter)
+        self.assertEqual(str(kicad.symbols.type.electric.open_emitter), 'E')
+
+    def test_symbols_type_electric_not_connected(self):
+        test = kicad.symbols.type.electric.from_str('N')
+        self.assertEqual(test, kicad.symbols.type.electric.not_connected)
+        self.assertEqual(str(kicad.symbols.type.electric.not_connected), 'N')
+
+    def test_symbols_type_electric_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.electric.from_str('')
+
+
+    def test_symbols_type_shape_line(self):
+        test = kicad.symbols.type.shape.from_str('')
+        self.assertEqual(test, kicad.symbols.type.shape.line)
+        self.assertEqual(str(kicad.symbols.type.shape.line), '')
+
+    def test_symbols_type_shape_invisible(self):
+        test = kicad.symbols.type.shape.from_str('N')
+        self.assertEqual(test, kicad.symbols.type.shape.invisible)
+        self.assertEqual(str(kicad.symbols.type.shape.invisible), 'N')
+
+    def test_symbols_type_shape_inverted(self):
+        test = kicad.symbols.type.shape.from_str('I')
+        self.assertEqual(test, kicad.symbols.type.shape.inverted)
+        self.assertEqual(str(kicad.symbols.type.shape.inverted), 'I')
+
+    def test_symbols_type_shape_clock(self):
+        test = kicad.symbols.type.shape.from_str('C')
+        self.assertEqual(test, kicad.symbols.type.shape.clock)
+        self.assertEqual(str(kicad.symbols.type.shape.clock), 'C')
+
+    def test_symbols_type_shape_inverted_clock(self):
+        test = kicad.symbols.type.shape.from_str('CI')
+        self.assertEqual(test, kicad.symbols.type.shape.inverted_clock)
+        self.assertEqual(str(kicad.symbols.type.shape.inverted_clock), 'CI')
+
+    def test_symbols_type_shape_input_low(self):
+        test = kicad.symbols.type.shape.from_str('L')
+        self.assertEqual(test, kicad.symbols.type.shape.input_low)
+        self.assertEqual(str(kicad.symbols.type.shape.input_low), 'L')
+
+    def test_symbols_type_shape_power_clock_low(self):
+        test = kicad.symbols.type.shape.from_str('CL')
+        self.assertEqual(test, kicad.symbols.type.shape.clock_low)
+        self.assertEqual(str(kicad.symbols.type.shape.clock_low), 'CL')
+
+    def test_symbols_type_shape_power_output_low(self):
+        test = kicad.symbols.type.shape.from_str('V')
+        self.assertEqual(test, kicad.symbols.type.shape.output_low)
+        self.assertEqual(str(kicad.symbols.type.shape.output_low), 'V')
+
+    def test_symbols_type_shape_open_falling_edge_clock(self):
+        test = kicad.symbols.type.shape.from_str('F')
+        self.assertEqual(test, kicad.symbols.type.shape.falling_edge_clock)
+        self.assertEqual(str(kicad.symbols.type.shape.falling_edge_clock), 'F')
+
+    def test_symbols_type_shape_open_non_logic(self):
+        test = kicad.symbols.type.shape.from_str('X')
+        self.assertEqual(test, kicad.symbols.type.shape.non_logic)
+        self.assertEqual(str(kicad.symbols.type.shape.non_logic), 'X')
+
+    def test_symbols_type_shape_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.shape.from_str('A')

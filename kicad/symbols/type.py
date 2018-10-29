@@ -113,9 +113,9 @@ class style(Enum):
 class fill(Enum):
     '''Element fill'''
 
-    none = "N"
-    foreground = "F"
-    background = "f"
+    none = 'N'
+    foreground = 'F'
+    background = 'f'
 
     def __str__(self):
         return self.value
@@ -177,3 +177,71 @@ class bold(Enum):
             if item.value == int_value:
                 return item
         raise NotImplementedError("'{}' is no element of 'bold'".format(value))
+
+class direction(Enum):
+    '''2.3.4 Pin direction (flipped in opposition to KiCAD documentation)'''
+
+    up = 'D'
+    down = 'U'
+    right = 'L'
+    left = 'R'
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in direction:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'direction'".format(value))
+
+class electric(Enum):
+    '''2.3.4 Electric pin type'''
+
+    input = 'I'
+    output = 'O'
+    bidirectional = 'B'
+    tristate = 'T'
+    passive = 'P'
+    unspecified = 'U'
+    power_input = 'W'
+    power_output = 'w'
+    open_collector = 'C'
+    open_emitter = 'E'
+    not_connected = 'N'
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in electric:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'electric'".format(value))
+
+# Add 'N' before characters, to create an invisible pin
+class shape(Enum):
+    '''2.3.4 Pin shape'''
+
+    line = ''
+    invisible = 'N'
+    inverted = 'I'
+    clock = 'C'
+    inverted_clock = 'CI'
+    input_low = 'L'
+    clock_low = 'CL'
+    output_low = 'V'
+    falling_edge_clock = 'F'
+    non_logic = 'X'
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in shape:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'shape'".format(value))
