@@ -4,6 +4,51 @@ import kicad.symbols.type
 
 class case(unittest.TestCase):
 
+    def test_symbols_type_visible_no(self):
+        test = kicad.symbols.type.visible.from_str('N')
+        self.assertEqual(test, kicad.symbols.type.visible.no)
+        self.assertEqual(str(kicad.symbols.type.visible.no), 'N')
+
+    def test_symbols_type_visible_yes(self):
+        test = kicad.symbols.type.visible.from_str('Y')
+        self.assertEqual(test, kicad.symbols.type.visible.yes)
+        self.assertEqual(str(kicad.symbols.type.visible.yes), 'Y')
+
+    def test_symbols_type_visible_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.visible.from_str('')
+
+
+    def test_symbols_type_units_locked(self):
+        test = kicad.symbols.type.units.from_str('L')
+        self.assertEqual(test, kicad.symbols.type.units.locked)
+        self.assertEqual(str(kicad.symbols.type.units.locked), 'L')
+
+    def test_symbols_type_units_swappable(self):
+        test = kicad.symbols.type.units.from_str('F')
+        self.assertEqual(test, kicad.symbols.type.units.swappable)
+        self.assertEqual(str(kicad.symbols.type.units.swappable), 'F')
+
+    def test_symbols_type_units_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.units.from_str('')
+
+
+    def test_symbols_type_flag_normal(self):
+        test = kicad.symbols.type.flag.from_str('N')
+        self.assertEqual(test, kicad.symbols.type.flag.normal)
+        self.assertEqual(str(kicad.symbols.type.flag.normal), 'N')
+
+    def test_symbols_type_flag_power(self):
+        test = kicad.symbols.type.flag.from_str('P')
+        self.assertEqual(test, kicad.symbols.type.flag.power)
+        self.assertEqual(str(kicad.symbols.type.flag.power), 'P')
+
+    def test_symbols_type_flag_raise(self):
+        with self.assertRaises(NotImplementedError):
+            kicad.symbols.type.flag.from_str('')
+
+
     def test_symbols_type_field_reference(self):
         test = kicad.symbols.type.field.from_str('0')
         self.assertEqual(test, kicad.symbols.type.field.reference)

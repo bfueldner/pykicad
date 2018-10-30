@@ -7,6 +7,10 @@ class symbols(object):
     DESCRIPTION_START = 'EESchema-DOCLIB Version 2.0\n'
     DESCRIPTION_END = '# End Doc Library\n'
 
+    FIELD_TEXT_SIZE = 60
+    PIN_NAME_SIZE = 40
+    PIN_NUMBER_SIZE = 40
+
 class footprint():
     '''Footprint configuration'''
 

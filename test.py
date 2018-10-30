@@ -9,6 +9,7 @@ if sys.version_info[0] < 3:
 import test.symbols.type
 import test.symbols.element
 import test.symbols.from_str
+import test.symbols.symbol
 
 import test.footprint.helper
 import test.footprint.type
@@ -20,6 +21,7 @@ if __name__ == '__main__':
     test_symbols_type = unittest.TestLoader().loadTestsFromTestCase(test.symbols.type.case)
     test_symbols_element = unittest.TestLoader().loadTestsFromTestCase(test.symbols.element.case)
     test_symbols_from_str = unittest.TestLoader().loadTestsFromTestCase(test.symbols.from_str.case)
+    test_symbols_symbol = unittest.TestLoader().loadTestsFromTestCase(test.symbols.symbol.case)
 
     test_footprint_helper = unittest.TestLoader().loadTestsFromTestCase(test.footprint.helper.case)
     test_footprint_type = unittest.TestLoader().loadTestsFromTestCase(test.footprint.type.case)
@@ -31,6 +33,7 @@ if __name__ == '__main__':
         test_symbols_type,
         test_symbols_element,
         test_symbols_from_str,
+        test_symbols_symbol,
 
         test_footprint_helper,
         test_footprint_type,

@@ -1,5 +1,53 @@
 from enum import Enum
 
+class visible(Enum):
+    '''Symbol pin name/number visible'''
+
+    no = 'N'
+    yes = 'Y'
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in visible:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'visible'".format(value))
+
+class units(Enum):
+    '''Symbol units swappable or locked'''
+
+    locked = 'L'
+    swappable = 'F'
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in units:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'units'".format(value))
+
+class flag(Enum):
+    '''Symbol flag'''
+
+    normal = 'N'
+    power = 'P'
+
+    def __str__(self):
+        return self.value
+
+    @staticmethod
+    def from_str(value):
+        for item in flag:
+            if item.value == value:
+                return item
+        raise NotImplementedError("'{}' is no element of 'flag'".format(value))
+
 class field(Enum):
     '''Schematic field type'''
 

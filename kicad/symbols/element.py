@@ -418,7 +418,7 @@ class symbols(object):
         print("# End Library")
         pass
 
-def from_str(string):
+def from_str(string, unify = True):
     '''Generate elements out of string lines. Used to load a symbol file'''
 
     string = string.strip()
@@ -428,13 +428,16 @@ def from_str(string):
     part = shlex.split(string[1:])
 
     if char == 'F':
+        if len(part) < 9:
+            raise ValueError("Not enough parts for 'field' element")
+
         # NOTE: Optional name field is ignored!
         return field(
             kicad.symbols.type.field.from_str(int(part[0])),
             str(part[1]),
             int(part[2]),
             int(part[3]),
-            int(part[4]),
+            kicad.config.symbols.FIELD_TEXT_SIZE if unify else int(part[4]),
             kicad.symbols.type.orientation.from_str(part[5]),
             kicad.symbols.type.visibility.from_str(part[6]),
             kicad.symbols.type.hjustify.from_str(part[7]),
@@ -442,6 +445,9 @@ def from_str(string):
             kicad.symbols.type.style.from_str(part[8][1:])
         )
     elif char == 'P':
+        if len(part) < 6:
+            raise ValueError("Not enough parts for 'polygon' element")
+
         count = int(part[0])
         result = polygon(
             int(part[3]),
@@ -454,6 +460,9 @@ def from_str(string):
             result.add(point(int(part[index * 2 + 4]), int(part[index * 2 + 5])))
         return result
     elif char == 'S':
+        if len(part) != 8:
+            raise ValueError("Not enough parts for 'rectangle' element")
+
         return rectangle(
             int(part[0]),
             int(part[1]),
@@ -465,6 +474,9 @@ def from_str(string):
             kicad.symbols.type.representation.from_str(part[5])
         )
     elif char == 'C':
+        if len(part) != 7:
+            raise ValueError("Not enough parts for 'circle' element")
+
         return circle(
             int(part[0]),
             int(part[1]),
@@ -475,6 +487,9 @@ def from_str(string):
             kicad.symbols.type.representation.from_str(part[4])
         )
     elif char == 'A':
+        if len(part) != 13:
+            raise ValueError("Not enough parts for 'arc' element")
+
         return arc(
             int(part[0]), # x
             int(part[1]), # y
@@ -507,7 +522,7 @@ def from_str(string):
                 kicad.symbols.type.representation.from_str(part[6]) # representation
             )
         # New format
-        else:
+        elif len(part) == 12:
             return text(
                 int(part[1]), # x
                 int(part[2]), # y
@@ -521,6 +536,8 @@ def from_str(string):
                 int(part[5]), # unit
                 kicad.symbols.type.representation.from_str(part[6]) # representation
             )
+        else:
+            raise ValueError("Not enough parts for 'text' element")
     elif char == 'X':
         if len(part) == 12:
             visible = True
@@ -528,9 +545,11 @@ def from_str(string):
                 visible = False
                 part[11] = part[11][1:]
             shape = kicad.symbols.type.shape.line.from_str(part[11])
-        else:
+        elif len(part) == 11:
             visible = True
             shape = kicad.symbols.type.shape.line
+        else:
+            raise ValueError("Not enough parts for 'pin' element")
 
         return pin(
             int(part[2]), # x
@@ -539,8 +558,8 @@ def from_str(string):
             part[1], # number
             int(part[4]), # length
             kicad.symbols.type.direction.from_str(part[5]), # direction
-            int(part[6]), # nameSize
-            int(part[7]), # numberSize
+            kicad.config.symbols.PIN_NAME_SIZE if unify else int(part[6]), # nameSize
+            kicad.config.symbols.PIN_NUMBER_SIZE if unify else int(part[7]), # numberSize
             kicad.symbols.type.electric.from_str(part[10]), # electric
             shape,
             visible,
