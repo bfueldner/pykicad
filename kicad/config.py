@@ -11,6 +11,8 @@ class symbols(object):
     PIN_NAME_SIZE = 40
     PIN_NUMBER_SIZE = 40
 
+    POWER_SYMBOL_REFERENCE = ['#PWR']
+
 class footprint():
     '''Footprint configuration'''
 

@@ -1,10 +1,10 @@
 import unittest
 
-import kicad.symbols.symbol
+import kicad.symbols.library
 
 class case(unittest.TestCase):
 
-    def test_symbols_symbol_base_from_str(self):
+    def test_symbols_library_symbol(self):
         text1 = '''EESchema-LIBRARY Version 2.3
 #encoding utf-8
 #
@@ -54,19 +54,26 @@ ENDDEF
             'color': 'red',
         }
 
-        test = kicad.symbols.symbol.base('', '')
+        test = kicad.symbols.library.symbol('TEST', 'IC', 'SOIC:soic_8', '')
         test.from_str(text1, map, 1)
-        test.from_str(text2, map, 2)
-    #    self.assertEqual(len(test.fields), 5)
-    #    self.assertEqual(len(test.elements), 10)
+        self.assertEqual(len(test.fields), 4)
+        self.assertEqual(len(test.elements), 5)
 
-        print(test)
-        print('---------------------------')
+        test.from_str(text2, map, 2)
+        self.assertEqual(len(test.fields), 4)
+        self.assertEqual(len(test.elements), 8)
+
+        test.from_str(text2, map, 3)
+        self.assertEqual(len(test.fields), 4)
+        self.assertEqual(len(test.elements), 11)
+
+        test.optimize()
+        self.assertEqual(len(test.fields), 4)
+        self.assertEqual(len(test.elements), 9)
+
         test.sort()
         print(test)
-        print('---------------------------')
-        test.optimize()
-        print(test)
-        print('---------------------------')
 
-    #    self.assertEqual(str(kicad.symbols.type.field.reference), 'Reference')
+    def test_symbols_library_description(self):
+        test = kicad.symbols.library.description('TEST', 'IC', 'SOIC:soic_8', '')
+        print(test)
