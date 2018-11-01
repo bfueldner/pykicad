@@ -2,10 +2,12 @@ class symbols(object):
     '''Symbols configuration'''
 
     LIBRARY_START = 'EESchema-LIBRARY Version 2.4\n# encoding utf-8\n'
-    LIBRARY_END = '# End Library\n'
+    LIBRARY_END = '#\n# End Library\n'
+    LIBRARY_EXTENSION = '.lib'
 
     DESCRIPTION_START = 'EESchema-DOCLIB Version 2.0\n'
-    DESCRIPTION_END = '# End Doc Library\n'
+    DESCRIPTION_END = '#\n# End Doc Library\n'
+    DESCRIPTION_EXTENSION = '.dcm'
 
     FIELD_TEXT_SIZE = 60
     PIN_NAME_SIZE = 40

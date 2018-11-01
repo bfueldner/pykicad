@@ -4,17 +4,17 @@ import datetime
 
 import kicad.symbols.type
 
-def pinValue(value):
+def pin_value(value):
     '''Convert pin number into value (especially for BGA numbering scheme)'''
 
-    res = re.match(r"[0-9A-Z]+", value)
+    res = re.match(r"[~0-9A-Z]+", value)
     if res:
         sum = 0
         for c in res.group(0):
             sum = sum * 128 + ord(c)
         return sum
     else:
-        raise ValueError('Value does not match!')
+        raise ValueError("'{}' is no valid pin value".format(value))
 
 class alias(object):
     '''2.3.1 Aliases'''
@@ -342,7 +342,7 @@ class pin(element):
 
     @property
     def priority(self):
-        return self.unit * 1048576 + self.order * 65536 + pinValue(self.number)
+        return self.unit * 1048576 + self.order * 65536 + pin_value(self.number)
 
     def __str__(self):
         return pin.fmt.format(

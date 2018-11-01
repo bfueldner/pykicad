@@ -7,16 +7,16 @@ import kicad.symbols.element
 class symbol(object):
     '''KiCAD symbol class'''
 
-    def __init__(self, name, reference, footprint, document, alias = '', offset = 0, pinname = kicad.symbols.type.visible.yes, fields = [], elements = []):
+    def __init__(self, name, reference, footprint, document, alias = ''): #, offset = 0, fields = [], elements = []):
         self.name = name
         self.reference = reference
         self.footprint = footprint
         self.document = document
         self.alias = alias.split()
-        self.offset = offset
-        self.pinname = pinname
-        self.fields = fields
-        self.elements = elements
+        self.offset = 0
+        self.pinname = kicad.symbols.type.visible.yes
+        self.fields = []
+        self.elements = []
 
     def optimize(self):
         '''Merge duplicate graphical elements into unit = 0'''
@@ -39,66 +39,16 @@ class symbol(object):
         self.fields.sort(key = lambda field: field.type.value)
         self.elements.sort(key = lambda element: element.priority)
 
-    def __str__(self):
-        '''Render symbol into string with some automatics'''
-
-        # Set pin name offset to zero, if pin names not visible
-        if self.pinname == kicad.symbols.type.visible.no:
-            self.offset = 0
-
-        # Detect number of units and their pins used in symbol
-        unit_pins = {}
-        unit_count = 1
-        for element in self.elements:
-            unit_count = max(unit_count, element.unit)
-            if isinstance(element, kicad.symbols.element.pin):
-                if element.unit in unit_pins:
-                    unit_pins[element.unit] += 1
-                else:
-                    unit_pins[element.unit] = 1
-
-        # Pin numbers are visible, if symbol has more than one unit
-        pinnumber = kicad.symbols.type.visible.yes if unit_count > 1 else kicad.symbols.type.visible.no
-
-        # Check, if every unit has same number of pins. Then units should be swappable!
-        units = kicad.symbols.type.units.swappable if 0 not in unit_pins and min(unit_pins.values()) == max(unit_pins.values()) else kicad.symbols.type.units.locked
-
-        # If reference matches POWER_SYMBOL_REFERENCE, than we have a power symbol
-        flag = kicad.symbols.type.flag.power if self.reference in kicad.config.symbols.POWER_SYMBOL_REFERENCE else kicad.symbols.type.flag.normal
-
-        result = '#\n# {:s}\n#\n'.format(self.name)
-        result += 'DEF {:s} {:s} 0 {:d} {:s} {:s} {:d} {:s} {:s}\n'.format(self.name, self.reference, self.offset, pinnumber, self.pinname, unit_count, units, flag)
-        if len(self.alias):
-            result += 'ALIAS {:s}\n'.format(' '.join(self.alias))
-
-        for field in self.fields:
-            # Always overwrite field 'name' and 'reference' with own parameters
-            if field.type == kicad.symbols.type.field.name:
-                field.value = self.name
-            elif field.type == kicad.symbols.type.field.reference:
-                field.value = self.reference
-            elif field.type == kicad.symbols.type.field.footprint:
-                field.value = self.footprint
-            elif field.type == kicad.symbols.type.field.document:
-                field.value = self.document
-
-            if len(field.value):
-                result += str(field) + '\n'
-        result += 'DRAW\n'
-        for element in self.elements:
-            result += str(element) + '\n'
-        result += 'ENDDRAW\nENDDEF\n'
-        return result
-
     def from_file(self, filename, map, unit = 0, unify = True):
         '''Read symbol from file, replace "$key" text with value from map and unify text sizes if required'''
 
         file = open(filename, "r")
-        from_str(file.read(), map, unit, unify)
+        self.from_str(file.read(), map, unit, unify)
         file.close()
 
     def from_str(self, text, map, unit = 0, unify = True):
         '''Read symbol from string, replace "$key" text with value from map and unify text sizes if required'''
+
         class position(Enum):
             unknown = 0
             definition = 1
@@ -108,6 +58,9 @@ class symbol(object):
         text = re.sub('^#.*$\s*', '', text, flags = re.MULTILINE)
 
         # Replace $KEYWORD with mapped value
+        for key, value in map.items():
+            if not isinstance(value, str):
+                map[key] = str(value)
         text = re.sub("\$(\w+)", lambda match: map[match.group(1).lower()] if match.group(1).lower() in map else match.group(0), text)
 
         # Parse library file
@@ -154,6 +107,8 @@ class symbol(object):
                 # Fields
                 if parser == position.definition:
                     field = kicad.symbols.element.from_str(line, unify)
+                    if field.type.name in map:
+                        field.value = map[field.type.name]
                     self.fields.append(field)
                 # Elements
                 elif parser == position.drawing:
@@ -161,12 +116,85 @@ class symbol(object):
                     element.unit = unit
                     self.elements.append(element)
 
+    def __str__(self):
+        '''Render symbol into string with some automatics'''
+
+        # Collect number of units and their pins used in symbol
+        unit_pins = {}
+        unit_count = 1
+    #   pinname = kicad.symbols.type.visible.no
+        for element in self.elements:
+            unit_count = max(unit_count, element.unit)
+            if isinstance(element, kicad.symbols.element.pin):
+            #   if element.number != '~':
+            #    pinname = kicad.symbols.type.visible.yes
+
+                if element.unit in unit_pins:
+                    unit_pins[element.unit] += 1
+                else:
+                    unit_pins[element.unit] = 1
+
+        # Set pin name offset to zero, if pin names not visible
+        if self.pinname == kicad.symbols.type.visible.no:
+            self.offset = 0
+
+        # Pin numbers are visible, if symbol has more than one unit
+        pinnumber = kicad.symbols.type.visible.yes if unit_count > 1 else kicad.symbols.type.visible.no
+
+        # Check, if every unit has same number of pins. Then units should be swappable!
+        units = kicad.symbols.type.units.locked
+        if len(unit_pins) and 0 not in unit_pins and min(unit_pins.values()) == max(unit_pins.values()):
+            units = kicad.symbols.type.units.swappable
+
+        # If reference matches POWER_SYMBOL_REFERENCE, than we have a power symbol
+        flag = kicad.symbols.type.flag.power if self.reference in kicad.config.symbols.POWER_SYMBOL_REFERENCE else kicad.symbols.type.flag.normal
+
+        result = '#\n# {:s}\n#\n'.format(self.name)
+        result += 'DEF {:s} {:s} 0 {:d} {:s} {:s} {:d} {:s} {:s}\n'.format(self.name, self.reference, self.offset, pinnumber, self.pinname, unit_count, units, flag)
+        if len(self.alias):
+            result += 'ALIAS {:s}\n'.format(' '.join(self.alias))
+
+        for field in self.fields:
+            # Always overwrite field 'name' and 'reference' with own parameters
+            if field.type == kicad.symbols.type.field.name:
+                field.value = self.name
+            elif field.type == kicad.symbols.type.field.reference:
+                field.value = self.reference
+            elif field.type == kicad.symbols.type.field.footprint:
+                field.value = self.footprint
+            elif field.type == kicad.symbols.type.field.document:
+                field.value = self.document
+
+            if len(field.value):
+                result += str(field) + '\n'
+        result += 'DRAW\n'
+        for element in self.elements:
+            result += str(element) + '\n'
+        result += 'ENDDRAW\nENDDEF\n'
+        return result
+
+class symbols(object):
+    '''List of symbols'''
+
+    def __init__(self):
+        self.symbols = []
+
+    def add(self, symbol):
+        self.symbols.append(symbol)
+
+    def __str__(self):
+        result = kicad.config.symbols.LIBRARY_START
+        for symbol in self.symbols:
+            result += str(symbol)
+        result += kicad.config.symbols.LIBRARY_END
+        return result
+
 class description(object):
     '''KiCAD symbol description class'''
 
     def __init__(self, name, description, keywords, document):
         self.name = name
-        self.description = description.replace('\n\r', '')
+        self.description = description.replace('\r', '').replace('\n', ' ')
         self.keywords = keywords.split()
         self.document = document
 
@@ -183,4 +211,20 @@ class description(object):
         if len(self.document):
             result += 'F {}\n'.format(self.document)
         result += '$ENDCMP\n'
+        return result
+
+class descriptions(object):
+    '''List of symbol descriptions'''
+
+    def __init__(self):
+        self.descriptions = []
+
+    def add(self, description):
+        self.descriptions.append(description)
+
+    def __str__(self):
+        result = kicad.config.symbols.DESCRIPTION_START
+        for descriptions in self.descriptions:
+            result += str(descriptions)
+        result += kicad.config.symbols.DESCRIPTION_END
         return result
