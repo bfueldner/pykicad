@@ -23,17 +23,17 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Symbols generator from csv table.')
     parser.add_argument('--csv', type = str, help = 'CSV formatted input table', required = True)
     parser.add_argument('--template-path', type = str, help = 'Path to symbol templates', required = True)
+    parser.add_argument('--table-path', type = str, help = 'Path to symbol tables', required = True)
+    parser.add_argument('--document-root', type = str, help = 'Root for document path', required = True)
     parser.add_argument('--library', type = str, help = 'Output file for generated KiCAD library', required = True)
     parser.add_argument('--description', type = str, help = 'Output file for generated KiCAD library description', required = True)
-    parser.add_argument('--document-root', type = str, help = 'Root for document path', required = True)
-#    parser.add_argument('--table_path', type = str, help = 'Path to table based symbols', required = True)
     args = parser.parse_args()
 
     symbols = kicad.symbols.library.symbols()
     descriptions = kicad.symbols.library.descriptions()
 
     with open(args.csv, 'r') as csvfile:
-        table = csv.reader(csvfile, delimiter=',', quotechar='\"')
+        table = csv.reader(csvfile, delimiter = ',', quotechar = '\"')
 
         first_row = True
         last_name = ''
@@ -104,9 +104,11 @@ if __name__ == "__main__":
 
                 # Template symbol
                 template_file = os.path.join(args.template_path, data['symbol'] + kicad.config.symbols.LIBRARY_EXTENSION)
-                table_file = os.path.join(args.template_path, data['symbol'] + kicad.config.symbols.LIBRARY_EXTENSION)
+                table_file = os.path.join(args.table_path, data['symbol'] + kicad.config.symbols.TABLE_EXTENSION)
                 if os.path.isfile(template_file):
                     symbol.from_file(template_file, data, data['unit'])
+                elif os.path.isfile(table_file):
+                    symbol.from_csv(table_file, data['unit'])
 
             #    elif os.path.isfile(table_file):
             #        sym.fromCSV(table_file, unit, data['section'], unit != 0)
@@ -116,7 +118,7 @@ if __name__ == "__main__":
                 #elif os.path.isfile(port_table_file):
                 #   sym.fromCSV(port_table_file, int(data['unit']), cfg.SYMBOL_PIN_TEXT_OFFSET, False)
                 else:
-                    raise Exception("Template symbol '{:s}' or csv table '{:s}' not found!".format(template_file, table_file))
+                    raise Exception("Neither template symbol '{:s}' nor csv table '{:s}' found!".format(template_file, table_file))
 
                 # TODO: Check keyword(s) or tags delimiter (modules, symbols)
                 # TODO: Check datasheet link with user defined variable?

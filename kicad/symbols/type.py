@@ -238,11 +238,18 @@ class direction(Enum):
         return self.value
 
     @staticmethod
+    def from_name(name):
+        for item in direction:
+            if item.name == name:
+                return item
+        raise NotImplementedError("'{}' is no name of 'direction'".format(name))
+
+    @staticmethod
     def from_str(value):
         for item in direction:
             if item.value == value:
                 return item
-        raise NotImplementedError("'{}' is no element of 'direction'".format(value))
+        raise NotImplementedError("'{}' is no value of 'direction'".format(value))
 
 class electric(Enum):
     '''2.3.4 Electric pin type'''
@@ -261,6 +268,13 @@ class electric(Enum):
 
     def __str__(self):
         return self.value
+
+    @staticmethod
+    def from_name(name):
+        for item in electric:
+            if item.name == name:
+                return item
+        raise NotImplementedError("'{}' is no name of 'electric'".format(name))
 
     @staticmethod
     def from_str(value):
@@ -286,6 +300,13 @@ class shape(Enum):
 
     def __str__(self):
         return self.value
+
+    @staticmethod
+    def from_name(name):
+        for item in shape:
+            if item.name == name:
+                return item
+        raise NotImplementedError("'{}' is no name of 'shape'".format(name))
 
     @staticmethod
     def from_str(value):

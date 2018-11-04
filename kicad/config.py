@@ -5,11 +5,18 @@ class symbols(object):
     LIBRARY_END = '#\n# End Library\n'
     LIBRARY_EXTENSION = '.lib'
 
-    DESCRIPTION_START = 'EESchema-DOCLIB Version 2.0\n'
+    DESCRIPTION_START = 'EESchema-DOCLIB  Version 2.0\n'
     DESCRIPTION_END = '#\n# End Doc Library\n'
     DESCRIPTION_EXTENSION = '.dcm'
 
+    TABLE_EXTENSION = '.csv'
+
+    ELEMENT_THICKNESS = 20
+    SPACE_THICKNESS = 10
     FIELD_TEXT_SIZE = 60
+    PIN_LENGTH = 100
+    PIN_GRID = 100
+    PIN_OFFSET = 50    # Pin name offset
     PIN_NAME_SIZE = 40
     PIN_NUMBER_SIZE = 40
 
