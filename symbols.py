@@ -88,8 +88,8 @@ if __name__ == "__main__":
                     if 'document' not in data:
                         data['document'] = ''
                     elif len(data['document']) > 0:
-                        if os.path.isfile(data['document']):
-                            data['document'] = os.path.join(args.document_root, data['document'])
+                        if os.path.isfile(os.path.join(args.document_root, data['document'])):
+                            data['document'] = os.path.join('${KIDOC}', args.document_root, data['document'])
                         else:
                             print("Warning: Document '{}' not found".format(data['document']))
                             data['document'] = ''

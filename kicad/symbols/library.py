@@ -320,7 +320,7 @@ class symbol(object):
                 else:
                     if len(pins[kicad.symbols.type.direction.down]):
                         x = center_x + width_half
-                    else
+                    else:
                         x = center_x - width_half
                     y = pos
                     pos -= kicad.config.symbols.PIN_GRID
