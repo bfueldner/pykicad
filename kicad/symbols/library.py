@@ -120,15 +120,103 @@ class symbol(object):
                     element.unit = unit
                     self.elements.append(element)
 
-    def from_csv(self, filename, unit = 0): #, section = '', centered = True):
+    def from_csv(self, filename, map, unit = 0): #, section = '', centered = True):
     #    # In table based symbols pin numbers are always visible!
-    #    self.pinnumber = 'Y'
+    #    self.pinnumber =
 
-        class space(object):
-            '''Space dummy class'''
+        def create_pins(x, y, step_x, step_y, data, direction):
+            # TODO: Pin name line for duplicate names
 
-            def __init__(self):
-                pass
+            result = []
+
+            name = None
+            length = 0
+            last_x = 0
+            last_y = 0
+
+            if direction == kicad.symbols.type.direction.left or direction == kicad.symbols.type.direction.right:
+                pin_offset_x = -kicad.config.symbols.PIN_LENGTH
+                pin_offset_y = 0
+                line_offset_x = int(kicad.config.symbols.PIN_OFFSET * 0.75)
+                line_offset_y = 0
+            elif direction == kicad.symbols.type.direction.up or direction == kicad.symbols.type.direction.down:
+                pin_offset_x = 0
+                pin_offset_y = kicad.config.symbols.PIN_LENGTH
+                line_offset_x = 0
+                line_offset_y = -int(kicad.config.symbols.PIN_OFFSET * 0.75)
+
+            if direction == kicad.symbols.type.direction.right or direction == kicad.symbols.type.direction.down:
+                pin_offset_x = -pin_offset_x
+                pin_offset_y = -pin_offset_y
+                line_offset_x = -line_offset_x
+                line_offset_y = -line_offset_y
+
+            for item in data:
+                # Check for same pin names
+                if len(item['name']) and name == item['name']:
+                    length += 1
+                else:
+                    # Draw line if equal pins follow each other
+                    if length:
+                        start_x = int(last_x + step_x * (length + 0.25))
+                        start_y = int(last_y + step_y * (length + 0.25))
+                        end_x = int(last_x - step_x * 0.25)
+                        end_y = int(last_y - step_y * 0.25)
+
+                        line = kicad.symbols.element.polygon(
+                            kicad.config.symbols.SPACE_THICKNESS,
+                            kicad.symbols.type.fill.none,
+                            unit
+                        )
+                        line.add(kicad.symbols.element.point(start_x + line_offset_x, start_y + line_offset_y))
+                        line.add(kicad.symbols.element.point(end_x + line_offset_x, end_y + line_offset_y))
+                        result.append(line)
+
+                    name = item['name']
+                    length = 0
+                    last_x = x
+                    last_y = y
+
+                if len(item['name']):
+                    electric = kicad.symbols.type.electric.from_name(item['electric'])
+                    shape = kicad.symbols.type.shape.from_name(item['shape'])
+
+                    result.append(
+                        kicad.symbols.element.pin(
+                            x + pin_offset_x,
+                            y + pin_offset_y,
+                            item['name'] if length == 0 else '~',
+                            item['number'],
+                            kicad.config.symbols.PIN_LENGTH,
+                            direction,
+                            kicad.config.symbols.PIN_NAME_SIZE,
+                            kicad.config.symbols.PIN_NUMBER_SIZE,
+                            electric,
+                            shape,
+                            True,
+                            unit
+                        )
+                    )
+
+                x += step_x
+                y += step_y
+
+            # Draw line if equal pins follow each other
+            if length:
+                start_x = int(last_x + step_x * (length + 0.25))
+                start_y = int(last_y + step_y * (length + 0.25))
+                end_x = int(last_x - step_x * 0.25)
+                end_y = int(last_y - step_y * 0.25)
+
+                line = kicad.symbols.element.polygon(
+                    kicad.config.symbols.SPACE_THICKNESS,
+                    kicad.symbols.type.fill.none,
+                    unit
+                )
+                line.add(kicad.symbols.element.point(start_x + line_offset_x, start_y + line_offset_y))
+                line.add(kicad.symbols.element.point(end_x + line_offset_x, end_y + line_offset_y))
+                result.append(line)
+            return result
 
         pins = {}
         for direction in kicad.symbols.type.direction:
@@ -144,115 +232,115 @@ class symbol(object):
                     first_row = False
                 else:
                     data = dict(zip(header, row))
-                    x = '''
-                    for i in range(len(row)):
-                        try:
-                            row[i] = int(row[i])
-                        except:
-                            pass'''
 
-                    print(data)
-
+                    # Order pins by direction
                     direction = kicad.symbols.type.direction.from_name(data['direction'])
-                    if data['electric'] != 'space':
-                        electric = kicad.symbols.type.electric.from_name(data['electric'])
-                        shape = kicad.symbols.type.shape.from_name(data['shape'])
+                    pins[direction].append(data)
 
-                        pins[direction].append(
-                            kicad.symbols.element.pin(
-                                0,
-                                0,
-                                data['name'],
-                                data['number'],
-                                kicad.config.symbols.PIN_LENGTH,
-                                direction,
-                                kicad.config.symbols.PIN_NAME_SIZE,
-                                kicad.config.symbols.PIN_NUMBER_SIZE,
-                                electric,
-                                shape,
-                                True,
-                                unit
-                            )
-                        )
-                    else:
-                        pins[direction].append(space())
-                        print('space')
+        # Adjust left and right pin count to satisfy zip
+        if len(pins[kicad.symbols.type.direction.left]) > len(pins[kicad.symbols.type.direction.right]):
+            pins[kicad.symbols.type.direction.right].extend([{'name': ''}] * (len(pins[kicad.symbols.type.direction.left]) - len(pins[kicad.symbols.type.direction.right])))
+        elif len(pins[kicad.symbols.type.direction.right]) > len(pins[kicad.symbols.type.direction.left]):
+            pins[kicad.symbols.type.direction.left].extend([{'name': ''}] * (len(pins[kicad.symbols.type.direction.right]) - len(pins[kicad.symbols.type.direction.left])))
 
-        for direction in kicad.symbols.type.direction:
-            print(direction.name, len(pins[direction]))
-
+        # Table generated symbols have their pin names inside
         self.offset = kicad.config.symbols.PIN_OFFSET
 
-        width = max(len(pins[kicad.symbols.type.direction.up]), len(pins[kicad.symbols.type.direction.down]))
-        height = max(len(pins[kicad.symbols.type.direction.left]), len(pins[kicad.symbols.type.direction.right]))
-        print(width, height)
-
         # Two grid spaces above first pin and below last pin
-        width = (width + 1) * kicad.config.symbols.PIN_GRID
-        height = (height + 1) * kicad.config.symbols.PIN_GRID
-        print(width, height)
+        height = (max(len(pins[kicad.symbols.type.direction.left]), len(pins[kicad.symbols.type.direction.right])) + 1) * kicad.config.symbols.PIN_GRID
 
-        # Detect space for device name and pin names (not really exact!)
-        device_width = len(self.name) * kicad.config.symbols.FIELD_TEXT_SIZE
+        # Calculate device width from device name and pin names (not really exact!)
+        width = len(self.name) * kicad.config.symbols.FIELD_TEXT_SIZE
         for left, right in zip(pins[kicad.symbols.type.direction.left], pins[kicad.symbols.type.direction.right]):
-            left_width = len(left.name) if isinstance(left, kicad.symbols.element.pin) else 0
-            right_width = len(right.name) if isinstance(right, kicad.symbols.element.pin) else 0
-            left_width *= kicad.config.symbols.PIN_NAME_SIZE
-            right_width *= kicad.config.symbols.PIN_NAME_SIZE
-            device_width = max(device_width, 3 * kicad.config.symbols.PIN_OFFSET + left_width + right_width)
-        device_width = (((device_width + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
+            left_width = len(left['name']) * kicad.config.symbols.PIN_NAME_SIZE
+            right_width = len(right['name']) * kicad.config.symbols.PIN_NAME_SIZE
+            width = max(width, 3 * kicad.config.symbols.PIN_OFFSET + left_width + right_width)
+
+        # Round up to next grid
+        width = (((width + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
+
+        center_x = 0
+        center_y = 0
+        width_half = width // 2
+        height_half = height // 2
+        if height_half % kicad.config.symbols.PIN_GRID:
+            center_y = height_half % kicad.config.symbols.PIN_GRID
 
         self.elements.append(
             kicad.symbols.element.rectangle(
-                -device_width // 2,
-                -height // 2,
-                device_width // 2,
-                height // 2,
+                center_x - width_half,
+                center_y - height_half,
+                center_x + width_half,
+                center_y + height_half,
                 kicad.config.symbols.ELEMENT_THICKNESS,
                 kicad.symbols.type.fill.background,
                 unit
             )
         )
 
-        x = device_width // 2
-        y = height // 2
-        y -= 1 * kicad.config.symbols.PIN_GRID
+        if len(pins[kicad.symbols.type.direction.up]) > 1:
+            up_x = (len(pins[kicad.symbols.type.direction.up]) - 1) * kicad.config.symbols.PIN_GRID // 2
+            up_x = up_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
+        else:
+            up_x = 0
+
+        if len(pins[kicad.symbols.type.direction.down]) > 1:
+            down_x = (len(pins[kicad.symbols.type.direction.down]) - 1) * kicad.config.symbols.PIN_GRID // 2
+            down_x = down_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
+        else:
+            down_x = 0
+
+        self.elements.extend(create_pins(center_x - width_half, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.left], kicad.symbols.type.direction.left))
+        self.elements.extend(create_pins(center_x + width_half, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.right], kicad.symbols.type.direction.right))
+        self.elements.extend(create_pins(center_x - up_x, center_y + height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.up], kicad.symbols.type.direction.up))
+        self.elements.extend(create_pins(center_x - down_x, center_y - height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.down], kicad.symbols.type.direction.down))
+
+        # Add line between empty pin slots on left and right side
+        y = center_y + height_half - kicad.config.symbols.PIN_GRID
         for left, right in zip(pins[kicad.symbols.type.direction.left], pins[kicad.symbols.type.direction.right]):
-            space = True
-            if isinstance(left, kicad.symbols.element.pin):
-                left.x = -x - kicad.config.symbols.PIN_LENGTH
-                left.y = y
-                print(left.name, left.x, left.y)
-                self.elements.append(left)
-                space = False
-
-            # TODO: Pin name line for dupplicate names
-
-            if isinstance(right, kicad.symbols.element.pin):
-                right.x = x + kicad.config.symbols.PIN_LENGTH
-                right.y = y
-                print(right.name, right.x, right.y)
-                self.elements.append(right)
-                space = False
-
-            # TODO: Pin name line for dupplicate names
-
             # TODO: Pin decoration
 
-            if space:
+            if len(left['name']) == 0 and len(right['name']) == 0:
                 line = kicad.symbols.element.polygon(
                     kicad.config.symbols.SPACE_THICKNESS,
                     kicad.symbols.type.fill.none,
                     unit
                 )
-                line.add(kicad.symbols.element.point(-x, y))
-                line.add(kicad.symbols.element.point(x, y))
+                line.add(kicad.symbols.element.point(center_x - width_half, y))
+                line.add(kicad.symbols.element.point(center_x + width_half, y))
                 self.elements.append(line)
             y -= kicad.config.symbols.PIN_GRID
 
+        pos = center_y - height_half - kicad.config.symbols.PIN_GRID // 2
+        for field in kicad.symbols.type.field:
+            if field.name in map:
+                if field == kicad.symbols.type.field.reference:
+                    x = center_x - width_half
+                    y = center_y + height_half + kicad.config.symbols.PIN_GRID // 2
+                else:
+                    if len(pins[kicad.symbols.type.direction.down]):
+                        x = center_x + width_half
+                    else
+                        x = center_x - width_half
+                    y = pos
+                    pos -= kicad.config.symbols.PIN_GRID
+
+                self.fields.append(
+                    kicad.symbols.element.field(
+                        field,
+                        map[field.name],
+                        x,
+                        y,
+                        kicad.config.symbols.FIELD_TEXT_SIZE,
+                        kicad.symbols.type.orientation.horizontal,
+                        kicad.symbols.type.visibility.visible if field == kicad.symbols.type.field.name or field == kicad.symbols.type.field.reference else kicad.symbols.type.visibility.invisible,
+                        kicad.symbols.type.hjustify.left,
+                        kicad.symbols.type.vjustify.center,
+                        kicad.symbols.type.style.none
+                    )
+                )
+
         # TODO: Section name right top corner
-        # TODO: Reference Top left
-        # TODO: Name Bottom left
 
     def __str__(self):
         '''Render symbol into string with some automatics'''

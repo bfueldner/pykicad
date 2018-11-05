@@ -108,7 +108,7 @@ if __name__ == "__main__":
                 if os.path.isfile(template_file):
                     symbol.from_file(template_file, data, data['unit'])
                 elif os.path.isfile(table_file):
-                    symbol.from_csv(table_file, data['unit'])
+                    symbol.from_csv(table_file, data, data['unit'])
 
             #    elif os.path.isfile(table_file):
             #        sym.fromCSV(table_file, unit, data['section'], unit != 0)

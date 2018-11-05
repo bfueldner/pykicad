@@ -4,20 +4,20 @@ import kicad.symbols.element
 
 class case(unittest.TestCase):
 
-    def test_symbols_element_pinValue(self):
-        self.assertEqual(kicad.symbols.element.pinValue('0'), 48)
-        self.assertEqual(kicad.symbols.element.pinValue('9'), 48 + 9)
-        self.assertEqual(kicad.symbols.element.pinValue('A0'), 8320 + 48)
-        self.assertEqual(kicad.symbols.element.pinValue('A1'), 8320 + 48 + 1)
+    def test_symbols_element_pin_value(self):
+        self.assertEqual(kicad.symbols.element.pin_value('0'), 48)
+        self.assertEqual(kicad.symbols.element.pin_value('9'), 48 + 9)
+        self.assertEqual(kicad.symbols.element.pin_value('A0'), 8320 + 48)
+        self.assertEqual(kicad.symbols.element.pin_value('A1'), 8320 + 48 + 1)
 
         with self.assertRaises(ValueError):
-            kicad.symbols.element.pinValue('')
+            kicad.symbols.element.pin_value('')
 
         with self.assertRaises(ValueError):
-            kicad.symbols.element.pinValue('a0')
+            kicad.symbols.element.pin_value('a0')
 
         with self.assertRaises(ValueError):
-            kicad.symbols.element.pinValue('$0')
+            kicad.symbols.element.pin_value('$0')
 
     def test_symbols_element_field(self):
         test = kicad.symbols.element.field(
