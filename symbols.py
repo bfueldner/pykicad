@@ -73,6 +73,9 @@ if __name__ == "__main__":
                     if 'unit' not in data:
                         data['unit'] = 0
 
+                    if 'section' not in data:
+                        data['section'] = ''
+
                     if 'footprint' not in data:
                         data['footprint'] = ''
 
@@ -89,13 +92,10 @@ if __name__ == "__main__":
                         data['document'] = ''
                     elif len(data['document']) > 0:
                         if os.path.isfile(os.path.join(args.document_root, data['document'])):
-                            data['document'] = os.path.join('${KIDOC}', args.document_root, data['document'])
+                            data['document'] = os.path.join('${KICAD_DOCUMENT_DIR}', data['document'])
                         else:
                             print("Warning: Document '{}' not found".format(data['document']))
                             data['document'] = ''
-
-                    if 'section' not in data:
-                        data['section'] = ''
 
                     symbol = kicad.symbols.library.symbol(data['name'], data['reference'], data['footprint'], data['document'], data['alias'])
                     description = kicad.symbols.library.description(data['name'], data['description'], data['keywords'], data['document'])
