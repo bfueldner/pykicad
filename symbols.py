@@ -24,7 +24,8 @@ if __name__ == "__main__":
     parser.add_argument('--csv', type = str, help = 'CSV formatted input table', required = True)
     parser.add_argument('--template-path', type = str, help = 'Path to symbol templates', required = True)
     parser.add_argument('--table-path', type = str, help = 'Path to symbol tables', required = True)
-    parser.add_argument('--document-root', type = str, help = 'Root for document path', required = True)
+    parser.add_argument('--modules-root', type = str, help = 'Root for modules path', required = True)
+    parser.add_argument('--documents-root', type = str, help = 'Root for documents path', required = True)
     parser.add_argument('--library', type = str, help = 'Output file for generated KiCAD library', required = True)
     parser.add_argument('--description', type = str, help = 'Output file for generated KiCAD library description', required = True)
     args = parser.parse_args()
@@ -78,6 +79,15 @@ if __name__ == "__main__":
 
                     if 'footprint' not in data:
                         data['footprint'] = ''
+                    else:
+                        if ':' in data['footprint']:
+                            prefix, name = data['footprint'].split(':', 2)
+                            if not os.path.isfile(os.path.join(args.modules_root, prefix + kicad.config.footprint.FOLDER_EXTENSION, name + kicad.config.footprint.FILE_EXTENSION)):
+                                print("Warning: Footprint '{}' does not exist!".format(data['footprint']))
+                                data['footprint'] = ''
+                        else:
+                            print("Warning: Footprint '{}' has old formatting scheme".format(data['footprint']))
+                            data['footprint'] = ''
 
                     if 'alias' not in data:
                         data['alias'] = ''
@@ -91,8 +101,8 @@ if __name__ == "__main__":
                     if 'document' not in data:
                         data['document'] = ''
                     elif len(data['document']) > 0:
-                        if os.path.isfile(os.path.join(args.document_root, data['document'])):
-                            data['document'] = os.path.join('${KICAD_DOCUMENT_DIR}', data['document'])
+                        if os.path.isfile(os.path.join(args.documents_root, data['document'])):
+                            data['document'] = os.path.join(kicad.config.documents.ROOT, data['document'])
                         else:
                             print("Warning: Document '{}' not found".format(data['document']))
                             data['document'] = ''

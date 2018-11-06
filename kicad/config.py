@@ -1,6 +1,8 @@
 class symbols(object):
     '''Symbols configuration'''
 
+    ROOT = '${KICAD_SYMBOL_DIR}'
+
     LIBRARY_START = 'EESchema-LIBRARY Version 2.4\n# encoding utf-8\n'
     LIBRARY_END = '#\n# End Library\n'
     LIBRARY_EXTENSION = '.lib'
@@ -10,6 +12,8 @@ class symbols(object):
     DESCRIPTION_EXTENSION = '.dcm'
 
     TABLE_EXTENSION = '.csv'
+
+#   SYMBOL_GRID = 100
 
     ELEMENT_THICKNESS = 20
     SPACE_THICKNESS = 10
@@ -22,12 +26,26 @@ class symbols(object):
 
     POWER_SYMBOL_REFERENCE = ['#PWR']
 
+class documents():
+    '''Documents configuration'''
+
+    ROOT = '${KICAD_DOCUMENT_DIR}'
+
+class packages3d():
+    '''3D packages configuration'''
+
+    ROOT = '${KISYS3DMOD}'
+    FOLDER_EXTENSION = '.3dshapes'
+    FILE_EXTENSION = ['wrl', 'stp']
+
 class footprint():
     '''Footprint configuration'''
 
     # Footprint
-    EXTENSION = '.kicad_mod'
-    PREFIX = '${KIPRJMOD}'
+    ROOT = '${KISYSMOD}'
+    FOLDER_EXTENSION = '.pretty'
+    FILE_EXTENSION = '.kicad_mod'
+
     #FOOTPRINT_PRECISION = 3
 
     #REFERENCE_LAYER = 'F.SilkS'

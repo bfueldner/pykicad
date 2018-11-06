@@ -18,8 +18,9 @@
 
 ## Footprint
 
-* **EXTENSION:** .kicad_mod
-* **PREFIX:** ${KIPRJMOD}
+* **ROOT:** ${KISYSMOD}
+* **FOLDER_EXTENSION:** .pretty
+* **FILE_EXTENSION:** .kicad_mod
 * **REFERENCE_FONT_SIZE:** 1.0
 * **REFERENCE_FONT_THICKNESS:** 0.15
 * **VALUE_FONT_SIZE:** 1.0

@@ -6,11 +6,8 @@ import csv
 import argparse
 import configparser
 
+import kicad.config
 import kicad.footprint.type
-#import kicad.config
-#import kicad.schematic.type
-#import kicad.footprint.generator
-#from kicad.footprint.generators import *
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description = 'Configuration generator for KiCAD.')
@@ -39,8 +36,8 @@ if __name__ == '__main__':
     # Generate modules table
     if args.type == 'modules':
         lib = []
-        for dir in glob.glob(os.path.join(args.library, "*.pretty")):
-            uri = os.path.join("${KISYSMOD}", os.path.relpath(dir, args.library))
+        for dir in glob.glob(os.path.join(args.library, '*' + kicad.config.footprint.FOLDER_EXTENSION)):
+            uri = os.path.join(kicad.config.footprint.ROOT, os.path.relpath(dir, args.library))
             name = os.path.splitext(os.path.basename(dir))[0]
             if name not in mapping:
                 print("Warning: No description found for module '{}'".format(name))
@@ -63,8 +60,8 @@ if __name__ == '__main__':
     # Generate symbols table
     elif args.type == 'symbols':
         lib = []
-        for file in glob.glob(os.path.join(args.library, "*.lib")):
-            uri = os.path.join("${KICAD_SYMBOL_DIR}", os.path.relpath(file, args.library))
+        for file in glob.glob(os.path.join(args.library, '*' + kicad.config.symbols.LIBRARY_EXTENSION)):
+            uri = os.path.join(kicad.config.symbols.ROOT, os.path.relpath(file, args.library))
             name = os.path.splitext(os.path.basename(file))[0]
             if name not in mapping:
                 print("Warning: No description found for symbols '{}'".format(name))

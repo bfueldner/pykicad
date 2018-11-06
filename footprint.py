@@ -68,14 +68,15 @@ if __name__ == '__main__':
                 # Look for 3D model
                 data['model'] = None
                 if args.package3d_root is not None:
-                    model_file = os.path.join(args.package3d_root, package_family + ".3dshapes", data['name'] + ".wrl" )
+                    # TODO: Add pattern search for multiple file formats!
+                    model_file = os.path.join(args.package3d_root, package_family + kicad.config.packages3d.FOLDER_EXTENSION, data['name'] + ".wrl" )
                     if os.path.isfile(model_file):
-                        data['model'] = os.path.join('${KISYS3DMOD}', package_family + ".3dshapes", data['name'] + ".wrl" )
+                        data['model'] = os.path.join(kicad.config.packages3d.ROOT, package_family + kicad.config.packages3d.FOLDER_EXTENSION, data['name'] + ".wrl" )
 
                 if generator in kicad.footprint.generator.registry.keys():
                     gen = kicad.footprint.generator.registry[generator](**data)
 
-                    filename = data['name'] + kicad.config.footprint.EXTENSION
+                    filename = data['name'] + kicad.config.footprint.FILE_EXTENSION
                     if data['model'] is not None:
                         print("Generate '{}' with package3d '{}'".format(filename, data['model']))
                     else:
