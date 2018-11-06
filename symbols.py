@@ -34,7 +34,7 @@ if __name__ == "__main__":
     descriptions = kicad.symbols.library.descriptions()
 
     with open(args.csv, 'r') as csvfile:
-        table = csv.reader(csvfile, delimiter = ',', quotechar = '\"')
+        table = csv.reader(csvfile, delimiter = ',', quotechar = '"')
 
         first_row = True
         last_name = ''

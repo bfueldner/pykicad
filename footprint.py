@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     # Parse csv file and generate dict out of every line
     with open(args.csv, 'r') as csvfile:
-        table = csv.reader(csvfile, delimiter=',', quotechar='\"')
+        table = csv.reader(csvfile, delimiter = ',', quotechar = '"')
         first_row = True
         for row in table:
             # Take first row for dict keys
