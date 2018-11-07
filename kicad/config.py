@@ -29,7 +29,7 @@ class symbols(object):
 class documents():
     '''Documents configuration'''
 
-    ROOT = '${KICAD_DOCUMENT_DIR}'
+    ROOT = 'http://localhost:8000'
 
 class packages3d():
     '''3D packages configuration'''
