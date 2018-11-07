@@ -340,7 +340,22 @@ class symbol(object):
                     )
                 )
 
-        # TODO: Section name right top corner
+        # Section name right top corner
+        if len(map['section']):
+            self.elements.append(
+                kicad.symbols.element.text(
+                    center_x + width_half - kicad.config.symbols.PIN_GRID // 2,
+                    center_y + height_half - kicad.config.symbols.PIN_GRID // 2,
+                    map['section'],
+                    kicad.config.symbols.FIELD_TEXT_SIZE,
+                    0.0,
+                    kicad.symbols.type.italic.off,
+                    kicad.symbols.type.bold.off,
+                    kicad.symbols.type.hjustify.right,
+                    kicad.symbols.type.vjustify.top,
+                    unit
+                )
+            )
 
     def __str__(self):
         '''Render symbol into string with some automatics'''
