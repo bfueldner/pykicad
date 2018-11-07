@@ -153,7 +153,7 @@ class symbol(object):
 
             for item in data:
                 # Check for same pin names
-                if len(item['name']) and name == item['name']:
+                if len(item['name']) and item['name'] != '~' and name == item['name']:
                     length += 1
                 else:
                     # Draw line if equal pins follow each other
