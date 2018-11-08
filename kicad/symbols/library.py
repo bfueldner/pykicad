@@ -4,6 +4,7 @@ from enum import Enum
 
 import kicad.config
 import kicad.symbols.element
+import kicad.symbols.decorator
 
 class symbol(object):
     '''KiCAD symbol class'''
@@ -164,7 +165,7 @@ class symbol(object):
                         end_y = int(last_y - step_y * 0.25)
 
                         line = kicad.symbols.element.polygon(
-                            kicad.config.symbols.SPACE_THICKNESS,
+                            kicad.config.symbols.DECORATION_THICKNESS,
                             kicad.symbols.type.fill.none,
                             unit
                         )
@@ -209,7 +210,7 @@ class symbol(object):
                 end_y = int(last_y - step_y * 0.25)
 
                 line = kicad.symbols.element.polygon(
-                    kicad.config.symbols.SPACE_THICKNESS,
+                    kicad.config.symbols.DECORATION_THICKNESS,
                     kicad.symbols.type.fill.none,
                     unit
                 )
@@ -256,6 +257,9 @@ class symbol(object):
             right_width = len(right['name']) * kicad.config.symbols.PIN_NAME_SIZE
             width = max(width, 3 * kicad.config.symbols.PIN_OFFSET + left_width + right_width)
 
+        # FIXME: Only for decorator test, should be detected if decorators are used!
+        width = kicad.config.symbols.PIN_GRID * 4
+
         # Round up to next grid
         width = (((width + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
 
@@ -295,14 +299,25 @@ class symbol(object):
         self.elements.extend(create_pins(center_x - up_x, center_y + height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.up], kicad.symbols.type.direction.up))
         self.elements.extend(create_pins(center_x - down_x, center_y - height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.down], kicad.symbols.type.direction.down))
 
+        # Add decoration
+        for direction in kicad.symbols.type.direction.left, kicad.symbols.type.direction.right:
+            y = center_y + height_half - kicad.config.symbols.PIN_GRID
+            for item in pins[direction]:
+                if 'decoration' in item and len(item['decoration']):
+                    if item['decoration'] in kicad.symbols.decorator.registry.keys():
+                        sign = -1 if direction == kicad.symbols.type.direction.left else 1
+                        decorator = kicad.symbols.decorator.registry[item['decoration']](center_x + sign * width_half, y, direction, unit)
+                        self.elements.extend(decorator.elements)
+                    else:
+                        print("Warning: Unknown decorator '{}'".format(item['decoration']))
+                y -= kicad.config.symbols.PIN_GRID
+
         # Add line between empty pin slots on left and right side
         y = center_y + height_half - kicad.config.symbols.PIN_GRID
         for left, right in zip(pins[kicad.symbols.type.direction.left], pins[kicad.symbols.type.direction.right]):
-            # TODO: Pin decoration
-
             if len(left['name']) == 0 and len(right['name']) == 0:
                 line = kicad.symbols.element.polygon(
-                    kicad.config.symbols.SPACE_THICKNESS,
+                    kicad.config.symbols.DECORATION_THICKNESS,
                     kicad.symbols.type.fill.none,
                     unit
                 )
