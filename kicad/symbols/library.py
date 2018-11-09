@@ -23,20 +23,46 @@ class symbol(object):
     def optimize(self):
         '''Merge duplicate graphical elements into unit = 0'''
 
+        # We need at least two elements to optimize
         if len(self.elements) < 2:
             return
 
-        # Walk over every element and delete duplicates from behind
-        compare = len(self.elements) - 1
-        while compare:
-            base = compare - 1
-            while base >= 0:
+        # First: Compare all elements agains each other and mark same elements with a id
+        # Parallel count max used units
+        id = 1
+        unit = 0
+        for base in range(len(self.elements) - 1):
+            unit = max(unit, self.elements[base].unit)
+            for compare in range(base + 1, len(self.elements)):
                 if self.elements[base] == self.elements[compare]:
-                    self.elements[base].unit = 0
-                    del self.elements[compare]
-                    break
-                base -= 1
-            compare -= 1
+                    if self.elements[base].id is not None:
+                        self.elements[compare].id = self.elements[base].id
+                    else:
+                        self.elements[base].id = id
+                        self.elements[compare].id = id
+                        id += 1
+
+        # Second: Count equal elements
+        for id in range(1, id):
+            count = 1
+            for index in range(len(self.elements)):
+                if self.elements[index].id == id:
+                    self.elements[index].count = count
+                    count += 1
+
+         # Correct values after loop
+        id += 1
+
+        # Third: Delete all elements with id that get counter to max units
+        for id in range(1, id):
+            unique = False
+            for index in range(len(self.elements) - 1, -1, -1):
+                if self.elements[index].id == id:
+                    if unique:
+                        del self.elements[index]
+                    elif self.elements[index].count >= unit:
+                        self.elements[index].unit = 0
+                        unique = True
 
     def sort(self):
         '''Sort fields and elements according to their priority'''
@@ -126,8 +152,6 @@ class symbol(object):
     #    self.pinnumber =
 
         def create_pins(x, y, step_x, step_y, data, direction):
-            # TODO: Pin name line for duplicate names
-
             result = []
 
             name = None

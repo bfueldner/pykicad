@@ -82,6 +82,8 @@ class element(object):
         self.unit = unit
         self.representation = representation
         self.order = order
+        self.id = None
+        self.count = 0
 
     @property
     def priority(self):
@@ -152,10 +154,22 @@ class rectangle(element):
     def __init__(self, x1, y1, x2, y2, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
         super().__init__(unit, representation, rectangle.order)
 
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
+        # Swap x coordinates of second values are less than first values to make optimization possible
+        if x1 > x2:
+            self.x1 = x2
+            self.x2 = x1
+        else:
+            self.x1 = x1
+            self.x2 = x2
+
+        # Swap y coordinates of second values are less than first values to make optimization possible
+        if y1 > y2:
+            self.y1 = y2
+            self.y2 = y1
+        else:
+            self.y1 = y1
+            self.y2 = y2
+
         self.thickness = thickness
         self.fill = fill
 
@@ -221,6 +235,22 @@ class arc(element):
 
     def __init__(self, x, y, startX, startY, endX, endY, startAngle, endAngle, radius, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
         super().__init__(unit, representation, arc.order)
+
+        # Swap x coordinates of second values are less than first values to make optimization possible
+        if startX > endX:
+            self.startX = endX
+            self.endX = startX
+        else:
+            self.startX = startX
+            self.endX = endX
+
+        # Swap y coordinates of second values are less than first values to make optimization possible
+        if startY > endY:
+            self.startY = endY
+            self.endY = startY
+        else:
+            self.startY = startY
+            self.endY = endY
 
         self.x = x
         self.y = y

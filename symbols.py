@@ -119,20 +119,10 @@ if __name__ == "__main__":
                     symbol.from_file(template_file, data, data['unit'])
                 elif os.path.isfile(table_file):
                     symbol.from_csv(table_file, data, data['unit'])
-
-            #    elif os.path.isfile(table_file):
-            #        sym.fromCSV(table_file, unit, data['section'], unit != 0)
-                    #if not unit and 'value' in data:
-                    #   sym.addModule(symbol.Text(0, 0, data['value'], cfg.SYMBOL_TEXT_SIZE))
-
-                #elif os.path.isfile(port_table_file):
-                #   sym.fromCSV(port_table_file, int(data['unit']), cfg.SYMBOL_PIN_TEXT_OFFSET, False)
                 else:
                     raise Exception("Neither template symbol '{:s}' nor csv table '{:s}' found!".format(template_file, table_file))
 
                 # TODO: Check keyword(s) or tags delimiter (modules, symbols)
-                # TODO: Check datasheet link with user defined variable?
-                # TODO: Add modules prefix into footprint entry
 
     if 'symbol' in locals():
         symbol.optimize()
