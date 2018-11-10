@@ -13,8 +13,6 @@ class symbols(object):
 
     TABLE_EXTENSION = '.csv'
 
-#   SYMBOL_GRID = 100
-
     ELEMENT_THICKNESS = 20
     DECORATION_THICKNESS = 10
     FIELD_TEXT_SIZE = 60
@@ -29,7 +27,7 @@ class symbols(object):
 class documents():
     '''Documents configuration'''
 
-    ROOT = 'http://localhost:8000'
+    ROOT = '${KICAD_DOCUMENT_DIR}'
 
 class packages3d():
     '''3D packages configuration'''
