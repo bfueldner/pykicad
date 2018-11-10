@@ -16,9 +16,13 @@ class symbol(object):
         self.document = document
         self.alias = alias.split()
         self.offset = 0
-        self.pinname = kicad.symbols.type.visible.yes
+        self.pinnumber = kicad.symbols.type.visible.no
+        self.pinname = kicad.symbols.type.visible.no
         self.fields = []
         self.elements = []
+
+        self.templates = 0
+        self.tables = 0
 
     def optimize(self):
         '''Merge duplicate graphical elements into unit = 0'''
@@ -80,6 +84,9 @@ class symbol(object):
     def from_str(self, text, map, unit = 0, unify = True):
         '''Read symbol from string, replace "$key" text with value from map and unify text sizes if required'''
 
+        # Strings are templates, so we increment
+        self.templates += 1
+
         class position(Enum):
             unknown = 0
             definition = 1
@@ -121,7 +128,7 @@ class symbol(object):
                 #   self.name = part[1]
                 #   self.reference = part[2]
                     self.offset = int(part[4])
-                #   self.pinnumber = kicad.symbols.type.visible.from_str(part[5])
+                    self.pinnumber = kicad.symbols.type.visible.from_str(part[5])
                     self.pinname = kicad.symbols.type.visible.from_str(part[6])
                 #   self.units = kicad.symbols.type.units.from_str(part[8])
                 #   self.flag = kicad.symbols.type.flag.from_str(part[9])
@@ -148,8 +155,8 @@ class symbol(object):
                     self.elements.append(element)
 
     def from_csv(self, filename, map, unit = 0): #, section = '', centered = True):
-    #    # In table based symbols pin numbers are always visible!
-    #    self.pinnumber =
+        # Increment table counter
+        self.tables += 1
 
         def create_pins(x, y, step_x, step_y, data, direction):
             result = []
@@ -267,9 +274,6 @@ class symbol(object):
             pins[kicad.symbols.type.direction.right].extend([{'name': ''}] * (len(pins[kicad.symbols.type.direction.left]) - len(pins[kicad.symbols.type.direction.right])))
         elif len(pins[kicad.symbols.type.direction.right]) > len(pins[kicad.symbols.type.direction.left]):
             pins[kicad.symbols.type.direction.left].extend([{'name': ''}] * (len(pins[kicad.symbols.type.direction.right]) - len(pins[kicad.symbols.type.direction.left])))
-
-        # Table generated symbols have their pin names inside
-        self.offset = kicad.config.symbols.PIN_OFFSET
 
         # Two grid spaces above first pin and below last pin
         height = (max(len(pins[kicad.symbols.type.direction.left]), len(pins[kicad.symbols.type.direction.right])) + 1) * kicad.config.symbols.PIN_GRID
@@ -402,24 +406,33 @@ class symbol(object):
         # Collect number of units and their pins used in symbol
         unit_pins = {}
         unit_count = 1
-    #   pinname = kicad.symbols.type.visible.no
+        pinname = kicad.symbols.type.visible.no
         for element in self.elements:
             unit_count = max(unit_count, element.unit)
             if isinstance(element, kicad.symbols.element.pin):
-            #   if element.number != '~':
-            #    pinname = kicad.symbols.type.visible.yes
+                if element.number != '~':
+                    pinname = kicad.symbols.type.visible.yes
 
                 if element.unit in unit_pins:
                     unit_pins[element.unit] += 1
                 else:
                     unit_pins[element.unit] = 1
 
+        # Override pinname visibility on table based symbols
+        if self.tables:
+            self.pinname = pinname
+
+        # Table generated symbols have their pin names inside
+        if self.tables:
+            self.offset = kicad.config.symbols.PIN_OFFSET
+
         # Set pin name offset to zero, if pin names not visible
         if self.pinname == kicad.symbols.type.visible.no:
             self.offset = 0
 
-        # Pin numbers are visible, if symbol has more than one unit
-        pinnumber = kicad.symbols.type.visible.yes if unit_count > 1 else kicad.symbols.type.visible.no
+        # Pin numbers are visible, if symbol has more than one unit or was table generated
+        if (self.templates and unit_count > 1) or self.tables:
+            self.pinnumber = kicad.symbols.type.visible.yes
 
         # Check, if every unit has same number of pins. Then units should be swappable!
         units = kicad.symbols.type.units.locked
@@ -430,7 +443,7 @@ class symbol(object):
         flag = kicad.symbols.type.flag.power if self.reference in kicad.config.symbols.POWER_SYMBOL_REFERENCE else kicad.symbols.type.flag.normal
 
         result = '#\n# {:s}\n#\n'.format(self.name)
-        result += 'DEF {:s} {:s} 0 {:d} {:s} {:s} {:d} {:s} {:s}\n'.format(self.name, self.reference, self.offset, pinnumber, self.pinname, unit_count, units, flag)
+        result += 'DEF {:s} {:s} 0 {:d} {:s} {:s} {:d} {:s} {:s}\n'.format(self.name, self.reference, self.offset, self.pinnumber, self.pinname, unit_count, units, flag)
         if len(self.alias):
             result += 'ALIAS {:s}\n'.format(' '.join(self.alias))
 
