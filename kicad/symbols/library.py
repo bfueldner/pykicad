@@ -354,34 +354,36 @@ class symbol(object):
                 self.elements.append(line)
             y -= kicad.config.symbols.PIN_GRID
 
-        pos = center_y - height_half - kicad.config.symbols.PIN_GRID // 2
-        for field in kicad.symbols.type.field:
-            if field.name in map:
-                if field == kicad.symbols.type.field.reference:
-                    x = center_x - width_half
-                    y = center_y + height_half + kicad.config.symbols.PIN_GRID // 2
-                else:
-                    if len(pins[kicad.symbols.type.direction.down]):
-                        x = center_x + width_half
-                    else:
+        # Take fields only for unit zero or one
+        if unit <= 1:
+            pos = center_y - height_half - kicad.config.symbols.PIN_GRID // 2
+            for field in kicad.symbols.type.field:
+                if field.name in map:
+                    if field == kicad.symbols.type.field.reference:
                         x = center_x - width_half
-                    y = pos
-                    pos -= kicad.config.symbols.PIN_GRID
+                        y = center_y + height_half + kicad.config.symbols.PIN_GRID // 2
+                    else:
+                        if len(pins[kicad.symbols.type.direction.down]):
+                            x = center_x + width_half
+                        else:
+                            x = center_x - width_half
+                        y = pos
+                        pos -= kicad.config.symbols.PIN_GRID
 
-                self.fields.append(
-                    kicad.symbols.element.field(
-                        field,
-                        map[field.name],
-                        x,
-                        y,
-                        kicad.config.symbols.FIELD_TEXT_SIZE,
-                        kicad.symbols.type.orientation.horizontal,
-                        kicad.symbols.type.visibility.visible if field == kicad.symbols.type.field.name or field == kicad.symbols.type.field.reference else kicad.symbols.type.visibility.invisible,
-                        kicad.symbols.type.hjustify.left,
-                        kicad.symbols.type.vjustify.center,
-                        kicad.symbols.type.style.none
+                    self.fields.append(
+                        kicad.symbols.element.field(
+                            field,
+                            map[field.name],
+                            x,
+                            y,
+                            kicad.config.symbols.FIELD_TEXT_SIZE,
+                            kicad.symbols.type.orientation.horizontal,
+                            kicad.symbols.type.visibility.invisible if field == kicad.symbols.type.field.footprint or field == kicad.symbols.type.field.document else kicad.symbols.type.visibility.visible,
+                            kicad.symbols.type.hjustify.left,
+                            kicad.symbols.type.vjustify.center,
+                            kicad.symbols.type.style.none
+                        )
                     )
-                )
 
         # Section name right top corner
         if len(map['section']):
