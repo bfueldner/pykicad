@@ -108,6 +108,7 @@ if __name__ == "__main__":
                             data['document'] = ''
 
                     symbol = kicad.symbols.library.symbol(data['name'], data['reference'], data['footprint'], data['document'], data['alias'])
+                    symbol.from_map(data, data['unit'])
                     description = kicad.symbols.library.description(data['name'], data['description'], data['keywords'], data['document'])
 
                     last_name = data['name']

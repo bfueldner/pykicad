@@ -1,6 +1,7 @@
 import re
 import csv
 from enum import Enum
+from math import floor, ceil
 
 import kicad.config
 import kicad.symbols.element
@@ -74,6 +75,29 @@ class symbol(object):
         self.fields.sort(key = lambda field: field.type.value)
         self.elements.sort(key = lambda element: element.priority)
 
+    def from_map(self, map, unit = 0):
+        '''Add fields from map'''
+
+        # Take fields only for unit zero or one
+        if unit <= 1:
+            # Iterate over fields and add field element, if found in map
+            for field in kicad.symbols.type.field:
+                if field.name in map:
+                    self.fields.append(
+                        kicad.symbols.element.field(
+                            field,
+                            map[field.name],
+                            0,
+                            0,
+                            kicad.config.symbols.FIELD_TEXT_SIZE,
+                            kicad.symbols.type.orientation.horizontal,
+                            kicad.symbols.type.visibility.invisible if field == kicad.symbols.type.field.footprint or field == kicad.symbols.type.field.document else kicad.symbols.type.visibility.visible,
+                            kicad.symbols.type.hjustify.center,
+                            kicad.symbols.type.vjustify.center,
+                            kicad.symbols.type.style.none
+                        )
+                    )
+
     def from_file(self, filename, map, unit = 0, unify = True):
         '''Read symbol from file, replace "$key" text with value from map and unify text sizes if required'''
 
@@ -141,18 +165,11 @@ class symbol(object):
                 parser = position.unknown
             elif key == 'ENDDEF':
                 parser = position.unknown
-            else:
-                # Fields
-                if parser == position.definition:
-                    field = kicad.symbols.element.from_str(line, unify)
-                    if field.type.name in map:
-                        field.value = map[field.type.name]
-                    self.fields.append(field)
-                # Elements
-                elif parser == position.drawing:
-                    element = kicad.symbols.element.from_str(line, unify)
-                    element.unit = unit
-                    self.elements.append(element)
+            elif parser == position.drawing:
+                # Elements, fields are ignored!
+                element = kicad.symbols.element.from_str(line, unify)
+                element.unit = unit
+                self.elements.append(element)
 
     def from_csv(self, filename, map, unit = 0): #, section = '', centered = True):
         # Increment table counter
@@ -250,9 +267,12 @@ class symbol(object):
                 result.append(line)
             return result
 
+        # Load pins and order by direction
         pins = {}
+        decoration = {}
         for direction in kicad.symbols.type.direction:
             pins[direction] = []
+            decoration[direction] = 0
 
         with open(filename, 'r') as csvfile:
             table = csv.reader(csvfile, delimiter = ',', quotechar = '\"')
@@ -268,6 +288,8 @@ class symbol(object):
                     # Order pins by direction
                     direction = kicad.symbols.type.direction.from_name(data['direction'])
                     pins[direction].append(data)
+                    if 'decoration' in data and len(data['decoration']):
+                        decoration[direction] += 1
 
         # Adjust left and right pin count to satisfy zip
         if len(pins[kicad.symbols.type.direction.left]) > len(pins[kicad.symbols.type.direction.right]):
@@ -277,32 +299,50 @@ class symbol(object):
 
         # Two grid spaces above first pin and below last pin
         height = (max(len(pins[kicad.symbols.type.direction.left]), len(pins[kicad.symbols.type.direction.right])) + 1) * kicad.config.symbols.PIN_GRID
+        height = max(height, kicad.config.symbols.PIN_GRID * 3)
 
+        # Fixed width if decorators used
+        width_left = kicad.config.symbols.PIN_GRID * 2 if decoration[kicad.symbols.type.direction.left] else 0
+        width_right = kicad.config.symbols.PIN_GRID * 2 if decoration[kicad.symbols.type.direction.right] else 0
+
+        # Otherwise take text for width
+        if width_left == 0 and width_right == 0:
+            for left, right in zip(pins[kicad.symbols.type.direction.left], pins[kicad.symbols.type.direction.right]):
+                width_left = kicad.config.symbols.PIN_OFFSET + len(left['name']) * kicad.config.symbols.PIN_NAME_SIZE
+                width_right = kicad.config.symbols.PIN_OFFSET + len(right['name']) * kicad.config.symbols.PIN_NAME_SIZE
+
+            width_left = (((width_left + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
+            width_right = (((width_right + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
+
+            # Symetric
+            width_left = max(width_left, kicad.config.symbols.PIN_GRID * 2)
+            width_left = max(width_left, width_right)
+            width_right = width_left
+
+        abc = '''
         # Calculate device width from device name and pin names (not really exact!)
         width = len(self.name) * kicad.config.symbols.FIELD_TEXT_SIZE
         for left, right in zip(pins[kicad.symbols.type.direction.left], pins[kicad.symbols.type.direction.right]):
-            left_width = len(left['name']) * kicad.config.symbols.PIN_NAME_SIZE
-            right_width = len(right['name']) * kicad.config.symbols.PIN_NAME_SIZE
+            left_width = kicad.config.symbols.PIN_OFFSET + len(left['name']) * kicad.config.symbols.PIN_NAME_SIZE
+            right_width = kicad.config.symbols.PIN_OFFSET + len(right['name']) * kicad.config.symbols.PIN_NAME_SIZE
             width = max(width, 3 * kicad.config.symbols.PIN_OFFSET + left_width + right_width)
 
-        # FIXME: Only for decorator test, should be detected if decorators are used!
-        width = kicad.config.symbols.PIN_GRID * 4
-
         # Round up to next grid
-        width = (((width + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
+        width = (((width + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)'''
 
         center_x = 0
         center_y = 0
-        width_half = width // 2
+    #    width_half = width // 2
+        width_half = max(width_left, width_right)
         height_half = height // 2
-        if height_half % kicad.config.symbols.PIN_GRID:
-            center_y = height_half % kicad.config.symbols.PIN_GRID
+    #   if height_half % kicad.config.symbols.PIN_GRID:
+    #       center_y = height_half % kicad.config.symbols.PIN_GRID
 
         self.elements.append(
             kicad.symbols.element.rectangle(
-                center_x - width_half,
+                center_x - width_left,
                 center_y - height_half,
-                center_x + width_half,
+                center_x + width_right,
                 center_y + height_half,
                 kicad.config.symbols.ELEMENT_THICKNESS,
                 kicad.symbols.type.fill.background,
@@ -322,8 +362,8 @@ class symbol(object):
         else:
             down_x = 0
 
-        self.elements.extend(create_pins(center_x - width_half, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.left], kicad.symbols.type.direction.left))
-        self.elements.extend(create_pins(center_x + width_half, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.right], kicad.symbols.type.direction.right))
+        self.elements.extend(create_pins(center_x - width_left, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.left], kicad.symbols.type.direction.left))
+        self.elements.extend(create_pins(center_x + width_right, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.right], kicad.symbols.type.direction.right))
         self.elements.extend(create_pins(center_x - up_x, center_y + height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.up], kicad.symbols.type.direction.up))
         self.elements.extend(create_pins(center_x - down_x, center_y - height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.down], kicad.symbols.type.direction.down))
 
@@ -349,47 +389,16 @@ class symbol(object):
                     kicad.symbols.type.fill.none,
                     unit
                 )
-                line.add(kicad.symbols.element.point(center_x - width_half, y))
-                line.add(kicad.symbols.element.point(center_x + width_half, y))
+                line.add(kicad.symbols.element.point(center_x - width_left, y))
+                line.add(kicad.symbols.element.point(center_x + width_right, y))
                 self.elements.append(line)
             y -= kicad.config.symbols.PIN_GRID
-
-        # Take fields only for unit zero or one
-        if unit <= 1:
-            pos = center_y - height_half - kicad.config.symbols.PIN_GRID // 2
-            for field in kicad.symbols.type.field:
-                if field.name in map:
-                    if field == kicad.symbols.type.field.reference:
-                        x = center_x - width_half
-                        y = center_y + height_half + kicad.config.symbols.PIN_GRID // 2
-                    else:
-                        if len(pins[kicad.symbols.type.direction.down]):
-                            x = center_x + width_half
-                        else:
-                            x = center_x - width_half
-                        y = pos
-                        pos -= kicad.config.symbols.PIN_GRID
-
-                    self.fields.append(
-                        kicad.symbols.element.field(
-                            field,
-                            map[field.name],
-                            x,
-                            y,
-                            kicad.config.symbols.FIELD_TEXT_SIZE,
-                            kicad.symbols.type.orientation.horizontal,
-                            kicad.symbols.type.visibility.invisible if field == kicad.symbols.type.field.footprint or field == kicad.symbols.type.field.document else kicad.symbols.type.visibility.visible,
-                            kicad.symbols.type.hjustify.left,
-                            kicad.symbols.type.vjustify.center,
-                            kicad.symbols.type.style.none
-                        )
-                    )
 
         # Section name right top corner
         if len(map['section']):
             self.elements.append(
                 kicad.symbols.element.text(
-                    center_x + width_half - kicad.config.symbols.PIN_GRID // 2,
+                    center_x + width_right - kicad.config.symbols.PIN_GRID // 2,
                     center_y + height_half - kicad.config.symbols.PIN_GRID // 2,
                     map['section'],
                     kicad.config.symbols.FIELD_TEXT_SIZE,
@@ -405,12 +414,19 @@ class symbol(object):
     def __str__(self):
         '''Render symbol into string with some automatics'''
 
+        # Count device pins
+        direction_pins = {}
+        for direction in kicad.symbols.type.direction:
+            direction_pins[direction] = 0
+
         # Collect number of units and their pins used in symbol
         unit_pins = {}
         unit_count = 1
+        bounds = kicad.symbols.element.boundary(0, 0, 0, 0)
         pinname = kicad.symbols.type.visible.no
         for element in self.elements:
             unit_count = max(unit_count, element.unit)
+            bounds = kicad.symbols.element.boundary.add(bounds, element.bounds)
             if isinstance(element, kicad.symbols.element.pin):
                 if element.number != '~':
                     pinname = kicad.symbols.type.visible.yes
@@ -419,6 +435,7 @@ class symbol(object):
                     unit_pins[element.unit] += 1
                 else:
                     unit_pins[element.unit] = 1
+                direction_pins[element.direction] += 1
 
         # Override pinname visibility on table based symbols
         if self.tables:
@@ -449,16 +466,25 @@ class symbol(object):
         if len(self.alias):
             result += 'ALIAS {:s}\n'.format(' '.join(self.alias))
 
+        y = bounds.y1
         for field in self.fields:
             # Always overwrite field 'name' and 'reference' with own parameters
             if field.type == kicad.symbols.type.field.name:
                 field.value = self.name
             elif field.type == kicad.symbols.type.field.reference:
                 field.value = self.reference
+                if self.reference[0] == '#':
+                    field.visibility = kicad.symbols.type.visibility.invisible
             elif field.type == kicad.symbols.type.field.footprint:
                 field.value = self.footprint
             elif field.type == kicad.symbols.type.field.document:
                 field.value = self.document
+
+            # Reposition visible fields
+            if field.visibility == kicad.symbols.type.visibility.visible:
+                y -= kicad.config.symbols.PIN_GRID
+            field.x = 0
+            field.y = y
 
             if len(field.value):
                 result += str(field) + '\n'

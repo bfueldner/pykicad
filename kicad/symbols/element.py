@@ -75,6 +75,26 @@ class point(object):
             self.y,
         )
 
+class boundary(object):
+
+    def __init__(self, x1, y1, x2, y2):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
+
+    @staticmethod
+    def add(lhs, rhs):
+        if isinstance(lhs, boundary) and isinstance(rhs, boundary):
+            return boundary(
+                min(lhs.x1, rhs.x1),
+                min(lhs.y1, rhs.y1),
+                max(lhs.x2, rhs.x2),
+                max(lhs.y2, rhs.y2),
+            )
+        else:
+            return boundary(0, 0, 0, 0)
+
 class element(object):
     '''Component element'''
 
@@ -89,6 +109,10 @@ class element(object):
     def priority(self):
         return self.unit * 1048576 + self.order * 65536
 
+    @property
+    def bounds(self):
+        return boundary(0, 0, 0, 0)
+
 class polygon(element):
     '''2.3.3.1 Polygon'''
 
@@ -101,6 +125,20 @@ class polygon(element):
         self.thickness = thickness
         self.fill = fill
         self.points = []
+
+    @property
+    def priority(self):
+        return self.unit * 1048576 + self.order * 65536 + len(self.points)
+
+    @property
+    def bounds(self):
+        result = boundary(0, 0, 0, 0)
+        for point in self.points:
+            result.x1 = min(point.x, result.x1)
+            result.y1 = min(point.y, result.y1)
+            result.x2 = max(point.x, result.x2)
+            result.y2 = max(point.y, result.y2)
+        return result
 
     def add(self, point):
         '''Add point to polygon'''
@@ -126,10 +164,6 @@ class polygon(element):
             if point1 != point2:
                 return False
         return True
-
-    @property
-    def priority(self):
-        return self.unit * 1048576 + self.order * 65536 + len(self.points)
 
     def __str__(self):
         points = ''
@@ -173,6 +207,10 @@ class rectangle(element):
         self.thickness = thickness
         self.fill = fill
 
+    @property
+    def bounds(self):
+        return boundary(self.x1, self.y1, self.x2, self.y2)
+
     def __eq__(self, other):
         '''Compare only same instances'''
 
@@ -207,6 +245,10 @@ class circle(element):
         self.radius = radius
         self.thickness = thickness
         self.fill = fill
+
+    @property
+    def bounds(self):
+        return boundary(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius)
 
     def __eq__(self, other):
         '''Compare only same instances'''
@@ -264,6 +306,11 @@ class arc(element):
         self.thickness = thickness
         self.fill = fill
 
+    @property
+    def bounds(self):
+        # FIXME: Not exact!
+        return boundary(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius)
+
     def __eq__(self, other):
         '''Compare only same instances'''
 
@@ -317,6 +364,11 @@ class text(element):
         self.hjustify = hjustify
         self.vjustify = vjustify
 
+    @property
+    def bounds(self):
+        # NOTE: Ignore for the moment!
+        return boundary(self.x, self.y, self.x, self.y)
+
     def __eq__(self, other):
         '''Compare only same instances'''
 
@@ -361,6 +413,23 @@ class pin(element):
         self.shape = shape
         self.visible = visible
 
+    @property
+    def priority(self):
+        return self.unit * 1048576 + self.order * 65536 + pin_value(self.number)
+
+    @property
+    def bounds(self):
+        result = boundary(self.x, self.y, self.x, self.y)
+        if self.direction == kicad.symbols.type.direction.left:
+            result.x1 -= self.length
+        elif self.direction == kicad.symbols.type.direction.right:
+            result.x2 += self.length
+        elif self.direction == kicad.symbols.type.direction.up:
+            result.y1 -= self.length
+        elif self.direction == kicad.symbols.type.direction.down:
+            result.y2 += self.length
+        return result
+
     def __eq__(self, other):
         '''Compare only same instances'''
 
@@ -369,10 +438,6 @@ class pin(element):
 
     #   return self.x == other.x and self.y == other.y and self.length == other.length and self.name == other.name and self.number == other.number
         return False
-
-    @property
-    def priority(self):
-        return self.unit * 1048576 + self.order * 65536 + pin_value(self.number)
 
     def __str__(self):
         return pin.fmt.format(
@@ -390,63 +455,6 @@ class pin(element):
             'N' if not self.visible else '',
             self.shape
         ).rstrip()
-
-class fields(object):
-    '''Component fields'''
-
-    def __init__(self):
-        self.fields = {}
-
-
-
-class elements(object):
-    '''Component elements'''
-
-    def __init__(self):
-        pass
-
-
-class component(object):
-    '''symbols component'''
-
-    def __init__(self):
-        self.name = ''
-        self.reference = ''
-        self.text_offset = ''
-        self.draw_pinnumber = True
-        self.draw_pinname = True
-        self.unit_count = 0
-        self.units_locked = False
-        self.option_flag = ''
-
-        self.fields = fields()
-        self.alias = []
-        self.elements = []
-
-    @property
-    def fields(self):
-        return self.fields
-
-    def load(self, file):
-        pass
-
-    def save(self, file):
-        pass
-
-class symbols(object):
-    '''symbols class'''
-
-    version_major = 2
-    version_minor = 0
-
-    def __init__(self):
-        pass
-
-    def __str__(self):
-        print("EESchema-LIBRARY Version {}.{} {}".format(self.version_major, self.version_minor, datetime.datetime.today().strftime('%d/%m/%Y-%H:%M:%S')))
-        print("description of the components")
-        print("# End Library")
-        pass
 
 def from_str(string, unify = True):
     '''Generate elements out of string lines. Used to load a symbol file'''
