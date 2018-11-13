@@ -267,12 +267,12 @@ class symbol(object):
                 result.append(line)
             return result
 
-        # Load pins and order by direction
+        # Load pins and pinname size and order them by direction
         pins = {}
-        decoration = {}
+        size = {}
         for direction in kicad.symbols.type.direction:
             pins[direction] = []
-            decoration[direction] = 0
+            size[direction] = 0
 
         with open(filename, 'r') as csvfile:
             table = csv.reader(csvfile, delimiter = ',', quotechar = '\"')
@@ -288,10 +288,22 @@ class symbol(object):
                     # Order pins by direction
                     direction = kicad.symbols.type.direction.from_name(data['direction'])
                     pins[direction].append(data)
-                    if 'decoration' in data and len(data['decoration']):
-                        decoration[direction] += 1
+                    if len(data['name']) and data['name'] != '~':
+                        size[direction] = max(size[direction], kicad.config.symbols.PIN_OFFSET + len(data['name'].replace('~', '')) * kicad.config.symbols.PIN_NAME_SIZE)
 
-        # Adjust left and right pin count to satisfy zip
+        # Set default size
+        for direction in kicad.symbols.type.direction:
+            if len(pins[direction]):
+                if direction == kicad.symbols.type.direction.left or kicad.symbols.type.direction.right:
+                    size[direction] = max(size[direction], kicad.config.symbols.PIN_GRID * 2)
+                else:
+                    size[direction] = max(size[direction], int(kicad.config.symbols.PIN_GRID * 1.5))
+
+    #   print(self.name)
+    #   for direction in kicad.symbols.type.direction:
+    #       print(direction.name, size[direction])
+
+        # Adjust left and right pin count to satisfy zip function
         if len(pins[kicad.symbols.type.direction.left]) > len(pins[kicad.symbols.type.direction.right]):
             pins[kicad.symbols.type.direction.right].extend([{'name': ''}] * (len(pins[kicad.symbols.type.direction.left]) - len(pins[kicad.symbols.type.direction.right])))
         elif len(pins[kicad.symbols.type.direction.right]) > len(pins[kicad.symbols.type.direction.left]):
@@ -300,49 +312,28 @@ class symbol(object):
         # Two grid spaces above first pin and below last pin
         height = (max(len(pins[kicad.symbols.type.direction.left]), len(pins[kicad.symbols.type.direction.right])) + 1) * kicad.config.symbols.PIN_GRID
         height = max(height, kicad.config.symbols.PIN_GRID * 3)
+        if len(pins[kicad.symbols.type.direction.up]) and len(pins[kicad.symbols.type.direction.down]):
+            height = max(height, kicad.config.symbols.PIN_GRID * 4)
 
-        # Fixed width if decorators used
-        width_left = kicad.config.symbols.PIN_GRID * 2 if decoration[kicad.symbols.type.direction.left] else 0
-        width_right = kicad.config.symbols.PIN_GRID * 2 if decoration[kicad.symbols.type.direction.right] else 0
-
-        # Otherwise take text for width
-        if width_left == 0 and width_right == 0:
-            for left, right in zip(pins[kicad.symbols.type.direction.left], pins[kicad.symbols.type.direction.right]):
-                width_left = kicad.config.symbols.PIN_OFFSET + len(left['name']) * kicad.config.symbols.PIN_NAME_SIZE
-                width_right = kicad.config.symbols.PIN_OFFSET + len(right['name']) * kicad.config.symbols.PIN_NAME_SIZE
-
-            width_left = (((width_left + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
-            width_right = (((width_right + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
-
-            # Symetric
-            width_left = max(width_left, kicad.config.symbols.PIN_GRID * 2)
-            width_left = max(width_left, width_right)
-            width_right = width_left
-
-        abc = '''
-        # Calculate device width from device name and pin names (not really exact!)
-        width = len(self.name) * kicad.config.symbols.FIELD_TEXT_SIZE
-        for left, right in zip(pins[kicad.symbols.type.direction.left], pins[kicad.symbols.type.direction.right]):
-            left_width = kicad.config.symbols.PIN_OFFSET + len(left['name']) * kicad.config.symbols.PIN_NAME_SIZE
-            right_width = kicad.config.symbols.PIN_OFFSET + len(right['name']) * kicad.config.symbols.PIN_NAME_SIZE
-            width = max(width, 3 * kicad.config.symbols.PIN_OFFSET + left_width + right_width)
+        width = size[kicad.symbols.type.direction.left] + size[kicad.symbols.type.direction.right]
+        if len(map['section']):
+            width = max(width, kicad.config.symbols.PIN_GRID + len(map['section']) * kicad.config.symbols.FIELD_TEXT_SIZE)
+        if width == 0:
+            width = (max(len(pins[kicad.symbols.type.direction.up]), len(pins[kicad.symbols.type.direction.down])) + 1) * kicad.config.symbols.PIN_GRID
 
         # Round up to next grid
-        width = (((width + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)'''
+        width = (((width + (kicad.config.symbols.PIN_GRID - 1)) // (kicad.config.symbols.PIN_GRID)) * kicad.config.symbols.PIN_GRID)
 
         center_x = 0
         center_y = 0
-    #    width_half = width // 2
-        width_half = max(width_left, width_right)
+        width_half = width // 2
         height_half = height // 2
-    #   if height_half % kicad.config.symbols.PIN_GRID:
-    #       center_y = height_half % kicad.config.symbols.PIN_GRID
 
         self.elements.append(
             kicad.symbols.element.rectangle(
-                center_x - width_left,
+                center_x - width_half,
                 center_y - height_half,
-                center_x + width_right,
+                center_x + width_half,
                 center_y + height_half,
                 kicad.config.symbols.ELEMENT_THICKNESS,
                 kicad.symbols.type.fill.background,
@@ -352,18 +343,18 @@ class symbol(object):
 
         if len(pins[kicad.symbols.type.direction.up]) > 1:
             up_x = (len(pins[kicad.symbols.type.direction.up]) - 1) * kicad.config.symbols.PIN_GRID // 2
-            up_x = up_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
+        #   up_x = up_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
         else:
             up_x = 0
 
         if len(pins[kicad.symbols.type.direction.down]) > 1:
             down_x = (len(pins[kicad.symbols.type.direction.down]) - 1) * kicad.config.symbols.PIN_GRID // 2
-            down_x = down_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
+        #   down_x = down_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
         else:
             down_x = 0
 
-        self.elements.extend(create_pins(center_x - width_left, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.left], kicad.symbols.type.direction.left))
-        self.elements.extend(create_pins(center_x + width_right, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.right], kicad.symbols.type.direction.right))
+        self.elements.extend(create_pins(center_x - width_half, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.left], kicad.symbols.type.direction.left))
+        self.elements.extend(create_pins(center_x + width_half, center_y + height_half - kicad.config.symbols.PIN_GRID, 0, -kicad.config.symbols.PIN_GRID, pins[kicad.symbols.type.direction.right], kicad.symbols.type.direction.right))
         self.elements.extend(create_pins(center_x - up_x, center_y + height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.up], kicad.symbols.type.direction.up))
         self.elements.extend(create_pins(center_x - down_x, center_y - height_half, kicad.config.symbols.PIN_GRID, 0, pins[kicad.symbols.type.direction.down], kicad.symbols.type.direction.down))
 
@@ -389,8 +380,8 @@ class symbol(object):
                     kicad.symbols.type.fill.none,
                     unit
                 )
-                line.add(kicad.symbols.element.point(center_x - width_left, y))
-                line.add(kicad.symbols.element.point(center_x + width_right, y))
+                line.add(kicad.symbols.element.point(center_x - width_half, y))
+                line.add(kicad.symbols.element.point(center_x + width_half, y))
                 self.elements.append(line)
             y -= kicad.config.symbols.PIN_GRID
 
@@ -398,7 +389,7 @@ class symbol(object):
         if len(map['section']):
             self.elements.append(
                 kicad.symbols.element.text(
-                    center_x + width_right - kicad.config.symbols.PIN_GRID // 2,
+                    center_x + width_half - kicad.config.symbols.PIN_GRID // 2,
                     center_y + height_half - kicad.config.symbols.PIN_GRID // 2,
                     map['section'],
                     kicad.config.symbols.FIELD_TEXT_SIZE,
@@ -461,18 +452,14 @@ class symbol(object):
         # If reference matches POWER_SYMBOL_REFERENCE, than we have a power symbol
         flag = kicad.symbols.type.flag.power if self.reference in kicad.config.symbols.POWER_SYMBOL_REFERENCE else kicad.symbols.type.flag.normal
 
-        result = '#\n# {:s}\n#\n'.format(self.name)
-        result += 'DEF {:s} {:s} 0 {:d} {:s} {:s} {:d} {:s} {:s}\n'.format(self.name, self.reference, self.offset, self.pinnumber, self.pinname, unit_count, units, flag)
-        if len(self.alias):
-            result += 'ALIAS {:s}\n'.format(' '.join(self.alias))
-
-        y = bounds.y1
+        # Overwrite fields with symbol parameters
         for field in self.fields:
-            # Always overwrite field 'name' and 'reference' with own parameters
             if field.type == kicad.symbols.type.field.name:
                 field.value = self.name
             elif field.type == kicad.symbols.type.field.reference:
                 field.value = self.reference
+
+                # Hide reference field, if reference starts with #
                 if self.reference[0] == '#':
                     field.visibility = kicad.symbols.type.visibility.invisible
             elif field.type == kicad.symbols.type.field.footprint:
@@ -480,14 +467,31 @@ class symbol(object):
             elif field.type == kicad.symbols.type.field.document:
                 field.value = self.document
 
-            # Reposition visible fields
+        # Reposition visible fields
+        y = bounds.y1
+        for field in self.fields:
             if field.visibility == kicad.symbols.type.visibility.visible:
                 y -= kicad.config.symbols.PIN_GRID
-            field.x = 0
-            field.y = y
+                field.x = 0
+                field.y = y
 
+        # Reposition invisible fields
+        for field in self.fields:
+            if field.visibility == kicad.symbols.type.visibility.invisible:
+                y -= kicad.config.symbols.PIN_GRID
+                field.x = 0
+                field.y = y
+
+        # Render symbol
+        result = '#\n# {:s}\n#\n'.format(self.name)
+        result += 'DEF {:s} {:s} 0 {:d} {:s} {:s} {:d} {:s} {:s}\n'.format(self.name, self.reference, self.offset, self.pinnumber, self.pinname, unit_count, units, flag)
+        if len(self.alias):
+            result += 'ALIAS {:s}\n'.format(' '.join(self.alias))
+
+        for field in self.fields:
             if len(field.value):
                 result += str(field) + '\n'
+
         result += 'DRAW\n'
         for element in self.elements:
             result += str(element) + '\n'
