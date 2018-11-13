@@ -1,7 +1,6 @@
 import re
 import csv
 from enum import Enum
-from math import floor, ceil
 
 import kicad.config
 import kicad.symbols.element
