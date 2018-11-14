@@ -177,7 +177,7 @@ class beveled_outline(multi_element):
 
     def __init__(self, layer, x1, y1, x2, y2, line_width, bevel, grid):
         super().__init__()
-        
+
         x_rep = int((x2 - x1) / grid)
         y_rep = int((y2 - y1) / grid)
         for i in range(x_rep):

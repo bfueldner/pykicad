@@ -24,8 +24,8 @@ class base(object, metaclass = register_generator):
         self.technology = technology
         self.name = name
         self.model = model
-        self.description = description if len(description) else None
-        self.tags = tags if len(tags) else None
+        self.description = description if description is not None and len(description) else None
+        self.tags = tags if tags is not None and  len(tags) else None
         self.element = []
 
     #    if add_ref_value:
