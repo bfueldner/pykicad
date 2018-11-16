@@ -34,7 +34,7 @@ class packages3d():
 
     ROOT = '${KISYS3DMOD}'
     FOLDER_EXTENSION = '.3dshapes'
-    FILE_EXTENSION = ['wrl', 'stp']
+    FILE_EXTENSION = ['stp', 'wrl']
 
 class footprint():
     '''Footprint configuration'''

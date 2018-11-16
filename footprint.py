@@ -68,10 +68,11 @@ if __name__ == '__main__':
                 # Look for 3D model
                 data['model'] = None
                 if args.package3d_root is not None:
-                    # TODO: Add pattern search for multiple file formats!
-                    model_file = os.path.join(args.package3d_root, package_family + kicad.config.packages3d.FOLDER_EXTENSION, data['name'] + ".wrl" )
-                    if os.path.isfile(model_file):
-                        data['model'] = os.path.join(kicad.config.packages3d.ROOT, package_family + kicad.config.packages3d.FOLDER_EXTENSION, data['name'] + ".wrl" )
+                    for extension in kicad.config.packages3d.FILE_EXTENSION:
+                        model_file = os.path.join(args.package3d_root, package_family + kicad.config.packages3d.FOLDER_EXTENSION, data['name'] + '.' + extension)
+                        if os.path.isfile(model_file):
+                            data['model'] = os.path.join(kicad.config.packages3d.ROOT, package_family + kicad.config.packages3d.FOLDER_EXTENSION, data['name'] + '.' + extension)
+                            break
 
                 if generator in kicad.footprint.generator.registry.keys():
                     gen = kicad.footprint.generator.registry[generator](**data)
