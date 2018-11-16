@@ -74,10 +74,9 @@ class chip_pol(chip):
     def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_distance):
         super().__init__(name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_distance)
 
-        line_x = package_width / 4 # + package_width * 0.1
-        line_y = package_height / 2
-
         # Marker
+        line_x = package_width / 4
+        line_y = package_height / 2
         super().add(
             kicad.footprint.element.line(
                 kicad.footprint.layer.silkscreen_top,
