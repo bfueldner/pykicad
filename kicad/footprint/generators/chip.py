@@ -71,10 +71,10 @@ class chip(kicad.footprint.generator.base):
 class chip_pol(chip):
     '''Generator for chip devices with polarity marker'''
 
-    def __init__(self, name, description, tags, package_width, package_height, pad_width, pad_height, pad_distance):
-        super().__init__(name, description, tags, package_width, package_height, pad_width, pad_height, pad_distance)
+    def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_distance):
+        super().__init__(name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_distance)
 
-        line_x = package_width / 2 + package_widht * 0.1
+        line_x = package_width / 4 # + package_width * 0.1
         line_y = package_height / 2
 
         # Marker
