@@ -122,7 +122,7 @@ class symbol(object):
         for key, value in map.items():
             if not isinstance(value, str):
                 map[key] = str(value)
-        text = re.sub("\$(\w+)", lambda match: map[match.group(1).lower()] if match.group(1).lower() in map else match.group(0), text)
+        text = re.sub("\$(\w+)", lambda match: map[match.group(1).lower()] if match.group(1).lower() in map else match.group(1), text)
 
         # Parse library file
         parser = position.unknown
