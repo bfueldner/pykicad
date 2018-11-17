@@ -5,8 +5,27 @@ All dimension are in millimeters/degree, if not otherwise noted.
 
 ## Naming conventions
 
-- Filenames are lowercase and separated with underscore (e.g. resistor_1k5_chip_0805, dip_8_narrow)
-- Devicesnames are uppercase and separated with underscore (e.g. SOIC_8_WIDE, 74HC595)
+- Pathnames are lowercase and separated with underscore. If structuring is permitted, use subfolders. Subfolders are not allowd in `symbols`, `modules` and `packages3d`.
+- Symbol libraries are named lowercase and with underscore.
+- Symbols are named uppercase as specified by manufacturer (e.g. BC517, 1N4148, 74HC595)
+- Modules are named uppercase and separated with hyphen (e.g. SOIC-8, TO-92)
+- All names for modules, packages3d and documents should be uniform. Otherwise they can not be found automatically.
+
+## Build
+
+    $> git clone https://code.fueldner.net/library/kicad.git
+    $> mkdir build
+    $> cd build
+    $> cmake ..
+    $> make
+    $> cpack -G TGZ
+
+## Installation
+
+    $> mkdir ~/kicad
+    $> cd ~/kicad
+    $> tar xf kicad_library-0.1.0-Linux.tar.gz
+    $> ./install.sh
 
 ### Datasheets
 
