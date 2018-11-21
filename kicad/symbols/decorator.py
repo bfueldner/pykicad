@@ -1,3 +1,5 @@
+import math
+
 import kicad.config
 import kicad.symbols.element
 
@@ -82,6 +84,36 @@ class connector_female(base):
                 unit
              )
         )
+
+class connector_screw(base):
+    '''Screw connector symbol'''
+
+    def __init__(self, x, y, direction, unit = 0):
+        super().__init__(direction)
+
+        line = kicad.symbols.element.polygon(0, kicad.symbols.type.fill.none, unit)
+        line.add(kicad.symbols.element.point(x, y))
+        x += self.sign * (kicad.config.symbols.PIN_OFFSET + int(kicad.config.symbols.PIN_GRID * 0.2))
+        line.add(kicad.symbols.element.point(x, y))
+        self.elements.append(line)
+
+        x += self.sign * int(kicad.config.symbols.PIN_GRID * 0.4)
+        self.elements.append(
+             kicad.symbols.element.circle(
+                x,
+                y,
+                int(kicad.config.symbols.PIN_GRID * 0.4),
+                kicad.config.symbols.DECORATION_THICKNESS,
+                kicad.symbols.type.fill.none,
+                unit
+             )
+        )
+
+        offset = int(math.sin(math.pi / 4) * kicad.config.symbols.PIN_GRID * 0.4)
+        line = kicad.symbols.element.polygon(kicad.config.symbols.DECORATION_THICKNESS, kicad.symbols.type.fill.none, unit)
+        line.add(kicad.symbols.element.point(x - offset, y - offset))
+        line.add(kicad.symbols.element.point(x + offset, y + offset))
+        self.elements.append(line)
 
 class switch_wiper(base):
     '''Switch wiper'''
