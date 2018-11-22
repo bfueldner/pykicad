@@ -27,7 +27,7 @@ class field(object):
 
     def __init__(self, type, value, x, y, size, orientation, visibility, hjustify, vjustify, style):
         self.type = type
-        self.value = value
+        self.value = str(value)
         self.x = x
         self.y = y
         self.size = size
