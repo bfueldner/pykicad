@@ -12,9 +12,10 @@ class connector_grid_male(kicad.footprint.generator.base):
                 kicad.footprint.layer.silkscreen_top,
                 kicad.footprint.type.text.reference,
                 None,
-                0.0, -(package_height + kicad.config.footprint.REFERENCE_FONT_SIZE) / 2 - 2 * kicad.config.footprint.REFERENCE_FONT_THICKNESS,
+                -(package_width + kicad.config.footprint.REFERENCE_FONT_SIZE) / 2 - 2 * kicad.config.footprint.REFERENCE_FONT_THICKNESS, 0.0,
                 kicad.config.footprint.REFERENCE_FONT_SIZE,
-                kicad.config.footprint.REFERENCE_FONT_THICKNESS
+                kicad.config.footprint.REFERENCE_FONT_THICKNESS,
+                90.0
             )
         )
 
@@ -24,9 +25,10 @@ class connector_grid_male(kicad.footprint.generator.base):
                 kicad.footprint.layer.fabrication_top,
                 kicad.footprint.type.text.value,
                 None,
-                0.0, (package_height + kicad.config.footprint.VALUE_FONT_SIZE) / 2 + 2 * kicad.config.footprint.VALUE_FONT_THICKNESS,
+                (package_width + kicad.config.footprint.VALUE_FONT_SIZE) / 2 + 2 * kicad.config.footprint.VALUE_FONT_THICKNESS, 0.0,
                 kicad.config.footprint.VALUE_FONT_SIZE,
-                kicad.config.footprint.VALUE_FONT_THICKNESS
+                kicad.config.footprint.VALUE_FONT_THICKNESS,
+                90.0
             )
         )
 
@@ -44,10 +46,10 @@ class connector_grid_male(kicad.footprint.generator.base):
 
         # Pads
         pin = 1
-        y = pad_grid * -((float(pin_count_y) / 2) - 0.5)
-        for i in range(pin_count_y):
-            x = pad_grid * -((float(pin_count_x) / 2) - 0.5)
-            for j in range(pin_count_x):
+        x = pad_grid * -((float(pin_count_x) / 2) - 0.5)
+        for i in range(pin_count_x):
+            y = pad_grid * ((float(pin_count_y) / 2) - 0.5)
+            for j in range(pin_count_y):
                 super().add(
                     kicad.footprint.element.pad(
                         kicad.footprint.layers.thru_hole,
@@ -61,8 +63,8 @@ class connector_grid_male(kicad.footprint.generator.base):
                 )
 
                 pin += 1
-                x += pad_grid
-            y += pad_grid
+                y -= pad_grid
+            x += pad_grid
 
 class connector_grid_female(kicad.footprint.generator.base):
     '''Generator wired connector lines (plugs)'''
@@ -76,7 +78,7 @@ class connector_grid_female(kicad.footprint.generator.base):
                 kicad.footprint.layer.silkscreen_top,
                 kicad.footprint.type.text.reference,
                 None,
-                0.0, -(package_height + kicad.config.footprint.REFERENCE_FONT_SIZE) / 2 - 2 * kicad.config.footprint.REFERENCE_FONT_THICKNESS,
+                -(package_height + kicad.config.footprint.REFERENCE_FONT_SIZE) / 2 - 2 * kicad.config.footprint.REFERENCE_FONT_THICKNESS, 0.0,
                 kicad.config.footprint.REFERENCE_FONT_SIZE,
                 kicad.config.footprint.REFERENCE_FONT_THICKNESS
             )
@@ -88,7 +90,7 @@ class connector_grid_female(kicad.footprint.generator.base):
                 kicad.footprint.layer.fabrication_top,
                 kicad.footprint.type.text.value,
                 None,
-                0.0, (package_height + kicad.config.footprint.VALUE_FONT_SIZE) / 2 + 2 * kicad.config.footprint.VALUE_FONT_THICKNESS,
+                (package_height + kicad.config.footprint.VALUE_FONT_SIZE) / 2 + 2 * kicad.config.footprint.VALUE_FONT_THICKNESS, 0.0,
                 kicad.config.footprint.VALUE_FONT_SIZE,
                 kicad.config.footprint.VALUE_FONT_THICKNESS
             )
@@ -107,10 +109,10 @@ class connector_grid_female(kicad.footprint.generator.base):
         )
 
         pin = 1
-        y = pad_grid * -((float(pin_count_y) / 2) - 0.5)
-        for i in range(pin_count_y):
-            x = pad_grid * ((float(pin_count_x) / 2) - 0.5)
-            for j in range(pin_count_x):
+        x = pad_grid * -((float(pin_count_x) / 2) - 0.5)
+        for i in range(pin_count_x):
+            y = pad_grid * -((float(pin_count_y) / 2) - 0.5)
+            for j in range(pin_count_y):
                 super().add(
                     kicad.footprint.element.pad(
                         kicad.footprint.layers.thru_hole,
@@ -124,5 +126,5 @@ class connector_grid_female(kicad.footprint.generator.base):
                 )
 
                 pin += 1
-                x -= pad_grid
-            y += pad_grid
+                y += pad_grid
+            x += pad_grid
