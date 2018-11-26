@@ -149,6 +149,20 @@ class centered_rectangle(rectangle):
 
         super().__init__(layer, x, y, x + width, y + height, line_width)
 
+class rounded_rectangle(multi_element):
+    '''Rectangle with rounded edges from x1/y1 to x2/y2'''
+
+    def __init__(self, layer, x1, y1, x2, y2, line_width, radius):
+        super().__init__()
+        super().add(line(layer, x1, y1 + radius, x1, y2 - radius, line_width))    # |
+        super().add(arc(layer, x1 + radius, y2 - radius, x1 + radius, y2, 90.0, line_width))    # \
+        super().add(line(layer, x1 + radius, y2, x2 - radius, y2, line_width))    # -
+        super().add(arc(layer, x2 - radius, y2 - radius, x2, y2 - radius, 90.0, line_width))    # /
+        super().add(line(layer, x2, y2 - radius, x2, y1 + radius, line_width))    # |
+        super().add(arc(layer, x2 - radius, y1 + radius, x2 - radius, y1, 90.0, line_width))    # \
+        super().add(line(layer, x2 - radius, y1, x1 + radius, y1, line_width))    # -
+        super().add(arc(layer, x1 + radius, y1 + radius, x1, y1 + radius, 90.0, line_width))    # /
+
 class beveled_rectangle(multi_element):
     '''Rectangle with beveled edges from x1/y1 to x2/y2'''
 
