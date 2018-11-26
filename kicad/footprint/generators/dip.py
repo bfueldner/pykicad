@@ -14,7 +14,7 @@ class dip(kicad.footprint.generator.base):
 * `pad_grid`: Pad distance between pins of one side (Reference is pad center)
 * `pad_distance`: Pad distance between pins of opposite pins (Reference is pad center)
 * `pad_count`: Count of overall pins
-* `pad_drill`: Drill diameter of pad whole
+* `pad_drill`: Drill diameter of pad hole
 '''
 
     def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_grid, pad_distance, pad_count, pad_drill):
@@ -48,10 +48,6 @@ class dip(kicad.footprint.generator.base):
             )
         )
 
-        pin = 1
-        x = pad_grid * -((pad_count / 4) - 0.5)
-        line_x = package_width / 2
-
         # Case
         super().add(
             kicad.footprint.element.centered_rectangle(
@@ -62,6 +58,7 @@ class dip(kicad.footprint.generator.base):
         )
 
         # Marker
+        line_x = package_width / 2
         super().add(
             kicad.footprint.element.arc(
                 kicad.footprint.layer.silkscreen_top,
@@ -72,6 +69,8 @@ class dip(kicad.footprint.generator.base):
         )
 
         # Pads
+        pin = 1
+        x = pad_grid * -((pad_count / 4) - 0.5)
         for i in range(pad_count // 2):
             super().add(
                 kicad.footprint.element.pad(

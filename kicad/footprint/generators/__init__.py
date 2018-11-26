@@ -3,7 +3,7 @@ __all__ = [
 	"chip",
 	"connector",
 	"dip",
-#	"dsub",
+	"dsub",
 	"qfp",
 	"soic",
 	"wired"
