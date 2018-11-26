@@ -100,7 +100,7 @@ class symbol(object):
     def from_file(self, filename, map, unit = 0, unify = True):
         '''Read symbol from file, replace "$key" text with value from map and unify text sizes if required'''
 
-        file = open(filename, "r")
+        file = open(filename, 'r')
         self.from_str(file.read(), map, unit, unify)
         file.close()
 

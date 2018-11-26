@@ -87,7 +87,10 @@ class dsub(kicad.footprint.generator.base):
 
         # Pads
         pin = 1
-        x = -math.floor(pin_count / 4) * pad_grid
+        upper_row = math.ceil(pin_count / 2)
+        lower_row = pin_count - upper_row
+
+        x = -(upper_row - 1) / 2 * pad_grid
         y = -pad_distance / 2
         for i in range(math.ceil(pin_count / 2)):
             super().add(
@@ -95,7 +98,7 @@ class dsub(kicad.footprint.generator.base):
                     kicad.footprint.layers.thru_hole,
                     str(pin),
                     kicad.footprint.type.technology.thru_hole,
-                    kicad.footprint.type.shape.circle,
+                    kicad.footprint.type.shape.rectangle if pin == 1 else kicad.footprint.type.shape.circle,
                     x, y,
                     pad_diameter, pad_diameter,
                     pad_drill
@@ -104,7 +107,7 @@ class dsub(kicad.footprint.generator.base):
             x += pad_grid
             pin += 1
 
-        x = -math.floor(pin_count / 4) * pad_grid + pad_grid / 2
+        x = -(lower_row - 1) / 2 * pad_grid
         y = pad_distance / 2
         for i in range(math.floor(pin_count / 2)):
             super().add(
