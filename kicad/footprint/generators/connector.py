@@ -69,7 +69,7 @@ class connector_grid_male(kicad.footprint.generator.base):
 class connector_grid_female(kicad.footprint.generator.base):
     '''Generator wired connector lines (plugs)'''
 
-    def __init__(self, name, description, tags, package_width, package_height, pad_diameter, pad_grid, pad_drill, pin_count_x, pin_count_y):
+    def __init__(self, name, model, description, tags, package_width, package_height, pad_diameter, pad_grid, pad_drill, pin_count_x, pin_count_y):
         super().__init__(kicad.footprint.type.footprint.thd, name, model, description, tags)
 
         # Reference text
@@ -78,9 +78,10 @@ class connector_grid_female(kicad.footprint.generator.base):
                 kicad.footprint.layer.silkscreen_top,
                 kicad.footprint.type.text.reference,
                 None,
-                -(package_height + kicad.config.footprint.REFERENCE_FONT_SIZE) / 2 - 2 * kicad.config.footprint.REFERENCE_FONT_THICKNESS, 0.0,
+                -(package_width + kicad.config.footprint.REFERENCE_FONT_SIZE) / 2 - 2 * kicad.config.footprint.REFERENCE_FONT_THICKNESS, 0.0,
                 kicad.config.footprint.REFERENCE_FONT_SIZE,
-                kicad.config.footprint.REFERENCE_FONT_THICKNESS
+                kicad.config.footprint.REFERENCE_FONT_THICKNESS,
+                90.0
             )
         )
 
@@ -90,9 +91,10 @@ class connector_grid_female(kicad.footprint.generator.base):
                 kicad.footprint.layer.fabrication_top,
                 kicad.footprint.type.text.value,
                 None,
-                (package_height + kicad.config.footprint.VALUE_FONT_SIZE) / 2 + 2 * kicad.config.footprint.VALUE_FONT_THICKNESS, 0.0,
+                (package_width + kicad.config.footprint.VALUE_FONT_SIZE) / 2 + 2 * kicad.config.footprint.VALUE_FONT_THICKNESS, 0.0,
                 kicad.config.footprint.VALUE_FONT_SIZE,
-                kicad.config.footprint.VALUE_FONT_THICKNESS
+                kicad.config.footprint.VALUE_FONT_THICKNESS,
+                90.0
             )
         )
 
