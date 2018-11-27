@@ -22,7 +22,7 @@ class dsub(kicad.footprint.generator.base):
 * `pad_drill`: Drill diameter of pad hole
 '''
 
-    def __init__(self, name, model, description, tags, package_width, package_height_up, package_height_down, mounting_distance, mounting_drill, connector_width, connector_height, screw_width, screw_height, pad_diameter, pad_grid, pad_distance, pad_drill, pin_count):
+    def __init__(self, name, model, description, tags, package_width, package_height_up, package_height_down, mounting_distance, mounting_diameter, mounting_drill, connector_width, connector_height, screw_width, screw_height, pad_diameter, pad_grid, pad_distance, pad_drill, pin_count):
         super().__init__(kicad.footprint.type.footprint.thd, name, model, description, tags)
 
         # Reference text
@@ -193,10 +193,10 @@ class dsub(kicad.footprint.generator.base):
             kicad.footprint.element.pad(
                 kicad.footprint.layers.thru_hole,
                 '',
-                kicad.footprint.type.technology.np_thru_hole,
+                kicad.footprint.type.technology.thru_hole,
                 kicad.footprint.type.shape.circle,
                 -mounting_distance / 2, 0.0,
-                mounting_drill, mounting_drill,
+                mounting_diameter, mounting_diameter,
                 mounting_drill
             )
         )
