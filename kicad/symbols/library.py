@@ -23,6 +23,7 @@ class symbol(object):
 
         self.templates = 0
         self.tables = 0
+        self.decorated = False
 
     def optimize(self):
         '''Merge duplicate graphical elements into unit = 0'''
@@ -298,10 +299,6 @@ class symbol(object):
                 else:
                     size[direction] = max(size[direction], int(kicad.config.symbols.PIN_GRID * 1.5))
 
-    #   print(self.name)
-    #   for direction in kicad.symbols.type.direction:
-    #       print(direction.name, size[direction])
-
         # Adjust left and right pin count to satisfy zip function
         if len(pins[kicad.symbols.type.direction.left]) > len(pins[kicad.symbols.type.direction.right]):
             pins[kicad.symbols.type.direction.right].extend([{'name': ''}] * (len(pins[kicad.symbols.type.direction.left]) - len(pins[kicad.symbols.type.direction.right])))
@@ -342,13 +339,11 @@ class symbol(object):
 
         if len(pins[kicad.symbols.type.direction.up]) > 1:
             up_x = (len(pins[kicad.symbols.type.direction.up]) - 1) * kicad.config.symbols.PIN_GRID // 2
-        #   up_x = up_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
         else:
             up_x = 0
 
         if len(pins[kicad.symbols.type.direction.down]) > 1:
             down_x = (len(pins[kicad.symbols.type.direction.down]) - 1) * kicad.config.symbols.PIN_GRID // 2
-        #   down_x = down_x // kicad.config.symbols.PIN_GRID * kicad.config.symbols.PIN_GRID
         else:
             down_x = 0
 
@@ -366,6 +361,7 @@ class symbol(object):
                         sign = -1 if direction == kicad.symbols.type.direction.left else 1
                         decorator = kicad.symbols.decorator.registry[item['decoration']](center_x + sign * width_half, y, direction, unit)
                         self.elements.extend(decorator.elements)
+                        self.decorated = True
                     else:
                         print("Warning: Unknown decorator '{}'".format(item['decoration']))
                 y -= kicad.config.symbols.PIN_GRID
@@ -418,7 +414,7 @@ class symbol(object):
             unit_count = max(unit_count, element.unit)
             bounds = kicad.symbols.element.boundary.add(bounds, element.bounds)
             if isinstance(element, kicad.symbols.element.pin):
-                if element.number != '~':
+                if element.name != '~':
                     pinname = kicad.symbols.type.visible.yes
 
                 if element.unit in unit_pins:
@@ -431,8 +427,8 @@ class symbol(object):
         if self.tables:
             self.pinname = pinname
 
-        # Table generated symbols have their pin names inside
-        if self.tables:
+        # Table generated symbols have their pin names inside, if pin names exists and no decorators are used
+        if self.tables and self.decorated == False and self.pinname == kicad.symbols.type.visible.yes:
             self.offset = kicad.config.symbols.PIN_OFFSET
 
         # Set pin name offset to zero, if pin names not visible
