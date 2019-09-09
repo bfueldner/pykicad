@@ -2,7 +2,8 @@ import re
 import shlex
 import datetime
 
-import kicad.symbols.type
+import pykicad
+
 
 def pin_value(value):
     '''Convert pin number into value (especially for BGA numbering scheme)'''
@@ -16,9 +17,11 @@ def pin_value(value):
     else:
         raise ValueError("'{}' is no valid pin value".format(value))
 
+
 class alias(object):
     '''2.3.1 Aliases'''
     pass
+
 
 class field(object):
     '''2.3.2 Component field'''
@@ -52,6 +55,7 @@ class field(object):
             self.type
         )
 
+
 class point(object):
     '''Point helper'''
 
@@ -75,6 +79,7 @@ class point(object):
             self.y,
         )
 
+
 class boundary(object):
 
     def __init__(self, x1, y1, x2, y2):
@@ -95,6 +100,7 @@ class boundary(object):
         else:
             return boundary(0, 0, 0, 0)
 
+
 class element(object):
     '''Component element'''
 
@@ -113,13 +119,14 @@ class element(object):
     def bounds(self):
         return boundary(0, 0, 0, 0)
 
+
 class polygon(element):
     '''2.3.3.1 Polygon'''
 
     fmt = "P {:d} {:d} {:d} {:d} {:s}{:s}"
     order = 2
 
-    def __init__(self, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+    def __init__(self, thickness, fill, unit = 0, representation = pykicad.symbols.type.representation.normal):
         super().__init__(unit, representation, polygon.order)
 
         self.thickness = thickness
@@ -179,13 +186,14 @@ class polygon(element):
             self.fill
         )
 
+
 class rectangle(element):
     '''2.3.3.2 Rectangle'''
 
     fmt = 'S {:d} {:d} {:d} {:d} {:d} {:d} {:d} {:s}'
     order = 1
 
-    def __init__(self, x1, y1, x2, y2, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+    def __init__(self, x1, y1, x2, y2, thickness, fill, unit = 0, representation = pykicad.symbols.type.representation.normal):
         super().__init__(unit, representation, rectangle.order)
 
         # Swap x coordinates of second values are less than first values to make optimization possible
@@ -231,13 +239,14 @@ class rectangle(element):
             self.fill
         )
 
+
 class circle(element):
     '''2.3.3.3 Circle'''
 
     fmt = 'C {:d} {:d} {:d} {:d} {:d} {:d} {:s}'
     order = 3
 
-    def __init__(self, x, y, radius, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+    def __init__(self, x, y, radius, thickness, fill, unit = 0, representation = pykicad.symbols.type.representation.normal):
         super().__init__(unit, representation, circle.order)
 
         self.x = x
@@ -269,13 +278,14 @@ class circle(element):
             self.fill
         )
 
+
 class arc(element):
     '''2.3.3.4 Arc'''
 
     fmt = 'A {:d} {:d} {:d} {:.0f} {:.0f} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d}'
     order = 4
 
-    def __init__(self, x, y, startX, startY, endX, endY, startAngle, endAngle, radius, thickness, fill, unit = 0, representation = kicad.symbols.type.representation.normal):
+    def __init__(self, x, y, startX, startY, endX, endY, startAngle, endAngle, radius, thickness, fill, unit = 0, representation = pykicad.symbols.type.representation.normal):
         super().__init__(unit, representation, arc.order)
 
         # Swap x coordinates of second values are less than first values to make optimization possible
@@ -336,6 +346,7 @@ class arc(element):
             self.endY
         )
 
+
 class text(element):
     '''2.3.3.5 Text
         New format since 2.4?
@@ -351,7 +362,7 @@ class text(element):
     fmt = 'T {:.0f} {:d} {:d} {:d} 0 {:d} {:d} "{:s}" {:s} {:d} {:s} {:s}'
     order = 0
 
-    def __init__(self, x, y, value, size, angle, italic = kicad.symbols.type.italic.off, bold = kicad.symbols.type.bold.off, hjustify = kicad.symbols.type.hjustify.center, vjustify = kicad.symbols.type.vjustify.center, unit = 0, representation = kicad.symbols.type.representation.normal):
+    def __init__(self, x, y, value, size, angle, italic = pykicad.symbols.type.italic.off, bold = pykicad.symbols.type.bold.off, hjustify = pykicad.symbols.type.hjustify.center, vjustify = pykicad.symbols.type.vjustify.center, unit = 0, representation = pykicad.symbols.type.representation.normal):
         super().__init__(unit, representation, text.order)
 
         self.x = x
@@ -392,13 +403,14 @@ class text(element):
             self.vjustify
         )
 
+
 class pin(element):
     '''2.3.4 Pin'''
 
     fmt = 'X {:s} {:s} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d} {:s} {:s}{:s}'
     order = 10
 
-    def __init__(self, x, y, name, number, length, direction, nameSize, numberSize, electric = kicad.symbols.type.electric.input, shape = kicad.symbols.type.shape.line, visible = True, unit = 0, representation = kicad.symbols.type.representation.normal):
+    def __init__(self, x, y, name, number, length, direction, nameSize, numberSize, electric = pykicad.symbols.type.electric.input, shape = pykicad.symbols.type.shape.line, visible = True, unit = 0, representation = pykicad.symbols.type.representation.normal):
         super().__init__(unit, representation, pin.order)
 
         self.x = x
@@ -420,13 +432,13 @@ class pin(element):
     @property
     def bounds(self):
         result = boundary(self.x, self.y, self.x, self.y)
-        if self.direction == kicad.symbols.type.direction.left:
+        if self.direction == pykicad.symbols.type.direction.left:
             result.x1 -= self.length
-        elif self.direction == kicad.symbols.type.direction.right:
+        elif self.direction == pykicad.symbols.type.direction.right:
             result.x2 += self.length
-        elif self.direction == kicad.symbols.type.direction.up:
+        elif self.direction == pykicad.symbols.type.direction.up:
             result.y1 -= self.length
-        elif self.direction == kicad.symbols.type.direction.down:
+        elif self.direction == pykicad.symbols.type.direction.down:
             result.y2 += self.length
         return result
 
@@ -456,6 +468,7 @@ class pin(element):
             self.shape
         ).rstrip()
 
+
 def from_str(string, unify = True):
     '''Generate elements out of string lines. Used to load a symbol file'''
 
@@ -471,16 +484,16 @@ def from_str(string, unify = True):
 
         # NOTE: Optional name field is ignored!
         return field(
-            kicad.symbols.type.field.from_str(int(part[0])),
+            pykicad.symbols.type.field.from_str(int(part[0])),
             str(part[1]),
             int(part[2]),
             int(part[3]),
-            kicad.config.symbols.FIELD_TEXT_SIZE if unify else int(part[4]),
-            kicad.symbols.type.orientation.from_str(part[5]),
-            kicad.symbols.type.visibility.from_str(part[6]),
-            kicad.symbols.type.hjustify.from_str(part[7]),
-            kicad.symbols.type.vjustify.from_str(part[8][:1]),
-            kicad.symbols.type.style.from_str(part[8][1:])
+            pykicad.config.symbols.FIELD_TEXT_SIZE if unify else int(part[4]),
+            pykicad.symbols.type.orientation.from_str(part[5]),
+            pykicad.symbols.type.visibility.from_str(part[6]),
+            pykicad.symbols.type.hjustify.from_str(part[7]),
+            pykicad.symbols.type.vjustify.from_str(part[8][:1]),
+            pykicad.symbols.type.style.from_str(part[8][1:])
         )
     elif char == 'P':
         if len(part) < 6:
@@ -489,9 +502,9 @@ def from_str(string, unify = True):
         count = int(part[0])
         result = polygon(
             int(part[3]),
-            kicad.symbols.type.fill.from_str(part[-1]),
+            pykicad.symbols.type.fill.from_str(part[-1]),
             int(part[1]),
-            kicad.symbols.type.representation.from_str(part[2])
+            pykicad.symbols.type.representation.from_str(part[2])
         )
 
         for index in range(count):
@@ -507,9 +520,9 @@ def from_str(string, unify = True):
             int(part[2]),
             int(part[3]),
             int(part[6]),
-            kicad.symbols.type.fill.from_str(part[7]),
+            pykicad.symbols.type.fill.from_str(part[7]),
             int(part[4]),
-            kicad.symbols.type.representation.from_str(part[5])
+            pykicad.symbols.type.representation.from_str(part[5])
         )
     elif char == 'C':
         if len(part) != 7:
@@ -520,9 +533,9 @@ def from_str(string, unify = True):
             int(part[1]),
             int(part[2]),
             int(part[5]),
-            kicad.symbols.type.fill.from_str(part[6]),
+            pykicad.symbols.type.fill.from_str(part[6]),
             int(part[3]),
-            kicad.symbols.type.representation.from_str(part[4])
+            pykicad.symbols.type.representation.from_str(part[4])
         )
     elif char == 'A':
         if len(part) != 13:
@@ -539,9 +552,9 @@ def from_str(string, unify = True):
             int(part[4]) / 10, # endAngle
             int(part[2]), # radius
             int(part[7]), # thickness
-            kicad.symbols.type.fill.from_str(part[8]), # fill
+            pykicad.symbols.type.fill.from_str(part[8]), # fill
             int(part[5]), # unit
-            kicad.symbols.type.representation.from_str(part[6]) # representation
+            pykicad.symbols.type.representation.from_str(part[6]) # representation
         )
     elif char == 'T':
         # Old format
@@ -552,12 +565,12 @@ def from_str(string, unify = True):
                 part[7].replace('~', ' '), # value
                 int(part[3]), # size
                 int(part[0]) * 90.0, # angle
-                kicad.symbols.type.italic.off,
-                kicad.symbols.type.bold.off,
-                kicad.symbols.type.hjustify.center,
-                kicad.symbols.type.vjustify.center,
+                pykicad.symbols.type.italic.off,
+                pykicad.symbols.type.bold.off,
+                pykicad.symbols.type.hjustify.center,
+                pykicad.symbols.type.vjustify.center,
                 int(part[5]), # unit
-                kicad.symbols.type.representation.from_str(part[6]) # representation
+                pykicad.symbols.type.representation.from_str(part[6]) # representation
             )
         # New format
         elif len(part) == 12:
@@ -567,12 +580,12 @@ def from_str(string, unify = True):
                 part[7].replace("''", '"'), # value
                 int(part[3]), # size
                 int(part[0]) / 10, # angle
-                kicad.symbols.type.italic.from_str(part[8]), # italic
-                kicad.symbols.type.bold.from_str(part[9]), # bold
-                kicad.symbols.type.hjustify.from_str(part[10]), # horizontal justify
-                kicad.symbols.type.vjustify.from_str(part[11]), # vertical justify
+                pykicad.symbols.type.italic.from_str(part[8]), # italic
+                pykicad.symbols.type.bold.from_str(part[9]), # bold
+                pykicad.symbols.type.hjustify.from_str(part[10]), # horizontal justify
+                pykicad.symbols.type.vjustify.from_str(part[11]), # vertical justify
                 int(part[5]), # unit
-                kicad.symbols.type.representation.from_str(part[6]) # representation
+                pykicad.symbols.type.representation.from_str(part[6]) # representation
             )
         else:
             raise ValueError("Not enough parts for 'text' element")
@@ -582,10 +595,10 @@ def from_str(string, unify = True):
             if part[11][0] == 'N':
                 visible = False
                 part[11] = part[11][1:]
-            shape = kicad.symbols.type.shape.line.from_str(part[11])
+            shape = pykicad.symbols.type.shape.line.from_str(part[11])
         elif len(part) == 11:
             visible = True
-            shape = kicad.symbols.type.shape.line
+            shape = pykicad.symbols.type.shape.line
         else:
             raise ValueError("Not enough parts for 'pin' element")
 
@@ -595,14 +608,14 @@ def from_str(string, unify = True):
             part[0], # name
             part[1], # number
             int(part[4]), # length
-            kicad.symbols.type.direction.from_str(part[5]), # direction
-            kicad.config.symbols.PIN_NAME_SIZE if unify else int(part[6]), # nameSize
-            kicad.config.symbols.PIN_NUMBER_SIZE if unify else int(part[7]), # numberSize
-            kicad.symbols.type.electric.from_str(part[10]), # electric
+            pykicad.symbols.type.direction.from_str(part[5]), # direction
+            pykicad.config.symbols.PIN_NAME_SIZE if unify else int(part[6]), # nameSize
+            pykicad.config.symbols.PIN_NUMBER_SIZE if unify else int(part[7]), # numberSize
+            pykicad.symbols.type.electric.from_str(part[10]), # electric
             shape,
             visible,
             int(part[8]), # unit
-            kicad.symbols.type.representation.from_str(part[9]), # representation
+            pykicad.symbols.type.representation.from_str(part[9]), # representation
         )
     else:
         raise KeyError

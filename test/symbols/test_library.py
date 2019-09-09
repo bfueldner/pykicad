@@ -1,10 +1,9 @@
 import unittest
+import pykicad
 
-import kicad.symbols.library
 
-class case(unittest.TestCase):
-
-    def test_symbols_library_symbol(self):
+class TestSymbolLibrarySymbol(unittest.TestCase):
+    def test_symbol(self):
         text1 = '''EESchema-LIBRARY Version 2.3
 #encoding utf-8
 #
@@ -54,7 +53,7 @@ ENDDEF
             'color': 'red',
         }
 
-        test = kicad.symbols.library.symbol('TEST', 'IC', 'SOIC:soic_8', '')
+        test = pykicad.symbols.library.symbol('TEST', 'IC', 'SOIC:soic_8', '')
         test.from_str(text1, map, 1)
         self.assertEqual(len(test.fields), 4)
         self.assertEqual(len(test.elements), 5)
@@ -74,6 +73,8 @@ ENDDEF
         test.sort()
         print(test)
 
-    def test_symbols_library_description(self):
-        test = kicad.symbols.library.description('TEST', 'IC', 'SOIC:soic_8', '')
+
+class TestSymbolLibraryDescription(unittest.TestCase):
+    def test_description(self):
+        test = pykicad.symbols.library.description('TEST', 'IC', 'SOIC:soic_8', '')
         print(test)

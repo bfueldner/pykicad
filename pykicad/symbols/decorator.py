@@ -1,7 +1,8 @@
 import math
 
-import kicad.config
-import kicad.symbols.element
+import pykicad
+import pykicad.config
+
 
 registry = {}
 
@@ -13,6 +14,7 @@ class register_decorator(type):
 
         if name != 'base':
             registry[name] = self
+
 
 class base(object, metaclass = register_decorator):
     '''Base class for decorators'''
@@ -31,6 +33,7 @@ class base(object, metaclass = register_decorator):
     @property
     def width(self):
         return kicad.config.symbols.PIN_OFFSET + kicad.config.symbols.PIN_GRID * 1.5
+
 
 class connector_male(base):
     '''Male connector symbol'''
@@ -54,6 +57,7 @@ class connector_male(base):
                 unit
              )
         )
+
 
 class connector_female(base):
     '''Female connector symbol'''
@@ -85,6 +89,7 @@ class connector_female(base):
              )
         )
 
+
 class connector_screw(base):
     '''Screw connector symbol'''
 
@@ -115,6 +120,7 @@ class connector_screw(base):
         line.add(kicad.symbols.element.point(x + offset, y + offset))
         self.elements.append(line)
 
+
 class switch_wiper(base):
     '''Switch wiper'''
 
@@ -130,6 +136,7 @@ class switch_wiper(base):
         line.add(kicad.symbols.element.point(x, y))
         self.elements.append(line)
 
+
 class switch_no(base):
     '''Switch "normaly open"'''
 
@@ -141,6 +148,7 @@ class switch_no(base):
         x += self.sign * (kicad.config.symbols.PIN_OFFSET + kicad.config.symbols.PIN_GRID)
         line.add(kicad.symbols.element.point(x, y))
         self.elements.append(line)
+
 
 class switch_nc_up(base):
     '''Switch "normaly closed" up'''
@@ -156,6 +164,7 @@ class switch_nc_up(base):
         line.add(kicad.symbols.element.point(x, y))
         self.elements.append(line)
 
+
 class switch_nc_down(base):
     '''Switch "normaly closed" down'''
 
@@ -169,6 +178,7 @@ class switch_nc_down(base):
         y -= int(kicad.config.symbols.PIN_GRID * 0.5)
         line.add(kicad.symbols.element.point(x, y))
         self.elements.append(line)
+
 
 class dip_switch_off(base):
     '''DIP switch pictogram without wiper'''
@@ -188,6 +198,7 @@ class dip_switch_off(base):
                 unit
              )
         )
+
 
 class dip_switch_on(dip_switch_off):
     '''DIP switch pictogram with wiper'''

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class visible(Enum):
     '''Symbol pin name/number visible'''
 
@@ -15,6 +16,7 @@ class visible(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'visible'".format(value))
+
 
 class units(Enum):
     '''Symbol units swappable or locked'''
@@ -32,6 +34,7 @@ class units(Enum):
                 return item
         raise NotImplementedError("'{}' is no element of 'units'".format(value))
 
+
 class flag(Enum):
     '''Symbol flag'''
 
@@ -47,6 +50,7 @@ class flag(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'flag'".format(value))
+
 
 class field(Enum):
     '''Schematic field type'''
@@ -74,6 +78,7 @@ class field(Enum):
                 return item
         raise NotImplementedError("'{}' is no element of 'field'".format(value))
 
+
 class orientation(Enum):
     '''Field orientation'''
 
@@ -90,6 +95,7 @@ class orientation(Enum):
                 return item
         raise NotImplementedError("'{}' is no element of 'orientation'".format(value))
 
+
 class visibility(Enum):
     '''Field visibility'''
 
@@ -105,6 +111,7 @@ class visibility(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'visibility'".format(value))
+
 
 class hjustify(Enum):
     '''Field horizontal justify'''
@@ -123,6 +130,7 @@ class hjustify(Enum):
                 return item
         raise NotImplementedError("'{}' is no element of 'hjustify'".format(value))
 
+
 class vjustify(Enum):
     '''Field vertical justify'''
 
@@ -139,6 +147,7 @@ class vjustify(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'vjustify'".format(value))
+
 
 class style(Enum):
     '''Field style'''
@@ -158,6 +167,7 @@ class style(Enum):
                 return item
         raise NotImplementedError("'{}' is no element of 'style'".format(value))
 
+
 class fill(Enum):
     '''Element fill'''
 
@@ -174,6 +184,7 @@ class fill(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'fill'".format(value))
+
 
 class representation(Enum):
     '''Symbol representation'''
@@ -193,6 +204,7 @@ class representation(Enum):
                 return item
         raise NotImplementedError("'{}' is no element of 'representation'".format(value))
 
+
 class italic(Enum):
     '''Text element italic'''
 
@@ -208,6 +220,7 @@ class italic(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'italic'".format(value))
+
 
 class bold(Enum):
     '''Text element bold'''
@@ -225,6 +238,7 @@ class bold(Enum):
             if item.value == int_value:
                 return item
         raise NotImplementedError("'{}' is no element of 'bold'".format(value))
+
 
 class direction(Enum):
     '''2.3.4 Pin direction (flipped in opposition to KiCAD documentation)'''
@@ -250,6 +264,7 @@ class direction(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no value of 'direction'".format(value))
+
 
 class electric(Enum):
     '''2.3.4 Electric pin type'''
@@ -282,6 +297,7 @@ class electric(Enum):
             if item.value == value:
                 return item
         raise NotImplementedError("'{}' is no element of 'electric'".format(value))
+
 
 # Add 'N' before characters, to create an invisible pin
 class shape(Enum):

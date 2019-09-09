@@ -1,0 +1,5 @@
+pytest
+pytest-codestyle
+pytest-flakes
+pytest-cov
+coveralls

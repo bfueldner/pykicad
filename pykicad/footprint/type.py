@@ -1,6 +1,7 @@
 from enum import Enum
 
-import kicad.footprint.helper
+import pykicad
+
 
 class footprint(Enum):
     '''Footprint technology type'''
@@ -16,6 +17,7 @@ class footprint(Enum):
     def __str__(self):
         return self.value
 
+
 class technology(Enum):
     '''Pad technology'''
 
@@ -26,6 +28,7 @@ class technology(Enum):
 
     def __str__(self):
         return self.value
+
 
 class shape(Enum):
     '''Pad shape'''
@@ -39,6 +42,7 @@ class shape(Enum):
     def __str__(self):
         return self.value
 
+
 class text(Enum):
     '''Text type'''
 
@@ -49,6 +53,7 @@ class text(Enum):
     def __str__(self):
         return self.value
 
+
 class style(Enum):
     '''Text style'''
 
@@ -58,6 +63,7 @@ class style(Enum):
     def __str__(self):
         return self.value
 
+
 class name(object):
     '''Name object'''
 
@@ -65,7 +71,8 @@ class name(object):
         self.value = value
 
     def __str__(self):
-        return kicad.footprint.helper.quote_str(self.value)
+        return pykicad.footprint.helper.quote_str(self.value)
+
 
 class value(object):
     '''Value object'''
@@ -74,7 +81,8 @@ class value(object):
         self.value = value
 
     def __str__(self):
-        return kicad.footprint.helper.float_to_str(self.value)
+        return pykicad.footprint.helper.float_to_str(self.value)
+
 
 class point2d(object):
     '''Coordinate in 2d space'''
@@ -84,7 +92,10 @@ class point2d(object):
         self.y = y
 
     def __str__(self):
-        return '{} {}'.format(kicad.footprint.helper.float_to_str(self.x), kicad.footprint.helper.float_to_str(self.y))
+        return '{} {}'.format(
+            pykicad.footprint.helper.float_to_str(self.x),
+            pykicad.footprint.helper.float_to_str(self.y))
+
 
 class point3d(object):
     '''Coordinate in 3d space'''
@@ -95,7 +106,11 @@ class point3d(object):
         self.z = z
 
     def __str__(self):
-        return '{} {} {}'.format(kicad.footprint.helper.float_to_str(self.x), kicad.footprint.helper.float_to_str(self.y), kicad.footprint.helper.float_to_str(self.z))
+        return '{} {} {}'.format(
+            pykicad.footprint.helper.float_to_str(self.x),
+            pykicad.footprint.helper.float_to_str(self.y),
+            pykicad.footprint.helper.float_to_str(self.z))
+
 
 class area(object):
     '''Area in 2d space'''
@@ -107,7 +122,12 @@ class area(object):
         self.y2 = y2
 
     def __str__(self):
-        return '{} {} {} {}'.format(kicad.footprint.helper.float_to_str(self.x1), kicad.footprint.helper.float_to_str(self.y1), kicad.footprint.helper.float_to_str(self.x2), kicad.footprint.helper.float_to_str(self.y2))
+        return '{} {} {} {}'.format(
+            pykicad.footprint.helper.float_to_str(self.x1),
+            pykicad.footprint.helper.float_to_str(self.y1),
+            pykicad.footprint.helper.float_to_str(self.x2),
+            pykicad.footprint.helper.float_to_str(self.y2))
+
 
 class key_data(object):
     '''footprint (key value) representation'''
