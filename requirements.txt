@@ -1,5 +1,6 @@
 pytest
 pytest-codestyle
 pytest-flakes
+pytest-pylin
 pytest-cov
 coveralls
