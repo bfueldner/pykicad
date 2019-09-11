@@ -11,7 +11,7 @@ install:
 before_script:
 - pip install -r requirements.txt
 script:
-- py.test --verbose --color=yes --codestyle --flakes --pylint --cov-report xml --cov pykicadlib test
+--py.test --verbose --color=yes --codestyle --flake8 --pylint --cov-report=xml --cov=pykicadlib pykicadlib test
 after_success:
 - coveralls
 deploy:

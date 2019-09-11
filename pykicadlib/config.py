@@ -1,4 +1,12 @@
-class symbol(object):
+"""
+.. module:: pykicad.config
+   :synopsis: pykicadlib configuration
+
+.. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
+"""
+
+
+class Symbol():
     '''Symbol configuration'''
 
     ROOT = '${KICAD_SYMBOL_DIR}'
@@ -25,13 +33,13 @@ class symbol(object):
     POWER_SYMBOL_REFERENCE = ['#PWR']
 
 
-class documents():
+class Documents():
     '''Documents configuration'''
 
     ROOT = '${KICAD_DOCUMENT_DIR}'
 
 
-class packages3d():
+class Packages3d():
     '''3D packages configuration'''
 
     ROOT = '${KISYS3DMOD}'
@@ -39,7 +47,7 @@ class packages3d():
     FILE_EXTENSION = ['stp', 'wrl']
 
 
-class footprint():
+class Footprint():
     '''Footprint configuration'''
 
     # Footprint
@@ -47,18 +55,18 @@ class footprint():
     FOLDER_EXTENSION = '.pretty'
     FILE_EXTENSION = '.kicad_mod'
 
-    #FOOTPRINT_PRECISION = 3
+    # FOOTPRINT_PRECISION = 3
 
-    #REFERENCE_LAYER = 'F.SilkS'
+    # REFERENCE_LAYER = 'F.SilkS'
     REFERENCE_FONT_SIZE = 1.0
     REFERENCE_FONT_THICKNESS = 0.15
 
-    #VALUE_LAYER = 'F.Fab'
+    # VALUE_LAYER = 'F.Fab'
     VALUE_FONT_SIZE = 1.0
     VALUE_FONT_THICKNESS = 0.15
 
-    #PACKAGE_LAYER = 'F.SilkS'
-    #PACKAGE_LINE_WIDTH = 0.15
+    # PACKAGE_LAYER = 'F.SilkS'
+    # PACKAGE_LINE_WIDTH = 0.15
     PACKAGE_LINE_WIDTH = 0.3
 
     # Scale line with and font size depending on device area
@@ -71,7 +79,25 @@ class footprint():
 
     # http://www.leiton.de/technologie-starre-leiterplatten.html
     # http://www.multi-circuit-boards.eu/leiterplatten-design-hilfe/design-parameter/restring.html
-    DRILL = [0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0]
+    DRILL = [
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        1.0
+    ]
     ANNULAR_RING = 0.15
 
 

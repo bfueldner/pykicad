@@ -1,0 +1,8 @@
+;[MASTER]
+;ignore-patterns=test_.*?py
+
+;[FORMAT]
+;max-line-length=100
+
+[BASIC]
+good-names=i,j,k,ex,Run,_,x,y

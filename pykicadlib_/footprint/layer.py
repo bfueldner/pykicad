@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class position(Enum):
-    '''4.5.1 Layer capacity'''
+    """4.5.1 Layer capacity"""
 
     all = '*'
     top = 'F'
@@ -27,22 +27,22 @@ class position(Enum):
 class type(Enum):
     '''4.5.2 Layer names'''
 
-    copper = 'Cu'
-    adhes = 'Adhes' # Glue
-    paste = 'Paste' # Solderpaste
-    silkscreen = 'SilkS'
-    soldermask = 'Mask' # Soldermask
-    courtyard = 'CrtYd' # Footprint outline
-    fabrication = 'Fab' # Footprint mounting (device type)
-    cutting = 'Cuts'
+    copper = 'Cu'           #: Copper
+    adhes = 'Adhes'         #: Glue
+    paste = 'Paste'         #: Solderpaste
+    silkscreen = 'SilkS'    #: Silkscreen
+    soldermask = 'Mask'     #: Soldermask
+    courtyard = 'CrtYd'     #: Footprint outline
+    fabrication = 'Fab'     #: Footprint mounting (device type)
+    cutting = 'Cuts'        #: Cutting
     user = 'User'
 
-    drawing = 'Dwgs'
-    comment = 'Cmts'
+    drawing = 'Dwgs'        #: Drawings
+    comment = 'Cmts'        #: Comments
     eco1 = 'Eco1'
     eco2 = 'Eco2'
-    edge = 'Edge'   # Board outline
-    margin = 'Margin'   # Edge/Board cutting margin
+    edge = 'Edge'           #: Board outline
+    margin = 'Margin'       #: Edge/Board cutting margin
 
     def __str__(self):
         return self.value

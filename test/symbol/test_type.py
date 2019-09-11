@@ -1,446 +1,578 @@
+"""
+.. module:: symbol.type
+   :synopsis: Symbol types test
+
+.. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
+"""
 import unittest
-import pykicadlib.symbol.type
+import pykicadlib
 
 
 class TestSymbolTypeVisible(unittest.TestCase):
+    """Test class pykicadlib.symbol.type.Visible"""
 
-    def test_visible_no(self):
-        test = pykicadlib.symbol.type.visible.from_str('N')
-        self.assertEqual(test, pykicadlib.symbol.type.visible.no)
-        self.assertEqual(str(pykicadlib.symbol.type.visible.no), 'N')
+    def test_from_str(self):
+        """Test static from_str function"""
 
-    def test_visible_yes(self):
-        test = pykicadlib.symbol.type.visible.from_str('Y')
-        self.assertEqual(test, pykicadlib.symbol.type.visible.yes)
-        self.assertEqual(str(pykicadlib.symbol.type.visible.yes), 'Y')
+        self.assertEqual(
+            pykicadlib.symbol.type.Visible.from_str('N'),
+            pykicadlib.symbol.type.Visible.no)
+        self.assertEqual(
+            pykicadlib.symbol.type.Visible.from_str('Y'),
+            pykicadlib.symbol.type.Visible.yes)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Visible.no), 'N')
+        self.assertEqual(str(pykicadlib.symbol.type.Visible.yes), 'Y')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.visible.from_str('')
+            pykicadlib.symbol.type.Visible.from_str('')
 
 
 class TestSymbolTypeUnits(unittest.TestCase):
-    def test_unitslocked(self):
-        test = pykicadlib.symbol.type.units.from_str('L')
-        self.assertEqual(test, pykicadlib.symbol.type.units.locked)
-        self.assertEqual(str(pykicadlib.symbol.type.units.locked), 'L')
+    """Test class pykicadlib.symbol.type.Units"""
 
-    def test_units_swappable(self):
-        test = pykicadlib.symbol.type.units.from_str('F')
-        self.assertEqual(test, pykicadlib.symbol.type.units.swappable)
-        self.assertEqual(str(pykicadlib.symbol.type.units.swappable), 'F')
+    def test_from_str(self):
+        """Test static from_str function"""
+
+        self.assertEqual(
+            pykicadlib.symbol.type.Units.from_str('L'),
+            pykicadlib.symbol.type.Units.locked)
+        self.assertEqual(
+            pykicadlib.symbol.type.Units.from_str('F'),
+            pykicadlib.symbol.type.Units.swappable)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Units.locked), 'L')
+        self.assertEqual(str(pykicadlib.symbol.type.Units.swappable), 'F')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.units.from_str('')
+            pykicadlib.symbol.type.Units.from_str('')
 
 
 class TestSymbolTypeFlag(unittest.TestCase):
-    def test_flag_normal(self):
-        test = pykicadlib.symbol.type.flag.from_str('N')
-        self.assertEqual(test, pykicadlib.symbol.type.flag.normal)
-        self.assertEqual(str(pykicadlib.symbol.type.flag.normal), 'N')
+    """Test class pykicadlib.symbol.type.Flag"""
 
-    def test_flag_power(self):
-        test = pykicadlib.symbol.type.flag.from_str('P')
-        self.assertEqual(test, pykicadlib.symbol.type.flag.power)
-        self.assertEqual(str(pykicadlib.symbol.type.flag.power), 'P')
+    def test_from_str(self):
+        """Test static from_str function"""
+
+        self.assertEqual(
+            pykicadlib.symbol.type.Flag.from_str('N'),
+            pykicadlib.symbol.type.Flag.normal)
+        self.assertEqual(
+            pykicadlib.symbol.type.Flag.from_str('P'),
+            pykicadlib.symbol.type.Flag.power)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Flag.normal), 'N')
+        self.assertEqual(str(pykicadlib.symbol.type.Flag.power), 'P')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.flag.from_str('')
+            pykicadlib.symbol.type.Flag.from_str('')
 
 
 class TestSymbolTypeField(unittest.TestCase):
-    def test_field_reference(self):
-        test = pykicadlib.symbol.type.field.from_str('0')
-        self.assertEqual(test, pykicadlib.symbol.type.field.reference)
-        self.assertEqual(str(pykicadlib.symbol.type.field.reference), 'Reference')
+    """Test class pykicadlib.symbol.type.Field"""
 
-    def test_field_name(self):
-        test = pykicadlib.symbol.type.field.from_str('1')
-        self.assertEqual(test, pykicadlib.symbol.type.field.name)
-        self.assertEqual(str(pykicadlib.symbol.type.field.name), 'Name')
+    def test_from_str(self):
+        """Test classmethod from_str"""
 
-    def test_field_footprint(self):
-        test = pykicadlib.symbol.type.field.from_str('2')
-        self.assertEqual(test, pykicadlib.symbol.type.field.footprint)
-        self.assertEqual(str(pykicadlib.symbol.type.field.footprint), 'Footprint')
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('0'),
+            pykicadlib.symbol.type.Field.reference)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('1'),
+            pykicadlib.symbol.type.Field.name)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('2'),
+            pykicadlib.symbol.type.Field.footprint)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('3'),
+            pykicadlib.symbol.type.Field.document)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('4'),
+            pykicadlib.symbol.type.Field.manufacturer)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('5'),
+            pykicadlib.symbol.type.Field.value)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('6'),
+            pykicadlib.symbol.type.Field.tolerance)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('7'),
+            pykicadlib.symbol.type.Field.temperature)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('8'),
+            pykicadlib.symbol.type.Field.model)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('9'),
+            pykicadlib.symbol.type.Field.voltage)
+        self.assertEqual(
+            pykicadlib.symbol.type.Field.from_str('10'),
+            pykicadlib.symbol.type.Field.power)
 
-    def test_field_document(self):
-        test = pykicadlib.symbol.type.field.from_str('3')
-        self.assertEqual(test, pykicadlib.symbol.type.field.document)
-        self.assertEqual(str(pykicadlib.symbol.type.field.document), 'Document')
+    def test_str(self):
+        """Test __str__ output"""
 
-    def test_field_manufacturer(self):
-        test = pykicadlib.symbol.type.field.from_str('4')
-        self.assertEqual(test, pykicadlib.symbol.type.field.manufacturer)
-        self.assertEqual(str(pykicadlib.symbol.type.field.manufacturer), 'Manufacturer')
-
-    def test_field_value(self):
-        test = pykicadlib.symbol.type.field.from_str('5')
-        self.assertEqual(test, pykicadlib.symbol.type.field.value)
-        self.assertEqual(str(pykicadlib.symbol.type.field.value), 'Value')
-
-    def test_field_tolerance(self):
-        test = pykicadlib.symbol.type.field.from_str('6')
-        self.assertEqual(test, pykicadlib.symbol.type.field.tolerance)
-        self.assertEqual(str(pykicadlib.symbol.type.field.tolerance), 'Tolerance')
-
-    def test_field_temperature(self):
-        test = pykicadlib.symbol.type.field.from_str('7')
-        self.assertEqual(test, pykicadlib.symbol.type.field.temperature)
-        self.assertEqual(str(pykicadlib.symbol.type.field.temperature), 'Temperature')
-
-    def test_field_model(self):
-        test = pykicadlib.symbol.type.field.from_str('8')
-        self.assertEqual(test, pykicadlib.symbol.type.field.model)
-        self.assertEqual(str(pykicadlib.symbol.type.field.model), 'Model')
-
-    def test_field_voltage(self):
-        test = pykicadlib.symbol.type.field.from_str('9')
-        self.assertEqual(test, pykicadlib.symbol.type.field.voltage)
-        self.assertEqual(str(pykicadlib.symbol.type.field.voltage), 'Voltage')
-
-    def test_field_power(self):
-        test = pykicadlib.symbol.type.field.from_str('10')
-        self.assertEqual(test, pykicadlib.symbol.type.field.power)
-        self.assertEqual(str(pykicadlib.symbol.type.field.power), 'Power')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.reference), 'Reference')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.name), 'Name')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.footprint), 'Footprint')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.document), 'Document')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.manufacturer), 'Manufacturer')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.value), 'Value')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.tolerance), 'Tolerance')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.temperature), 'Temperature')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.model), 'Model')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.voltage), 'Voltage')
+        self.assertEqual(str(pykicadlib.symbol.type.Field.power), 'Power')
 
     def test_exception(self):
-        with self.assertRaises(ValueError):
-            pykicadlib.symbol.type.field.from_str('')
+        """Test exception"""
 
         with self.assertRaises(ValueError):
-            pykicadlib.symbol.type.field.from_str('A')
+            pykicadlib.symbol.type.Field.from_str('')
+
+        with self.assertRaises(ValueError):
+            pykicadlib.symbol.type.Field.from_str('A')
 
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.field.from_str('11')
+            pykicadlib.symbol.type.Field.from_str('11')
 
 
 class TestSymbolTypeOrientation(unittest.TestCase):
-    def test_orientation_horizontal(self):
-        test = pykicadlib.symbol.type.orientation.from_str('H')
-        self.assertEqual(test, pykicadlib.symbol.type.orientation.horizontal)
-        self.assertEqual(str(pykicadlib.symbol.type.orientation.horizontal), 'H')
+    """Test class pykicadlib.symbol.type.Orientation"""
 
-    def test_orientation_vertical(self):
-        test = pykicadlib.symbol.type.orientation.from_str('V')
-        self.assertEqual(test, pykicadlib.symbol.type.orientation.vertical)
-        self.assertEqual(str(pykicadlib.symbol.type.orientation.vertical), 'V')
+    def test_from_str(self):
+        """Test classmethod from_str"""
+
+        self.assertEqual(
+            pykicadlib.symbol.type.Orientation.from_str('H'),
+            pykicadlib.symbol.type.Orientation.horizontal)
+        self.assertEqual(
+            pykicadlib.symbol.type.Orientation.from_str('V'),
+            pykicadlib.symbol.type.Orientation.vertical)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Orientation.horizontal), 'H')
+        self.assertEqual(str(pykicadlib.symbol.type.Orientation.vertical), 'V')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.orientation.from_str('')
+            pykicadlib.symbol.type.Orientation.from_str('')
 
 
 class TestSymbolTypeVisibility(unittest.TestCase):
-    def test_visibility_visible(self):
-        test = pykicadlib.symbol.type.visibility.from_str('V')
-        self.assertEqual(test, pykicadlib.symbol.type.visibility.visible)
-        self.assertEqual(str(pykicadlib.symbol.type.visibility.visible), 'V')
+    """Test class pykicadlib.symbol.type.Visibility"""
 
-    def test_visibility_invisible(self):
-        test = pykicadlib.symbol.type.visibility.from_str('I')
-        self.assertEqual(test, pykicadlib.symbol.type.visibility.invisible)
-        self.assertEqual(str(pykicadlib.symbol.type.visibility.invisible), 'I')
+    def test_from_str(self):
+        """Test classmethod from_str"""
+
+        self.assertEqual(
+            pykicadlib.symbol.type.Visibility.from_str('V'),
+            pykicadlib.symbol.type.Visibility.visible)
+        self.assertEqual(
+            pykicadlib.symbol.type.Visibility.from_str('I'),
+            pykicadlib.symbol.type.Visibility.invisible)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Visibility.visible), 'V')
+        self.assertEqual(str(pykicadlib.symbol.type.Visibility.invisible), 'I')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.visibility.from_str('')
+            pykicadlib.symbol.type.Visibility.from_str('')
 
 
 class TestSymbolTypeHJustify(unittest.TestCase):
-    def test_hjustify_left(self):
-        test = pykicadlib.symbol.type.hjustify.from_str('L')
-        self.assertEqual(test, pykicadlib.symbol.type.hjustify.left)
-        self.assertEqual(str(pykicadlib.symbol.type.hjustify.left), 'L')
+    """Test class pykicadlib.symbol.type.HJustify"""
 
-    def test_hjustify_center(self):
-        test = pykicadlib.symbol.type.hjustify.from_str('C')
-        self.assertEqual(test, pykicadlib.symbol.type.hjustify.center)
-        self.assertEqual(str(pykicadlib.symbol.type.hjustify.center), 'C')
+    def test_from_str(self):
+        """Test classmethod from_str"""
 
-    def test_hjustify_right(self):
-        test = pykicadlib.symbol.type.hjustify.from_str('R')
-        self.assertEqual(test, pykicadlib.symbol.type.hjustify.right)
-        self.assertEqual(str(pykicadlib.symbol.type.hjustify.right), 'R')
+        self.assertEqual(
+            pykicadlib.symbol.type.HJustify.from_str('L'),
+            pykicadlib.symbol.type.HJustify.left)
+        self.assertEqual(
+            pykicadlib.symbol.type.HJustify.from_str('C'),
+            pykicadlib.symbol.type.HJustify.center)
+        self.assertEqual(
+            pykicadlib.symbol.type.HJustify.from_str('R'),
+            pykicadlib.symbol.type.HJustify.right)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.HJustify.left), 'L')
+        self.assertEqual(str(pykicadlib.symbol.type.HJustify.center), 'C')
+        self.assertEqual(str(pykicadlib.symbol.type.HJustify.right), 'R')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.hjustify.from_str('')
+            pykicadlib.symbol.type.HJustify.from_str('')
 
 
 class TestSymbolTypeVJustify(unittest.TestCase):
-    def test_vjustify_top(self):
-        test = pykicadlib.symbol.type.vjustify.from_str('T')
-        self.assertEqual(test, pykicadlib.symbol.type.vjustify.top)
-        self.assertEqual(str(pykicadlib.symbol.type.vjustify.top), 'T')
+    """Test class pykicadlib.symbol.type.VJustify"""
 
-    def test_vjustify_center(self):
-        test = pykicadlib.symbol.type.vjustify.from_str('C')
-        self.assertEqual(test, pykicadlib.symbol.type.vjustify.center)
-        self.assertEqual(str(pykicadlib.symbol.type.vjustify.center), 'C')
+    def test_from_str(self):
+        """Test classmethod from_str"""
+        self.assertEqual(
+            pykicadlib.symbol.type.VJustify.from_str('T'),
+            pykicadlib.symbol.type.VJustify.top)
+        self.assertEqual(
+            pykicadlib.symbol.type.VJustify.from_str('C'),
+            pykicadlib.symbol.type.VJustify.center)
+        self.assertEqual(
+            pykicadlib.symbol.type.VJustify.from_str('B'),
+            pykicadlib.symbol.type.VJustify.bottom)
 
-    def test_vjustify_bottom(self):
-        test = pykicadlib.symbol.type.vjustify.from_str('B')
-        self.assertEqual(test, pykicadlib.symbol.type.vjustify.bottom)
-        self.assertEqual(str(pykicadlib.symbol.type.vjustify.bottom), 'B')
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.VJustify.top), 'T')
+        self.assertEqual(str(pykicadlib.symbol.type.VJustify.center), 'C')
+        self.assertEqual(str(pykicadlib.symbol.type.VJustify.bottom), 'B')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.vjustify.from_str('X')
+            pykicadlib.symbol.type.VJustify.from_str('X')
 
 
 class TestSymbolTypeStyle(unittest.TestCase):
-    def test_style_none(self):
-        test = pykicadlib.symbol.type.style.from_str('NN')
-        self.assertEqual(test, pykicadlib.symbol.type.style.none)
-        self.assertEqual(str(pykicadlib.symbol.type.style.none), 'NN')
+    """Test class pykicadlib.symbol.type.Style"""
 
-    def test_style_italic(self):
-        test = pykicadlib.symbol.type.style.from_str('IN')
-        self.assertEqual(test, pykicadlib.symbol.type.style.italic)
-        self.assertEqual(str(pykicadlib.symbol.type.style.italic), 'IN')
+    def test_from_str(self):
+        """Test classmethod from_str"""
 
-    def test_style_bold(self):
-        test = pykicadlib.symbol.type.style.from_str('NB')
-        self.assertEqual(test, pykicadlib.symbol.type.style.bold)
-        self.assertEqual(str(pykicadlib.symbol.type.style.bold), 'NB')
+        self.assertEqual(
+            pykicadlib.symbol.type.Style.from_str('NN'),
+            pykicadlib.symbol.type.Style.none)
+        self.assertEqual(
+            pykicadlib.symbol.type.Style.from_str('IN'),
+            pykicadlib.symbol.type.Style.italic)
+        self.assertEqual(
+            pykicadlib.symbol.type.Style.from_str('NB'),
+            pykicadlib.symbol.type.Style.bold)
+        self.assertEqual(
+            pykicadlib.symbol.type.Style.from_str('IB'),
+            pykicadlib.symbol.type.Style.italic_bold)
 
-    def test_style_italic_bold(self):
-        test = pykicadlib.symbol.type.style.from_str('IB')
-        self.assertEqual(test, pykicadlib.symbol.type.style.italic_bold)
-        self.assertEqual(str(pykicadlib.symbol.type.style.italic_bold), 'IB')
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Style.none), 'NN')
+        self.assertEqual(str(pykicadlib.symbol.type.Style.italic), 'IN')
+        self.assertEqual(str(pykicadlib.symbol.type.Style.bold), 'NB')
+        self.assertEqual(str(pykicadlib.symbol.type.Style.italic_bold), 'IB')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.style.from_str('')
+            pykicadlib.symbol.type.Style.from_str('')
 
 
 class TestSymbolTypeFill(unittest.TestCase):
-    def test_fill_none(self):
-        test = pykicadlib.symbol.type.fill.from_str('N')
-        self.assertEqual(test, pykicadlib.symbol.type.fill.none)
-        self.assertEqual(str(pykicadlib.symbol.type.fill.none), 'N')
+    """Test class pykicadlib.symbol.type.Fill"""
 
-    def test_fill_foreground(self):
-        test = pykicadlib.symbol.type.fill.from_str('F')
-        self.assertEqual(test, pykicadlib.symbol.type.fill.foreground)
-        self.assertEqual(str(pykicadlib.symbol.type.fill.foreground), 'F')
+    def test_from_str(self):
+        """Test classmethod from_str"""
 
-    def test_fill_background(self):
-        test = pykicadlib.symbol.type.fill.from_str('f')
-        self.assertEqual(test, pykicadlib.symbol.type.fill.background)
-        self.assertEqual(str(pykicadlib.symbol.type.fill.background), 'f')
+        self.assertEqual(
+            pykicadlib.symbol.type.Fill.from_str('N'),
+            pykicadlib.symbol.type.Fill.none)
+        self.assertEqual(
+            pykicadlib.symbol.type.Fill.from_str('F'),
+            pykicadlib.symbol.type.Fill.foreground)
+        self.assertEqual(
+            pykicadlib.symbol.type.Fill.from_str('f'),
+            pykicadlib.symbol.type.Fill.background)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Fill.none), 'N')
+        self.assertEqual(str(pykicadlib.symbol.type.Fill.foreground), 'F')
+        self.assertEqual(str(pykicadlib.symbol.type.Fill.background), 'f')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.fill.from_str('')
+            pykicadlib.symbol.type.Fill.from_str('')
 
 
 class TestSymbolTypeRepresentation(unittest.TestCase):
-    def test_representation_both(self):
-        test = pykicadlib.symbol.type.representation.from_str('0')
-        self.assertEqual(test, pykicadlib.symbol.type.representation.both)
-        self.assertEqual(str(pykicadlib.symbol.type.representation.both), '0')
+    """Test class pykicadlib.symbol.type.Representation"""
 
-    def test_representation_normal(self):
-        test = pykicadlib.symbol.type.representation.from_str('1')
-        self.assertEqual(test, pykicadlib.symbol.type.representation.normal)
+    def test_from_str(self):
+        """Test classmethod from_str"""
 
-    def test_representation_morgan(self):
-        test = pykicadlib.symbol.type.representation.from_str('2')
-        self.assertEqual(test, pykicadlib.symbol.type.representation.morgan)
+        self.assertEqual(
+            pykicadlib.symbol.type.Representation.from_str('0'),
+            pykicadlib.symbol.type.Representation.both)
+        self.assertEqual(
+            pykicadlib.symbol.type.Representation.from_str('1'),
+            pykicadlib.symbol.type.Representation.normal)
+        self.assertEqual(
+            pykicadlib.symbol.type.Representation.from_str('2'),
+            pykicadlib.symbol.type.Representation.morgan)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Representation.both), '0')
+        self.assertEqual(str(pykicadlib.symbol.type.Representation.normal), '1')
+        self.assertEqual(str(pykicadlib.symbol.type.Representation.morgan), '2')
 
     def test_exception(self):
-        with self.assertRaises(ValueError):
-            pykicadlib.symbol.type.representation.from_str('')
+        """Test exception"""
 
         with self.assertRaises(ValueError):
-            pykicadlib.symbol.type.representation.from_str('A')
+            pykicadlib.symbol.type.Representation.from_str('')
+
+        with self.assertRaises(ValueError):
+            pykicadlib.symbol.type.Representation.from_str('A')
 
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.representation.from_str('3')
+            pykicadlib.symbol.type.Representation.from_str('3')
 
 
 class TestSymbolTypeItalic(unittest.TestCase):
-    def test_italic_off(self):
-        test = pykicadlib.symbol.type.italic.from_str('Normal')
-        self.assertEqual(test, pykicadlib.symbol.type.italic.off)
-        self.assertEqual(str(pykicadlib.symbol.type.italic.off), 'Normal')
+    """Test class pykicadlib.symbol.type.Italic"""
 
-    def test_italic_on(self):
-        test = pykicadlib.symbol.type.italic.from_str('Italic')
-        self.assertEqual(test, pykicadlib.symbol.type.italic.on)
-        self.assertEqual(str(pykicadlib.symbol.type.italic.on), 'Italic')
+    def test_from_str(self):
+        """Test classmethod from_str"""
+
+        self.assertEqual(
+            pykicadlib.symbol.type.Italic.from_str('Normal'),
+            pykicadlib.symbol.type.Italic.off)
+        self.assertEqual(
+            pykicadlib.symbol.type.Italic.from_str('Italic'),
+            pykicadlib.symbol.type.Italic.on)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Italic.off), 'Normal')
+        self.assertEqual(str(pykicadlib.symbol.type.Italic.on), 'Italic')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.italic.from_str('')
+            pykicadlib.symbol.type.Italic.from_str('')
 
 
 class TestSymbolTypeBold(unittest.TestCase):
-    def test_bold_off(self):
-        test = pykicadlib.symbol.type.bold.from_str('0')
-        self.assertEqual(test, pykicadlib.symbol.type.bold.off)
-        self.assertEqual(str(pykicadlib.symbol.type.bold.off), '0')
+    """Test class pykicadlib.symbol.type.Bold"""
 
-    def test_bold_on(self):
-        test = pykicadlib.symbol.type.bold.from_str('1')
-        self.assertEqual(test, pykicadlib.symbol.type.bold.on)
-        self.assertEqual(str(pykicadlib.symbol.type.bold.on), '1')
+    def test_from_str(self):
+        """Test classmethod from_str"""
+
+        self.assertEqual(
+            pykicadlib.symbol.type.Bold.from_str('0'),
+            pykicadlib.symbol.type.Bold.off)
+        self.assertEqual(
+            pykicadlib.symbol.type.Bold.from_str('1'),
+            pykicadlib.symbol.type.Bold.on)
+
+    def test_str(self):
+        """Test __str__ output"""
+
+        self.assertEqual(str(pykicadlib.symbol.type.Bold.off), '0')
+        self.assertEqual(str(pykicadlib.symbol.type.Bold.on), '1')
 
     def test_exception(self):
-        with self.assertRaises(ValueError):
-            pykicadlib.symbol.type.bold.from_str('')
+        """Test exception"""
 
         with self.assertRaises(ValueError):
-            pykicadlib.symbol.type.bold.from_str('A')
+            pykicadlib.symbol.type.Bold.from_str('')
+
+        with self.assertRaises(ValueError):
+            pykicadlib.symbol.type.Bold.from_str('A')
 
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.bold.from_str('2')
+            pykicadlib.symbol.type.Bold.from_str('2')
 
 
 class TestSymbolTypeDirection(unittest.TestCase):
-    def test_direction_up(self):
+    """Test class pykicadlib.symbol.type.Direction"""
+
+    def test_from_str(self):
+        """Test classmethod from_str"""
+
         # NOTE: Definition of directions in KiCAD is flipped! We test against corrected definition!
-        test = pykicadlib.symbol.type.direction.from_str('D')
-        self.assertEqual(test, pykicadlib.symbol.type.direction.up)
-        self.assertEqual(str(pykicadlib.symbol.type.direction.up), 'D')
+        self.assertEqual(
+            pykicadlib.symbol.type.Direction.from_str('D'),
+            pykicadlib.symbol.type.Direction.up)
+        self.assertEqual(
+            pykicadlib.symbol.type.Direction.from_str('U'),
+            pykicadlib.symbol.type.Direction.down)
+        self.assertEqual(
+            pykicadlib.symbol.type.Direction.from_str('R'),
+            pykicadlib.symbol.type.Direction.left)
+        self.assertEqual(
+            pykicadlib.symbol.type.Direction.from_str('L'),
+            pykicadlib.symbol.type.Direction.right)
 
-    def test_direction_down(self):
-        test = pykicadlib.symbol.type.direction.from_str('U')
-        self.assertEqual(test, pykicadlib.symbol.type.direction.down)
-        self.assertEqual(str(pykicadlib.symbol.type.direction.down), 'U')
+    def test_str(self):
+        """Test __str__ output"""
 
-    def test_direction_left(self):
-        test = pykicadlib.symbol.type.direction.from_str('R')
-        self.assertEqual(test, pykicadlib.symbol.type.direction.left)
-        self.assertEqual(str(pykicadlib.symbol.type.direction.left), 'R')
-
-    def test_direction_right(self):
-        test = pykicadlib.symbol.type.direction.from_str('L')
-        self.assertEqual(test, pykicadlib.symbol.type.direction.right)
-        self.assertEqual(str(pykicadlib.symbol.type.direction.right), 'L')
+        self.assertEqual(str(pykicadlib.symbol.type.Direction.up), 'D')
+        self.assertEqual(str(pykicadlib.symbol.type.Direction.down), 'U')
+        self.assertEqual(str(pykicadlib.symbol.type.Direction.left), 'R')
+        self.assertEqual(str(pykicadlib.symbol.type.Direction.right), 'L')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.direction.from_str('')
+            pykicadlib.symbol.type.Direction.from_str('')
 
 
 class TestSymbolTypeElectric(unittest.TestCase):
-    def test_electric_input(self):
-        test = pykicadlib.symbol.type.electric.from_str('I')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.input)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.input), 'I')
+    """Test class pykicadlib.symbol.type.Electric"""
 
-    def test_electric_output(self):
-        test = pykicadlib.symbol.type.electric.from_str('O')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.output)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.output), 'O')
+    def test_from_str(self):
+        """Test classmethod from_str"""
 
-    def test_electric_bidirectional(self):
-        test = pykicadlib.symbol.type.electric.from_str('B')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.bidirectional)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.bidirectional), 'B')
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('I'),
+            pykicadlib.symbol.type.Electric.input)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('O'),
+            pykicadlib.symbol.type.Electric.output)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('B'),
+            pykicadlib.symbol.type.Electric.bidirectional)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('T'),
+            pykicadlib.symbol.type.Electric.tristate)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('P'),
+            pykicadlib.symbol.type.Electric.passive)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('U'),
+            pykicadlib.symbol.type.Electric.unspecified)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('W'),
+            pykicadlib.symbol.type.Electric.power_input)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('w'),
+            pykicadlib.symbol.type.Electric.power_output)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('C'),
+            pykicadlib.symbol.type.Electric.open_collector)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('E'),
+            pykicadlib.symbol.type.Electric.open_emitter)
+        self.assertEqual(
+            pykicadlib.symbol.type.Electric.from_str('N'),
+            pykicadlib.symbol.type.Electric.not_connected)
 
-    def test_electric_tristate(self):
-        test = pykicadlib.symbol.type.electric.from_str('T')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.tristate)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.tristate), 'T')
+    def test_str(self):
+        """Test __str__ output"""
 
-    def test_electric_passive(self):
-        test = pykicadlib.symbol.type.electric.from_str('P')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.passive)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.passive), 'P')
-
-    def test_electric_unspecified(self):
-        test = pykicadlib.symbol.type.electric.from_str('U')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.unspecified)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.unspecified), 'U')
-
-    def test_electric_power_input(self):
-        test = pykicadlib.symbol.type.electric.from_str('W')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.power_input)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.power_input), 'W')
-
-    def test_electric_power_output(self):
-        test = pykicadlib.symbol.type.electric.from_str('w')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.power_output)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.power_output), 'w')
-
-    def test_electric_open_collector(self):
-        test = pykicadlib.symbol.type.electric.from_str('C')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.open_collector)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.open_collector), 'C')
-
-    def test_electric_open_emitter(self):
-        test = pykicadlib.symbol.type.electric.from_str('E')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.open_emitter)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.open_emitter), 'E')
-
-    def test_electric_not_connected(self):
-        test = pykicadlib.symbol.type.electric.from_str('N')
-        self.assertEqual(test, pykicadlib.symbol.type.electric.not_connected)
-        self.assertEqual(str(pykicadlib.symbol.type.electric.not_connected), 'N')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.input), 'I')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.output), 'O')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.bidirectional), 'B')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.tristate), 'T')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.passive), 'P')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.unspecified), 'U')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.power_input), 'W')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.power_output), 'w')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.open_collector), 'C')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.open_emitter), 'E')
+        self.assertEqual(str(pykicadlib.symbol.type.Electric.not_connected), 'N')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.electric.from_str('')
+            pykicadlib.symbol.type.Electric.from_str('')
 
 
 class TestSymbolTypeShape(unittest.TestCase):
-    def test_shape_line(self):
-        test = pykicadlib.symbol.type.shape.from_str('')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.line)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.line), '')
+    """Test class pykicadlib.symbol.type.Shape"""
 
-    def test_shape_invisible(self):
-        test = pykicadlib.symbol.type.shape.from_str('N')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.invisible)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.invisible), 'N')
+    def test_from_str(self):
+        """Test classmethod from_str"""
 
-    def test_shape_inverted(self):
-        test = pykicadlib.symbol.type.shape.from_str('I')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.inverted)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.inverted), 'I')
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str(''),
+            pykicadlib.symbol.type.Shape.line)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('N'),
+            pykicadlib.symbol.type.Shape.invisible)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('I'),
+            pykicadlib.symbol.type.Shape.inverted)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('C'),
+            pykicadlib.symbol.type.Shape.clock)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('CI'),
+            pykicadlib.symbol.type.Shape.inverted_clock)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('L'),
+            pykicadlib.symbol.type.Shape.input_low)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('CL'),
+            pykicadlib.symbol.type.Shape.clock_low)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('V'),
+            pykicadlib.symbol.type.Shape.output_low)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('F'),
+            pykicadlib.symbol.type.Shape.falling_edge_clock)
+        self.assertEqual(
+            pykicadlib.symbol.type.Shape.from_str('X'),
+            pykicadlib.symbol.type.Shape.non_logic)
 
-    def test_shape_clock(self):
-        test = pykicadlib.symbol.type.shape.from_str('C')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.clock)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.clock), 'C')
+    def test_str(self):
+        """Test __str__ output"""
 
-    def test_shape_inverted_clock(self):
-        test = pykicadlib.symbol.type.shape.from_str('CI')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.inverted_clock)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.inverted_clock), 'CI')
-
-    def test_shape_input_low(self):
-        test = pykicadlib.symbol.type.shape.from_str('L')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.input_low)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.input_low), 'L')
-
-    def test_shape_power_clock_low(self):
-        test = pykicadlib.symbol.type.shape.from_str('CL')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.clock_low)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.clock_low), 'CL')
-
-    def test_shape_power_output_low(self):
-        test = pykicadlib.symbol.type.shape.from_str('V')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.output_low)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.output_low), 'V')
-
-    def test_shape_open_falling_edge_clock(self):
-        test = pykicadlib.symbol.type.shape.from_str('F')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.falling_edge_clock)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.falling_edge_clock), 'F')
-
-    def test_shape_open_non_logic(self):
-        test = pykicadlib.symbol.type.shape.from_str('X')
-        self.assertEqual(test, pykicadlib.symbol.type.shape.non_logic)
-        self.assertEqual(str(pykicadlib.symbol.type.shape.non_logic), 'X')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.line), '')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.invisible), 'N')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.inverted), 'I')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.clock), 'C')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.inverted_clock), 'CI')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.input_low), 'L')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.clock_low), 'CL')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.output_low), 'V')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.falling_edge_clock), 'F')
+        self.assertEqual(str(pykicadlib.symbol.type.Shape.non_logic), 'X')
 
     def test_exception(self):
+        """Test exception"""
+
         with self.assertRaises(NotImplementedError):
-            pykicadlib.symbol.type.shape.from_str('A')
+            pykicadlib.symbol.type.Shape.from_str('A')

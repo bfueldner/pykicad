@@ -1,3 +1,12 @@
+"""
+.. module:: symbol.element
+   :platform: Unix, Windows
+   :synopsis: Symbol elements
+
+.. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
+
+"""
+
 import re
 import shlex
 import datetime
@@ -24,7 +33,23 @@ class alias(object):
 
 
 class field(object):
-    '''2.3.2 Component field'''
+    '''2.3.2 Component field
+
+    :param pykicadlib.symbol.type.field type:
+        Type of :class:`field`
+    :param str value:
+        Value of :class:`field`
+    :param int x:
+        X coordinate
+    :param int y:
+        Y coordinate
+    :param int size:
+        Field value size
+    :param pykicadlib.symbol.type.orientation orientation:
+        Orientation of field value
+    :returns:  int -- the return code.
+    :raises: AttributeError, KeyError
+    '''
 
     fmt = 'F{:d} "{:s}" {:d} {:d} {:d} {:s} {:s} {:s} {:s}{:s} "{:s}"'
 
@@ -41,6 +66,11 @@ class field(object):
         self.style = style
 
     def __str__(self):
+        '''Test
+
+        Return :class:`field` as str.
+        '''
+
         return field.fmt.format(
             self.type.value,
             self.value,

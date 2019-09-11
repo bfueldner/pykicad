@@ -1,0 +1,24 @@
+Symbol elements
+===============
+
+Symbols consist of multiple elements. These are well known elements like lines,
+circles and arcs. Additionally elements are added, the help construct symbols
+out of element primitives.
+
+Examples
+--------
+
+Here is a simple example::
+
+    >>> el = symbol.element.arc(1, 2, 3)
+    >>> print(el)
+    A(1, 2, 3)
+
+
+API
+---
+
+.. automodule:: pykicadlib.symbol.element
+    :members:
+
+.. automethod:: pykicadlib.symbol.element.arc.__str__

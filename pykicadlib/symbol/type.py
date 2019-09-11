@@ -1,332 +1,303 @@
+"""
+.. module:: pykicadlib.symbol.type
+   :synopsis: KiCAD symbol types
+
+.. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
+"""
 from enum import Enum
 
 
-class visible(Enum):
-    '''Symbol pin name/number visible'''
+class SymbolEnum(Enum):
+    """Symbol enumeration base class
 
-    no = 'N'
-    yes = 'Y'
+    .. automethod:: __str__
+    .. automethod:: from_str
+    """
 
     def __str__(self):
+        """Return KiCAD value of :class:`SymbolEnum`"""
+
         return self.value
 
-    @staticmethod
-    def from_str(value):
-        for item in visible:
+    @classmethod
+    def from_str(cls, value):
+        """Convert string to enum element.
+
+        :param str value:
+            String with value to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+
+        for item in cls:
             if item.value == value:
                 return item
-        raise NotImplementedError("'{}' is no element of 'visible'".format(value))
+        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
 
 
-class units(Enum):
-    '''Symbol units swappable or locked'''
+class Visible(SymbolEnum):
+    """Symbol pin name/number visible"""
 
-    locked = 'L'
-    swappable = 'F'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in units:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'units'".format(value))
+    no = 'N'            #: Not visible
+    yes = 'Y'           #: Visible
 
 
-class flag(Enum):
-    '''Symbol flag'''
+class Units(SymbolEnum):
+    """Symbol units swappable or locked"""
 
-    normal = 'N'
-    power = 'P'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in flag:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'flag'".format(value))
+    locked = 'L'        #: Locked
+    swappable = 'F'     #: Swappable
 
 
-class field(Enum):
-    '''Schematic field type'''
+class Flag(SymbolEnum):
+    """Flag normal or power symbol"""
 
-    reference = 0
-    name = 1
-    footprint = 2
-    document = 3
-    manufacturer = 4
-    value = 5
-    tolerance = 6
-    temperature = 7
-    model = 8
-    voltage = 9
-    power = 10
+    normal = 'N'        #: Normal symbol
+    power = 'P'         #: Power symbol
+
+
+class Field(Enum):
+    """Symbol field type"""
+
+    reference = 0       #: Reference field
+    name = 1            #: Name field
+    footprint = 2       #: Footprint field
+    document = 3        #: Document field
+    manufacturer = 4    #: Manufacturer field
+    value = 5           #: Value field
+    tolerance = 6       #: Tolerance field
+    temperature = 7     #: Temperature range field
+    model = 8           #: Model field
+    voltage = 9         #: Voltage field
+    power = 10          #: Power field
 
     def __str__(self):
-        return self.name.title()
+        """Return KiCAD value of :class:`Field`"""
 
-    @staticmethod
-    def from_str(value):
+        return str(self.name).title()
+
+    @classmethod
+    def from_str(cls, value):
+        """Convert string to enum element.
+
+        :param str value:
+            String with value to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+
         int_value = int(value)
-        for item in field:
+        for item in cls:
             if item.value == int_value:
                 return item
-        raise NotImplementedError("'{}' is no element of 'field'".format(value))
+        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
 
 
-class orientation(Enum):
-    '''Field orientation'''
+class Orientation(SymbolEnum):
+    """Field orientation"""
 
-    horizontal = 'H'
-    vertical = 'V'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in orientation:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'orientation'".format(value))
+    horizontal = 'H'    #: Horizontal orientation
+    vertical = 'V'      #: Vertical orientation
 
 
-class visibility(Enum):
-    '''Field visibility'''
+class Visibility(SymbolEnum):
+    """Field visibility"""
 
-    visible = 'V'
-    invisible = 'I'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in visibility:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'visibility'".format(value))
+    visible = 'V'       #: Visible
+    invisible = 'I'     #: Invisible
 
 
-class hjustify(Enum):
-    '''Field horizontal justify'''
+class HJustify(SymbolEnum):
+    """Field horizontal justify"""
 
-    left = 'L'
-    center = 'C'
-    right = 'R'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in hjustify:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'hjustify'".format(value))
+    left = 'L'          #: Left
+    center = 'C'        #: Center
+    right = 'R'         #: Right
 
 
-class vjustify(Enum):
-    '''Field vertical justify'''
+class VJustify(SymbolEnum):
+    """Field vertical justify"""
 
-    top = 'T'
-    center = 'C'
-    bottom = 'B'
+    top = 'T'           #: Top
+    center = 'C'        #: Center
+    bottom = 'B'        #: Bottom
+
+
+class Style(SymbolEnum):
+    """Field style"""
+
+    none = 'NN'         #: None
+    italic = 'IN'       #: Italic
+    bold = 'NB'         #: Bold
+    italic_bold = 'IB'  #: Italic and Bold
+
+
+class Fill(SymbolEnum):
+    """Element fill"""
+
+    none = 'N'          #: None
+    foreground = 'F'    #: Foreground
+    background = 'f'    #: Background
+
+
+class Representation(Enum):
+    """Symbol representation"""
+
+    both = 0            #: Both
+    normal = 1          #: Normal
+    morgan = 2          #: Morgan
 
     def __str__(self):
-        return self.value
+        """Return KiCAD value of :class:`Representation`"""
 
-    @staticmethod
-    def from_str(value):
-        for item in vjustify:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'vjustify'".format(value))
-
-
-class style(Enum):
-    '''Field style'''
-
-    none = 'NN'
-    italic = 'IN'
-    bold = 'NB'
-    italic_bold = 'IB'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in style:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'style'".format(value))
-
-
-class fill(Enum):
-    '''Element fill'''
-
-    none = 'N'
-    foreground = 'F'
-    background = 'f'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in fill:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'fill'".format(value))
-
-
-class representation(Enum):
-    '''Symbol representation'''
-
-    both = 0
-    normal = 1
-    morgan = 2
-
-    def __str__(self):
         return str(self.value)
 
-    @staticmethod
-    def from_str(value):
+    @classmethod
+    def from_str(cls, value):
+        """Convert string to enum element.
+
+        :param str value:
+            String with value to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+
         int_value = int(value)
-        for item in representation:
+        for item in cls:
             if item.value == int_value:
                 return item
-        raise NotImplementedError("'{}' is no element of 'representation'".format(value))
+        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
 
 
-class italic(Enum):
-    '''Text element italic'''
+class Italic(SymbolEnum):
+    """Text element italic"""
 
-    off = 'Normal'
-    on = 'Italic'
-
-    def __str__(self):
-        return self.value
-
-    @staticmethod
-    def from_str(value):
-        for item in italic:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'italic'".format(value))
+    off = 'Normal'      #: Normal
+    on = 'Italic'       #: Italic
 
 
-class bold(Enum):
-    '''Text element bold'''
+class Bold(Enum):
+    """Text element bold"""
 
-    off = 0
-    on = 1
+    off = 0             #: Normal
+    on = 1              #: Bold
 
     def __str__(self):
+        """Return KiCAD value of :class:`Bold`"""
         return str(self.value)
 
-    @staticmethod
-    def from_str(value):
+    @classmethod
+    def from_str(cls, value):
+        """Convert string to enum element.
+
+        :param str value:
+            String with value to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+
         int_value = int(value)
-        for item in bold:
+        for item in cls:
             if item.value == int_value:
                 return item
-        raise NotImplementedError("'{}' is no element of 'bold'".format(value))
+        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
 
 
-class direction(Enum):
-    '''2.3.4 Pin direction (flipped in opposition to KiCAD documentation)'''
+class Direction(SymbolEnum):
+    """2.3.4 Pin direction (flipped in opposition to KiCAD documentation)"""
 
-    up = 'D'
-    down = 'U'
-    right = 'L'
-    left = 'R'
+    up = 'D'            #: Up
+    down = 'U'          #: Down
+    right = 'L'         #: Right
+    left = 'R'          #: Left
 
-    def __str__(self):
-        return self.value
+    @classmethod
+    def from_name(cls, name):
+        """Convert name to enum element.
 
-    @staticmethod
-    def from_name(name):
-        for item in direction:
+        :param str name:
+            String with name to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+
+        for item in cls:
             if item.name == name:
                 return item
-        raise NotImplementedError("'{}' is no name of 'direction'".format(name))
-
-    @staticmethod
-    def from_str(value):
-        for item in direction:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no value of 'direction'".format(value))
+        raise NotImplementedError("'{}' is no name of '{}'".format(name, cls.__name__))
 
 
-class electric(Enum):
+class Electric(SymbolEnum):
     '''2.3.4 Electric pin type'''
 
-    input = 'I'
-    output = 'O'
-    bidirectional = 'B'
-    tristate = 'T'
-    passive = 'P'
-    unspecified = 'U'
-    power_input = 'W'
-    power_output = 'w'
-    open_collector = 'C'
-    open_emitter = 'E'
-    not_connected = 'N'
+    input = 'I'             #: Input
+    output = 'O'            #: Output
+    bidirectional = 'B'     #: Bidirectional
+    tristate = 'T'          #: Tristate
+    passive = 'P'           #: Passive
+    unspecified = 'U'       #: Unspecified
+    power_input = 'W'       #: Power input
+    power_output = 'w'      #: Power output
+    open_collector = 'C'    #: Open collector
+    open_emitter = 'E'      #: Open emitter
+    not_connected = 'N'     #: Not connected
 
-    def __str__(self):
-        return self.value
+    @classmethod
+    def from_name(cls, name):
+        """Convert name to enum element.
 
-    @staticmethod
-    def from_name(name):
-        for item in electric:
+        :param str name:
+            String with name to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+
+        for item in cls:
             if item.name == name:
                 return item
-        raise NotImplementedError("'{}' is no name of 'electric'".format(name))
-
-    @staticmethod
-    def from_str(value):
-        for item in electric:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'electric'".format(value))
+        raise NotImplementedError("'{}' is no name of '{}'".format(name, cls.__name__))
 
 
 # Add 'N' before characters, to create an invisible pin
-class shape(Enum):
+class Shape(SymbolEnum):
     '''2.3.4 Pin shape'''
 
-    line = ''
-    invisible = 'N'
-    inverted = 'I'
-    clock = 'C'
-    inverted_clock = 'CI'
-    input_low = 'L'
-    clock_low = 'CL'
-    output_low = 'V'
-    falling_edge_clock = 'F'
-    non_logic = 'X'
+    line = ''                   #: Line
+    invisible = 'N'             #: Invisible
+    inverted = 'I'              #: Inverted
+    clock = 'C'                 #: Clock
+    inverted_clock = 'CI'       #: Inverted clock
+    input_low = 'L'             #: Input low
+    clock_low = 'CL'            #: Clock low
+    output_low = 'V'            #: Output low
+    falling_edge_clock = 'F'    #: Falling-edge clock
+    non_logic = 'X'             #: Non logic
 
-    def __str__(self):
-        return self.value
+    @classmethod
+    def from_name(cls, name):
+        """Convert name to enum element.
 
-    @staticmethod
-    def from_name(name):
-        for item in shape:
+        :param str name:
+            String with name to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+
+        for item in cls:
             if item.name == name:
                 return item
-        raise NotImplementedError("'{}' is no name of 'shape'".format(name))
-
-    @staticmethod
-    def from_str(value):
-        for item in shape:
-            if item.value == value:
-                return item
-        raise NotImplementedError("'{}' is no element of 'shape'".format(value))
+        raise NotImplementedError("'{}' is no name of '{}'".format(name, cls.__name__))
