@@ -1,6 +1,6 @@
 from enum import Enum
 
-import pykicad
+import pykicadlib
 
 
 class footprint(Enum):
@@ -71,7 +71,7 @@ class name(object):
         self.value = value
 
     def __str__(self):
-        return pykicad.footprint.helper.quote_str(self.value)
+        return pykicadlib.footprint.helper.quote_str(self.value)
 
 
 class value(object):
@@ -81,7 +81,7 @@ class value(object):
         self.value = value
 
     def __str__(self):
-        return pykicad.footprint.helper.float_to_str(self.value)
+        return pykicadlib.footprint.helper.float_to_str(self.value)
 
 
 class point2d(object):
@@ -93,8 +93,8 @@ class point2d(object):
 
     def __str__(self):
         return '{} {}'.format(
-            pykicad.footprint.helper.float_to_str(self.x),
-            pykicad.footprint.helper.float_to_str(self.y))
+            pykicadlib.footprint.helper.float_to_str(self.x),
+            pykicadlib.footprint.helper.float_to_str(self.y))
 
 
 class point3d(object):
@@ -107,9 +107,9 @@ class point3d(object):
 
     def __str__(self):
         return '{} {} {}'.format(
-            pykicad.footprint.helper.float_to_str(self.x),
-            pykicad.footprint.helper.float_to_str(self.y),
-            pykicad.footprint.helper.float_to_str(self.z))
+            pykicadlib.footprint.helper.float_to_str(self.x),
+            pykicadlib.footprint.helper.float_to_str(self.y),
+            pykicadlib.footprint.helper.float_to_str(self.z))
 
 
 class area(object):
@@ -123,10 +123,10 @@ class area(object):
 
     def __str__(self):
         return '{} {} {} {}'.format(
-            pykicad.footprint.helper.float_to_str(self.x1),
-            pykicad.footprint.helper.float_to_str(self.y1),
-            pykicad.footprint.helper.float_to_str(self.x2),
-            pykicad.footprint.helper.float_to_str(self.y2))
+            pykicadlib.footprint.helper.float_to_str(self.x1),
+            pykicadlib.footprint.helper.float_to_str(self.y1),
+            pykicadlib.footprint.helper.float_to_str(self.x2),
+            pykicadlib.footprint.helper.float_to_str(self.y2))
 
 
 class key_data(object):

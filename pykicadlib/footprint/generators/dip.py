@@ -1,12 +1,12 @@
-import kicad.footprint.generator
+import pykicadlib.footprint.generator
 
-class dip(kicad.footprint.generator.base):
+class dip(pykicadlib.footprint.generator.base):
     '''Generates footprint for dual inline ICs with pin marker on left side.
 
 * `name`: Name of footprint
 * `model`: Filename for 3D model. Be shure to use variable ${KISYS3DMOD} as starting point
 * `description`: Textual description of footprint details
-* `tags`: Space separated list of parameters with footprint details (searchable from within KiCAD)
+* `tags`: Space separated list of parameters with footprint details (searchable from within pykicadlib)
 * `package_width`: Width of package body
 * `package_height`: Height of package body
 * `pad_width`: Width of pad
@@ -18,53 +18,53 @@ class dip(kicad.footprint.generator.base):
 '''
 
     def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_grid, pad_distance, pad_count, pad_drill):
-        super().__init__(kicad.footprint.type.footprint.thd, name, model, description, tags)
+        super().__init__(pykicadlib.footprint.type.footprint.thd, name, model, description, tags)
 
         if pad_count % 2:
             raise ValueError("pad_count is odd")
 
         # Reference text
         super().add(
-            kicad.footprint.element.text(
-                kicad.footprint.layer.silkscreen_top,
-                kicad.footprint.type.text.reference,
+            pykicadlib.footprint.element.text(
+                pykicadlib.footprint.layer.silkscreen_top,
+                pykicadlib.footprint.type.text.reference,
                 None,
-                -package_width / 2 - kicad.config.footprint.REFERENCE_FONT_SIZE, 0.0,
-                kicad.config.footprint.REFERENCE_FONT_SIZE,
-                kicad.config.footprint.REFERENCE_FONT_THICKNESS,
+                -package_width / 2 - pykicadlib.config.footprint.REFERENCE_FONT_SIZE, 0.0,
+                pykicadlib.config.footprint.REFERENCE_FONT_SIZE,
+                pykicadlib.config.footprint.REFERENCE_FONT_THICKNESS,
                 90.0,
             )
         )
 
         # Value text
         super().add(
-            kicad.footprint.element.text(
-                kicad.footprint.layer.fabrication_top,
-                kicad.footprint.type.text.value,
+            pykicadlib.footprint.element.text(
+                pykicadlib.footprint.layer.fabrication_top,
+                pykicadlib.footprint.type.text.value,
                 None,
                 0.0, 0.0,
-                kicad.config.footprint.VALUE_FONT_SIZE,
-                kicad.config.footprint.VALUE_FONT_THICKNESS
+                pykicadlib.config.footprint.VALUE_FONT_SIZE,
+                pykicadlib.config.footprint.VALUE_FONT_THICKNESS
             )
         )
 
         # Case
         super().add(
-            kicad.footprint.element.centered_rectangle(
-                kicad.footprint.layer.silkscreen_top,
+            pykicadlib.footprint.element.centered_rectangle(
+                pykicadlib.footprint.layer.silkscreen_top,
                 0, 0, package_width, package_height,
-                kicad.config.footprint.PACKAGE_LINE_WIDTH,
+                pykicadlib.config.footprint.PACKAGE_LINE_WIDTH,
             )
         )
 
         # Marker
         line_x = package_width / 2
         super().add(
-            kicad.footprint.element.arc(
-                kicad.footprint.layer.silkscreen_top,
+            pykicadlib.footprint.element.arc(
+                pykicadlib.footprint.layer.silkscreen_top,
                 -line_x, 0.0, -line_x, 1.0,
                 -180.0,
-                kicad.config.footprint.PACKAGE_LINE_WIDTH
+                pykicadlib.config.footprint.PACKAGE_LINE_WIDTH
             )
         )
 
@@ -73,11 +73,11 @@ class dip(kicad.footprint.generator.base):
         x = pad_grid * -((pad_count / 4) - 0.5)
         for i in range(pad_count // 2):
             super().add(
-                kicad.footprint.element.pad(
-                    kicad.footprint.layers.thru_hole,
+                pykicadlib.footprint.element.pad(
+                    pykicadlib.footprint.layers.thru_hole,
                     str(pin),
-                    kicad.footprint.type.technology.thru_hole,
-                    kicad.footprint.type.shape.oval,
+                    pykicadlib.footprint.type.technology.thru_hole,
+                    pykicadlib.footprint.type.shape.oval,
                     x, pad_distance / 2,
                     pad_width, pad_height,
                     pad_drill
@@ -89,11 +89,11 @@ class dip(kicad.footprint.generator.base):
         for i in range(pad_count // 2, pad_count):
             x -= pad_grid
             super().add(
-                kicad.footprint.element.pad(
-                    kicad.footprint.layers.thru_hole,
+                pykicadlib.footprint.element.pad(
+                    pykicadlib.footprint.layers.thru_hole,
                     str(pin),
-                    kicad.footprint.type.technology.thru_hole,
-                    kicad.footprint.type.shape.oval,
+                    pykicadlib.footprint.type.technology.thru_hole,
+                    pykicadlib.footprint.type.shape.oval,
                     x, -pad_distance / 2,
                     pad_width, pad_height,
                     pad_drill

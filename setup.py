@@ -1,24 +1,24 @@
 import setuptools
 import unittest
 
-exec(open('pykicad/version.py').read())
+exec(open('pykicadlib/version.py').read())
 
 with open("README.rst", "r") as file:
     long_description = file.read()
 
 setuptools.setup(
-    name="pykicad",
+    name="pykicadlib",
     version=__version__,
-    description="KiCAD symbol and footprint parser/generator",
+    description="Python KiCAD library parser/generator",
     long_description=long_description,
-    keywords="KiCAD symbol footprint device PCB",
+    keywords="KiCAD symbol footprint device PCB schematic",
     license="MIT",
     author="Benjamin Füldner",
     author_email="benjamin@fueldner.net",
-    url="https://code.fueldner.net/opensource/pykicad",
+    url="https://code.fueldner.net/opensource/pykicadlib",
     project_urls={
-        'Source': 'https://github.com/bfueldner/pykicad',
-        'Bug Reports': 'https://github.com/bfueldner/pykicad/issues',
+        'Source': 'https://github.com/bfueldner/pykicadlib',
+        'Bug Reports': 'https://github.com/bfueldner/pykicadlib/issues',
     },
     packages=setuptools.find_packages(),
     classifiers=[

@@ -1,7 +1,7 @@
 import time
 
-import pykicad
-import pykicad.config
+import pykicadlib
+import pykicadlib.config
 
 registry = {}
 
@@ -44,22 +44,22 @@ class base(object, metaclass = register_generator):
 
     def __str__(self):
         parts = [
-            str(pykicad.footprint.type.key_data('tedit', '{:8X}'.format(int(time.time()))))
+            str(pykicadlib.footprint.type.key_data('tedit', '{:8X}'.format(int(time.time()))))
         ]
 
         if self.description is not None:
             parts += [
-                str(pykicad.footprint.type.key_data('descr', pykicad.footprint.type.name(self.description)))
+                str(pykicadlib.footprint.type.key_data('descr', pykicadlib.footprint.type.name(self.description)))
             ]
 
         if self.tags is not None:
             parts += [
-                str(pykicad.footprint.type.key_data('tags', pykicad.footprint.type.name(self.tags)))
+                str(pykicadlib.footprint.type.key_data('tags', pykicadlib.footprint.type.name(self.tags)))
             ]
 
         if self.technology.value is not None:
             parts += [
-                str(pykicad.footprint.type.key_data('attr', self.technology))
+                str(pykicadlib.footprint.type.key_data('attr', self.technology))
             ]
 
         for element in self.elements:
@@ -67,21 +67,21 @@ class base(object, metaclass = register_generator):
 
         if self.model is not None:
             model = [
-                str(pykicad.footprint.type.key_data('at', pykicad.footprint.type.key_data('xyz', pykicad.footprint.type.point3d(0.0, 0.0, 0.0) ) )),
-                str(pykicad.footprint.type.key_data('scale', pykicad.footprint.type.key_data('xyz', pykicad.footprint.type.point3d(1.0, 1.0, 1.0) ) )),
-                str(pykicad.footprint.type.key_data('rotate', pykicad.footprint.type.key_data('xyz', pykicad.footprint.type.point3d(0.0, 0.0, 0.0) ) ))
+                str(pykicadlib.footprint.type.key_data('at', pykicadlib.footprint.type.key_data('xyz', pykicadlib.footprint.type.point3d(0.0, 0.0, 0.0) ) )),
+                str(pykicadlib.footprint.type.key_data('scale', pykicadlib.footprint.type.key_data('xyz', pykicadlib.footprint.type.point3d(1.0, 1.0, 1.0) ) )),
+                str(pykicadlib.footprint.type.key_data('rotate', pykicadlib.footprint.type.key_data('xyz', pykicadlib.footprint.type.point3d(0.0, 0.0, 0.0) ) ))
             ]
 
             model = '\n    '.join(model)
             parts += [
-                str(pykicad.footprint.type.key_data('model', [pykicad.footprint.type.name(self.model), '\n    '+model+'\n']))
+                str(pykicadlib.footprint.type.key_data('model', [pykicadlib.footprint.type.name(self.model), '\n    '+model+'\n']))
             ]
 
-        return str(pykicad.footprint.type.key_data('module', [pykicad.footprint.type.name(self.name), pykicad.footprint.type.key_data('layer', pykicad.footprint.layer.copper_top), '\n  '.join(parts) ]))
+        return str(pykicadlib.footprint.type.key_data('module', [pykicadlib.footprint.type.name(self.name), pykicadlib.footprint.type.key_data('layer', pykicadlib.footprint.layer.copper_top), '\n  '.join(parts) ]))
 
         x = '''
         result = '(module {} (tedit {:8X})\n'.format(self.name, int(time.time()))
-        if self.technology == pykicad.footprint.type.technology.smd:
+        if self.technology == pykicadlib.footprint.type.technology.smd:
             result += '  (attr smd)\n'
 
         if len(self.description):

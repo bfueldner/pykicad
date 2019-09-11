@@ -1,13 +1,13 @@
 import unittest
-import pykicad.footprint
+import pykicadlib.footprint.type
 
 
 class TestFootprintTypeName(unittest.TestCase):
     def test_name(self):
-        self.assertEqual(str(pykicad.footprint.type.name('Text')), '"Text"')
-        self.assertEqual(str(pykicad.footprint.type.name('Text "with" double quote')), '"Text \"\"with\"\" double quote"')
+        self.assertEqual(str(pykicadlib.footprint.type.name('Text')), '"Text"')
+        self.assertEqual(str(pykicadlib.footprint.type.name('Text "with" double quote')), '"Text \"\"with\"\" double quote"')
 
-        test = pykicad.footprint.type.name('abc')
+        test = pykicadlib.footprint.type.name('abc')
         self.assertEqual(str(test), '"abc"')
 
         test.value = '123'
@@ -16,7 +16,7 @@ class TestFootprintTypeName(unittest.TestCase):
 
 class TestFootprintTypeValue(unittest.TestCase):
     def test_value(self):
-        test = pykicad.footprint.type.value(000.000)
+        test = pykicadlib.footprint.type.value(000.000)
         self.assertEqual(str(test), '0.0')
 
         test.value = 123.456
@@ -25,7 +25,7 @@ class TestFootprintTypeValue(unittest.TestCase):
 
 class TestFootprintTypePoint2d(unittest.TestCase):
     def test_point2d(self):
-        test = pykicad.footprint.type.point2d(0.0, 0.0)
+        test = pykicadlib.footprint.type.point2d(0.0, 0.0)
         self.assertEqual(str(test), '0.0 0.0')
 
         test.x = 1000000.0
@@ -35,7 +35,7 @@ class TestFootprintTypePoint2d(unittest.TestCase):
 
 class TestFootprintTypePoint3d(unittest.TestCase):
     def test_point3d(self):
-        test = pykicad.footprint.type.point3d(0.0, 0.0, 0.0)
+        test = pykicadlib.footprint.type.point3d(0.0, 0.0, 0.0)
         self.assertEqual(str(test), '0.0 0.0 0.0')
 
         test.x = 1000000.0
@@ -46,7 +46,7 @@ class TestFootprintTypePoint3d(unittest.TestCase):
 
 class TestFootprintTypeArea(unittest.TestCase):
     def test_area(self):
-        test = pykicad.footprint.type.area(-1.0, -2.0, 1.0, 2.0)
+        test = pykicadlib.footprint.type.area(-1.0, -2.0, 1.0, 2.0)
         self.assertEqual(str(test), '-1.0 -2.0 1.0 2.0')
 
         test.x1 = -20.0
@@ -58,12 +58,12 @@ class TestFootprintTypeArea(unittest.TestCase):
 
 class TestFootprintTypeKeyData(unittest.TestCase):
     def test_key_data(self):
-        self.assertEqual(str(pykicad.footprint.type.key_data('name', pykicad.footprint.type.name('abc'))), '(name "abc")')
-        self.assertEqual(str(pykicad.footprint.type.key_data('size', pykicad.footprint.type.value(0.0))), '(size 0.0)')
-        self.assertEqual(str(pykicad.footprint.type.key_data('pos', pykicad.footprint.type.point2d(1.0, 2.0))), '(pos 1.0 2.0)')
-        self.assertEqual(str(pykicad.footprint.type.key_data('xyz', pykicad.footprint.type.point3d(1.0, 2.0, 3.0))), '(xyz 1.0 2.0 3.0)')
-        self.assertEqual(str(pykicad.footprint.type.key_data('layer', pykicad.footprint.layer.copper_top)), '(layer F.Cu)')
-        self.assertEqual(str(pykicad.footprint.type.key_data('layers', [
-            pykicad.footprint.layer.copper_top,
-            pykicad.footprint.layer.solderpaste_top,
-            pykicad.footprint.layer.soldermask_top])), '(layers F.Cu F.Paste F.Mask)')
+        self.assertEqual(str(pykicadlib.footprint.type.key_data('name', pykicadlib.footprint.type.name('abc'))), '(name "abc")')
+        self.assertEqual(str(pykicadlib.footprint.type.key_data('size', pykicadlib.footprint.type.value(0.0))), '(size 0.0)')
+        self.assertEqual(str(pykicadlib.footprint.type.key_data('pos', pykicadlib.footprint.type.point2d(1.0, 2.0))), '(pos 1.0 2.0)')
+        self.assertEqual(str(pykicadlib.footprint.type.key_data('xyz', pykicadlib.footprint.type.point3d(1.0, 2.0, 3.0))), '(xyz 1.0 2.0 3.0)')
+        self.assertEqual(str(pykicadlib.footprint.type.key_data('layer', pykicadlib.footprint.layer.copper_top)), '(layer F.Cu)')
+        self.assertEqual(str(pykicadlib.footprint.type.key_data('layers', [
+            pykicadlib.footprint.layer.copper_top,
+            pykicadlib.footprint.layer.solderpaste_top,
+            pykicadlib.footprint.layer.soldermask_top])), '(layers F.Cu F.Paste F.Mask)')

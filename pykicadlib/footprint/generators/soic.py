@@ -1,6 +1,6 @@
-import kicad.footprint.generator
+import pykicadlib.footprint.generator
 
-class soic(kicad.footprint.generator.base):
+class soic(pykicadlib.footprint.generator.base):
     '''Generates footprint for small outline ICs with marker for pin one.
 
 * `name`: Name of footprint
@@ -17,33 +17,33 @@ class soic(kicad.footprint.generator.base):
 '''
 
     def __init__(self, name, model, description, tags, package_width, package_height, pad_width, pad_height, pad_grid, pad_distance, pad_count):
-        super().__init__(kicad.footprint.type.footprint.smd, name, model, description, tags)
+        super().__init__(pykicadlib.footprint.type.footprint.smd, name, model, description, tags)
 
         if pad_count % 2:
             raise ValueError("pad_count is odd")
 
         # Reference text
         super().add(
-            kicad.footprint.element.text(
-                kicad.footprint.layer.silkscreen_top,
-                kicad.footprint.type.text.reference,
+            pykicadlib.footprint.element.text(
+                pykicadlib.footprint.layer.silkscreen_top,
+                pykicadlib.footprint.type.text.reference,
                 None,
-                -package_width / 2 - kicad.config.footprint.REFERENCE_FONT_SIZE, 0.0,
-                kicad.config.footprint.REFERENCE_FONT_SIZE,
-                kicad.config.footprint.REFERENCE_FONT_THICKNESS,
+                -package_width / 2 - pykicadlib.config.footprint.REFERENCE_FONT_SIZE, 0.0,
+                pykicadlib.config.footprint.REFERENCE_FONT_SIZE,
+                pykicadlib.config.footprint.REFERENCE_FONT_THICKNESS,
                 90.0,
             )
         )
 
         # Value text
         super().add(
-            kicad.footprint.element.text(
-                kicad.footprint.layer.fabrication_top,
-                kicad.footprint.type.text.value,
+            pykicadlib.footprint.element.text(
+                pykicadlib.footprint.layer.fabrication_top,
+                pykicadlib.footprint.type.text.value,
                 None,
                 0.0, 0.0,
-                kicad.config.footprint.VALUE_FONT_SIZE,
-                kicad.config.footprint.VALUE_FONT_THICKNESS
+                pykicadlib.config.footprint.VALUE_FONT_SIZE,
+                pykicadlib.config.footprint.VALUE_FONT_THICKNESS
             )
         )
 
@@ -54,18 +54,18 @@ class soic(kicad.footprint.generator.base):
 
         # Case
         super().add(
-            kicad.footprint.element.centered_rectangle(
-                kicad.footprint.layer.silkscreen_top,
+            pykicadlib.footprint.element.centered_rectangle(
+                pykicadlib.footprint.layer.silkscreen_top,
                 0, 0, package_width, package_height,
-                kicad.config.footprint.PACKAGE_LINE_WIDTH,
+                pykicadlib.config.footprint.PACKAGE_LINE_WIDTH,
             )
         )
 
         super().add(
-            kicad.footprint.element.line(
-                kicad.footprint.layer.silkscreen_top,
+            pykicadlib.footprint.element.line(
+                pykicadlib.footprint.layer.silkscreen_top,
                 -line_x, line_y, line_x, line_y,
-                kicad.config.footprint.PACKAGE_LINE_WIDTH
+                pykicadlib.config.footprint.PACKAGE_LINE_WIDTH
             )
         )
 
@@ -74,21 +74,21 @@ class soic(kicad.footprint.generator.base):
 
         # Marker
         super().add(
-            kicad.footprint.element.circle(
-                kicad.footprint.layer.silkscreen_top,
+            pykicadlib.footprint.element.circle(
+                pykicadlib.footprint.layer.silkscreen_top,
                 x, line_y, x - 0.3, line_y,
-                kicad.config.footprint.PACKAGE_LINE_WIDTH
+                pykicadlib.config.footprint.PACKAGE_LINE_WIDTH
             )
         )
 
         # Pads
         for i in range(pad_count // 2):
             super().add(
-                kicad.footprint.element.pad(
-                    kicad.footprint.layers.smd,
+                pykicadlib.footprint.element.pad(
+                    pykicadlib.footprint.layers.smd,
                     str(pin),
-                    kicad.footprint.type.technology.smd,
-                    kicad.footprint.type.shape.rectangle,
+                    pykicadlib.footprint.type.technology.smd,
+                    pykicadlib.footprint.type.shape.rectangle,
                     x, pad_distance / 2,
                     pad_width, pad_height
                 )
@@ -99,11 +99,11 @@ class soic(kicad.footprint.generator.base):
         for i in range(pad_count // 2, pad_count):
             x -= pad_grid
             super().add(
-                kicad.footprint.element.pad(
-                    kicad.footprint.layers.smd,
+                pykicadlib.footprint.element.pad(
+                    pykicadlib.footprint.layers.smd,
                     str(pin),
-                    kicad.footprint.type.technology.smd,
-                    kicad.footprint.type.shape.rectangle,
+                    pykicadlib.footprint.type.technology.smd,
+                    pykicadlib.footprint.type.shape.rectangle,
                     x, -pad_distance / 2,
                     pad_width, pad_height
                 )

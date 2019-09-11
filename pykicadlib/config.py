@@ -1,5 +1,5 @@
-class symbols(object):
-    '''Symbols configuration'''
+class symbol(object):
+    '''Symbol configuration'''
 
     ROOT = '${KICAD_SYMBOL_DIR}'
 
@@ -24,10 +24,12 @@ class symbols(object):
 
     POWER_SYMBOL_REFERENCE = ['#PWR']
 
+
 class documents():
     '''Documents configuration'''
 
     ROOT = '${KICAD_DOCUMENT_DIR}'
+
 
 class packages3d():
     '''3D packages configuration'''
@@ -35,6 +37,7 @@ class packages3d():
     ROOT = '${KISYS3DMOD}'
     FOLDER_EXTENSION = '.3dshapes'
     FILE_EXTENSION = ['stp', 'wrl']
+
 
 class footprint():
     '''Footprint configuration'''

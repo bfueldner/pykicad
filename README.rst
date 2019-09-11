@@ -1,25 +1,25 @@
-.. image:: https://img.shields.io/pypi/v/pykicad
-    :target: https://pypi.org/project/pykicad
+.. image:: https://img.shields.io/pypi/v/pykicadlib
+    :target: https://pypi.org/project/pykicadlib
     :alt: Latest version on PyPi
 
-.. image:: https://img.shields.io/pypi/pyversions/pykicad
-    :target: https://pypi.org/project/pykicad
+.. image:: https://img.shields.io/pypi/pyversions/pykicadlib
+    :target: https://pypi.org/project/pykicadlib
     :alt: Python versions
 
-.. image:: https://img.shields.io/pypi/l/pykicad
-    :target: https://pypi.org/project/pykicad
+.. image:: https://img.shields.io/pypi/l/pykicadlib
+    :target: https://pypi.org/project/pykicadlib
     :alt: License
 
-.. image:: https://travis-ci.org/bfueldner/pykicad.svg?branch=master
-    :target: https://travis-ci.org/bfueldner/pykicad
+.. image:: https://travis-ci.org/bfueldner/pykicadlib.svg?branch=master
+    :target: https://travis-ci.org/bfueldner/pykicadlib
     :alt: Build state
 
-.. image:: https://coveralls.io/repos/github/bfueldner/pykicad/badge.svg?branch=master
-    :target: https://coveralls.io/github/bfueldner/pykicad?branch=master
+.. image:: https://coveralls.io/repos/github/bfueldner/pykicadlib/badge.svg?branch=master
+    :target: https://coveralls.io/github/bfueldner/pykicadlib?branch=master
     :alt: Coverage
 
 
-pykicad
-=======
+pykicadlib
+==========
 
-KiCAD symbol and footprint parser/generator package for Python 3.5+.
+Python KiCAD library parser/generator package for Python 3.5+.

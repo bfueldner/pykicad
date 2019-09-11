@@ -1,34 +1,34 @@
-import pykicad
+import pykicadlib
 
 
 class text(object):
     '''Text at x/y'''
 
-    def __init__(self, layer, text, value, x, y, size, thickness, angle = 0.0, style = pykicad.footprint.type.style.normal, visible = True):
+    def __init__(self, layer, text, value, x, y, size, thickness, angle = 0.0, style = pykicadlib.footprint.type.style.normal, visible = True):
         self.text = text
-        if text == pykicad.footprint.type.text.reference:
+        if text == pykicadlib.footprint.type.text.reference:
             if value is not None:
                 raise ValueError('Value has to be None when text is reference')
             self.value = 'REF**'
-        elif text == pykicad.footprint.type.text.value:
+        elif text == pykicadlib.footprint.type.text.value:
             if value is not None:
                 raise ValueError('Value has to be None when text is value')
             self.value = 'VAL**'
         else:
-            self.value = pykicad.footprint.type.name(value)
-        self.at = pykicad.footprint.type.key_data('at', pykicad.footprint.type.point3d(x, y, angle))
-        self.layer = pykicad.footprint.type.key_data('layer', layer)
+            self.value = pykicadlib.footprint.type.name(value)
+        self.at = pykicadlib.footprint.type.key_data('at', pykicadlib.footprint.type.point3d(x, y, angle))
+        self.layer = pykicadlib.footprint.type.key_data('layer', layer)
         self.visible = visible
-        self.size = pykicad.footprint.type.key_data('size', pykicad.footprint.type.point2d(size, size))
-        self.thickness = pykicad.footprint.type.key_data('thickness', pykicad.footprint.type.value(thickness))
+        self.size = pykicadlib.footprint.type.key_data('size', pykicadlib.footprint.type.point2d(size, size))
+        self.thickness = pykicadlib.footprint.type.key_data('thickness', pykicadlib.footprint.type.value(thickness))
         self.style = style
 
     def __str__(self):
         fontlist = [self.size, self.thickness]
-        if self.style != pykicad.footprint.type.style.normal:
+        if self.style != pykicadlib.footprint.type.style.normal:
             fontlist += [self.style]
-        font = pykicad.footprint.type.key_data('font', fontlist)
-        effects = pykicad.footprint.type.key_data('effects', font)
+        font = pykicadlib.footprint.type.key_data('font', fontlist)
+        effects = pykicadlib.footprint.type.key_data('effects', font)
 
         list = [str(self.text), str(self.value), str(self.at), str(self.layer)]
         if self.visible == False:
@@ -41,11 +41,11 @@ class arc(object):
     '''Arc between x1/y1 and x2/y2 with given angle'''
 
     def __init__(self, layer, x1, y1, x2, y2, angle, width):
-        self.start = pykicad.footprint.type.key_data('start', pykicad.footprint.type.point2d(x1, y1))
-        self.end = pykicad.footprint.type.key_data('end', pykicad.footprint.type.point2d(x2, y2))
-        self.angle = pykicad.footprint.type.key_data('angle', angle)
-        self.layer = pykicad.footprint.type.key_data('layer', layer)
-        self.width = pykicad.footprint.type.key_data('width', width)
+        self.start = pykicadlib.footprint.type.key_data('start', pykicadlib.footprint.type.point2d(x1, y1))
+        self.end = pykicadlib.footprint.type.key_data('end', pykicadlib.footprint.type.point2d(x2, y2))
+        self.angle = pykicadlib.footprint.type.key_data('angle', angle)
+        self.layer = pykicadlib.footprint.type.key_data('layer', layer)
+        self.width = pykicadlib.footprint.type.key_data('width', width)
 
     def __str__(self):
         list = [str(self.start), str(self.end), str(self.angle), str(self.layer), str(self.width)]
@@ -56,10 +56,10 @@ class circle(object):
     '''Circle with center x1/y1 and radius through point x2/y2'''
 
     def __init__(self, layer, x1, y1, x2, y2, width):
-        self.center = pykicad.footprint.type.key_data('center', pykicad.footprint.type.point2d(x1, y1))
-        self.end = pykicad.footprint.type.key_data('end', pykicad.footprint.type.point2d(x2, y2))
-        self.layer = pykicad.footprint.type.key_data('layer', layer)
-        self.width = pykicad.footprint.type.key_data('width', width)
+        self.center = pykicadlib.footprint.type.key_data('center', pykicadlib.footprint.type.point2d(x1, y1))
+        self.end = pykicadlib.footprint.type.key_data('end', pykicadlib.footprint.type.point2d(x2, y2))
+        self.layer = pykicadlib.footprint.type.key_data('layer', layer)
+        self.width = pykicadlib.footprint.type.key_data('width', width)
 
     def __str__(self):
         list = [str(self.center), str(self.end), str(self.layer), str(self.width)]
@@ -70,10 +70,10 @@ class line(object):
     '''Line from x1/y1 to x2/y2'''
 
     def __init__(self, layer, x1, y1, x2, y2, width):
-        self.start = pykicad.footprint.type.key_data('start', pykicad.footprint.type.point2d(x1, y1))
-        self.end = pykicad.footprint.type.key_data('end', pykicad.footprint.type.point2d(x2, y2))
-        self.layer = pykicad.footprint.type.key_data('layer', layer)
-        self.width = pykicad.footprint.type.key_data('width', pykicad.footprint.type.value(width))
+        self.start = pykicadlib.footprint.type.key_data('start', pykicadlib.footprint.type.point2d(x1, y1))
+        self.end = pykicadlib.footprint.type.key_data('end', pykicadlib.footprint.type.point2d(x2, y2))
+        self.layer = pykicadlib.footprint.type.key_data('layer', layer)
+        self.width = pykicadlib.footprint.type.key_data('width', pykicadlib.footprint.type.value(width))
 
     def __str__(self):
         list = [str(self.start), str(self.end), str(self.layer), str(self.width)]
@@ -84,32 +84,32 @@ class pad(object):
     '''Pad at x/y with size width/height in given type/shap on layers'''
 
     def __init__(self, layers, name, technology, shape, x, y, width, height, drill = None, angle = 0.0):
-        self.name = pykicad.footprint.type.name(name if technology != pykicad.footprint.type.technology.np_thru_hole else '')
+        self.name = pykicadlib.footprint.type.name(name if technology != pykicadlib.footprint.type.technology.np_thru_hole else '')
         self.technology = technology
         self.shape = shape
-        self.at = pykicad.footprint.type.key_data('at', pykicad.footprint.type.point3d(x, y, angle))
-        if shape == pykicad.footprint.type.shape.circle:
+        self.at = pykicadlib.footprint.type.key_data('at', pykicadlib.footprint.type.point3d(x, y, angle))
+        if shape == pykicadlib.footprint.type.shape.circle:
             if width != height:
                 raise ValueError('width and height must be equal if shape is a circle')
-            self.size = pykicad.footprint.type.key_data('size', pykicad.footprint.type.point2d(width, height))
+            self.size = pykicadlib.footprint.type.key_data('size', pykicadlib.footprint.type.point2d(width, height))
         else:
-            self.size = pykicad.footprint.type.key_data('size', pykicad.footprint.type.point2d(width, height))
+            self.size = pykicadlib.footprint.type.key_data('size', pykicadlib.footprint.type.point2d(width, height))
 
-        if technology == pykicad.footprint.type.technology.thru_hole or technology == pykicad.footprint.type.technology.np_thru_hole:
+        if technology == pykicadlib.footprint.type.technology.thru_hole or technology == pykicadlib.footprint.type.technology.np_thru_hole:
             if drill is None:
                 raise ValueError('Thru hole pads need a drill diameter')
-            self.drill = pykicad.footprint.type.key_data('drill', pykicad.footprint.type.value(drill))
+            self.drill = pykicadlib.footprint.type.key_data('drill', pykicadlib.footprint.type.value(drill))
         else:
             self.drill = None
-        self.layers = pykicad.footprint.type.key_data('layers', layers)
-        self.roundrect_rratio = pykicad.footprint.type.key_data('roundrect_rratio', pykicad.footprint.type.value(0.25))
+        self.layers = pykicadlib.footprint.type.key_data('layers', layers)
+        self.roundrect_rratio = pykicadlib.footprint.type.key_data('roundrect_rratio', pykicadlib.footprint.type.value(0.25))
 
     def __str__(self):
         list = [str(self.name), str(self.technology), str(self.shape), str(self.at), str(self.size)]
         if self.drill is not None:
             list += [str(self.drill)]
         list += [str(self.layers)]
-        if self.shape == pykicad.footprint.type.shape.round_rectangle:
+        if self.shape == pykicadlib.footprint.type.shape.round_rectangle:
             list += [str(self.round_rectangle)]
         return '(pad ' + ' '.join(list) +')'
 

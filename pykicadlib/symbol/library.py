@@ -2,8 +2,8 @@ import re
 import csv
 from enum import Enum
 
-import pykicad
-import pykicad.config
+import pykicadlib
+import pykicadlib.config
 
 
 class symbol(object):
@@ -16,8 +16,8 @@ class symbol(object):
         self.document = document
         self.alias = alias.split()
         self.offset = 0
-        self.pinnumber = pykicad.symbols.type.visible.no
-        self.pinname = pykicad.symbols.type.visible.no
+        self.pinnumber = pykicadlib.symbol.type.visible.no
+        self.pinname = pykicadlib.symbol.type.visible.no
         self.fields = []
         self.elements = []
 
@@ -81,20 +81,20 @@ class symbol(object):
         # Take fields only for unit zero or one
         if unit <= 1:
             # Iterate over fields and add field element, if found in map
-            for field in pykicad.symbols.type.field:
+            for field in pykicadlib.symbol.type.field:
                 if field.name in map:
                     self.fields.append(
-                        pykicad.symbols.element.field(
+                        pykicadlib.symbol.element.field(
                             field,
                             map[field.name],
                             0,
                             0,
-                            pykicad.config.symbols.FIELD_TEXT_SIZE,
-                            pykicad.symbols.type.orientation.horizontal,
-                            pykicad.symbols.type.visibility.invisible if field == pykicad.symbols.type.field.footprint or field == pykicad.symbols.type.field.document else pykicad.symbols.type.visibility.visible,
-                            pykicad.symbols.type.hjustify.center,
-                            pykicad.symbols.type.vjustify.center,
-                            pykicad.symbols.type.style.none
+                            pykicadlib.config.symbol.FIELD_TEXT_SIZE,
+                            pykicadlib.symbol.type.orientation.horizontal,
+                            pykicadlib.symbol.type.visibility.invisible if field == pykicadlib.symbol.type.field.footprint or field == pykicadlib.symbol.type.field.document else pykicadlib.symbol.type.visibility.visible,
+                            pykicadlib.symbol.type.hjustify.center,
+                            pykicadlib.symbol.type.vjustify.center,
+                            pykicadlib.symbol.type.style.none
                         )
                     )
 
@@ -152,10 +152,10 @@ class symbol(object):
                 #   self.name = part[1]
                 #   self.reference = part[2]
                     self.offset = int(part[4])
-                    self.pinnumber = pykicad.symbols.type.visible.from_str(part[5])
-                    self.pinname = pykicad.symbols.type.visible.from_str(part[6])
-                #   self.units = pykicad.symbols.type.units.from_str(part[8])
-                #   self.flag = pykicad.symbols.type.flag.from_str(part[9])
+                    self.pinnumber = pykicadlib.symbol.type.visible.from_str(part[5])
+                    self.pinname = pykicadlib.symbol.type.visible.from_str(part[6])
+                #   self.units = pykicadlib.symbol.type.units.from_str(part[8])
+                #   self.flag = pykicadlib.symbol.type.flag.from_str(part[9])
                     parser = position.definition
             elif key == 'ALIAS':
                 pass
@@ -167,7 +167,7 @@ class symbol(object):
                 parser = position.unknown
             elif parser == position.drawing:
                 # Elements, fields are ignored!
-                element = pykicad.symbols.element.from_str(line, unify)
+                element = pykicadlib.symbol.element.from_str(line, unify)
                 element.unit = unit
                 self.elements.append(element)
 
@@ -183,18 +183,18 @@ class symbol(object):
             last_x = 0
             last_y = 0
 
-            if direction == pykicad.symbols.type.direction.left or direction == pykicad.symbols.type.direction.right:
-                pin_offset_x = -pykicad.config.symbols.PIN_LENGTH
+            if direction == pykicadlib.symbol.type.direction.left or direction == pykicadlib.symbol.type.direction.right:
+                pin_offset_x = -pykicadlib.config.symbol.PIN_LENGTH
                 pin_offset_y = 0
-                line_offset_x = int(pykicad.config.symbols.PIN_OFFSET * 0.75)
+                line_offset_x = int(pykicadlib.config.symbol.PIN_OFFSET * 0.75)
                 line_offset_y = 0
-            elif direction == pykicad.symbols.type.direction.up or direction == pykicad.symbols.type.direction.down:
+            elif direction == pykicadlib.symbol.type.direction.up or direction == pykicadlib.symbol.type.direction.down:
                 pin_offset_x = 0
-                pin_offset_y = pykicad.config.symbols.PIN_LENGTH
+                pin_offset_y = pykicadlib.config.symbol.PIN_LENGTH
                 line_offset_x = 0
-                line_offset_y = -int(pykicad.config.symbols.PIN_OFFSET * 0.75)
+                line_offset_y = -int(pykicadlib.config.symbol.PIN_OFFSET * 0.75)
 
-            if direction == pykicad.symbols.type.direction.right or direction == pykicad.symbols.type.direction.down:
+            if direction == pykicadlib.symbol.type.direction.right or direction == pykicadlib.symbol.type.direction.down:
                 pin_offset_x = -pin_offset_x
                 pin_offset_y = -pin_offset_y
                 line_offset_x = -line_offset_x
@@ -212,13 +212,13 @@ class symbol(object):
                         end_x = int(last_x - step_x * 0.25)
                         end_y = int(last_y - step_y * 0.25)
 
-                        line = pykicad.symbols.element.polygon(
-                            pykicad.config.symbols.DECORATION_THICKNESS,
-                            pykicad.symbols.type.fill.none,
+                        line = pykicadlib.symbol.element.polygon(
+                            pykicadlib.config.symbol.DECORATION_THICKNESS,
+                            pykicadlib.symbol.type.fill.none,
                             unit
                         )
-                        line.add(pykicad.symbols.element.point(start_x + line_offset_x, start_y + line_offset_y))
-                        line.add(pykicad.symbols.element.point(end_x + line_offset_x, end_y + line_offset_y))
+                        line.add(pykicadlib.symbol.element.point(start_x + line_offset_x, start_y + line_offset_y))
+                        line.add(pykicadlib.symbol.element.point(end_x + line_offset_x, end_y + line_offset_y))
                         result.append(line)
 
                     name = item['name']
@@ -227,19 +227,19 @@ class symbol(object):
                     last_y = y
 
                 if len(item['name']):
-                    electric = pykicad.symbols.type.electric.from_name(item['electric'])
-                    shape = pykicad.symbols.type.shape.from_name(item['shape'])
+                    electric = pykicadlib.symbol.type.electric.from_name(item['electric'])
+                    shape = pykicadlib.symbol.type.shape.from_name(item['shape'])
 
                     result.append(
-                        pykicad.symbols.element.pin(
+                        pykicadlib.symbol.element.pin(
                             x + pin_offset_x,
                             y + pin_offset_y,
                             item['name'] if length == 0 else '~',
                             item['number'],
-                            pykicad.config.symbols.PIN_LENGTH,
+                            pykicadlib.config.symbol.PIN_LENGTH,
                             direction,
-                            pykicad.config.symbols.PIN_NAME_SIZE,
-                            pykicad.config.symbols.PIN_NUMBER_SIZE,
+                            pykicadlib.config.symbol.PIN_NAME_SIZE,
+                            pykicadlib.config.symbol.PIN_NUMBER_SIZE,
                             electric,
                             shape,
                             True,
@@ -257,20 +257,20 @@ class symbol(object):
                 end_x = int(last_x - step_x * 0.25)
                 end_y = int(last_y - step_y * 0.25)
 
-                line = pykicad.symbols.element.polygon(
-                    pykicad.config.symbols.DECORATION_THICKNESS,
-                    pykicad.symbols.type.fill.none,
+                line = pykicadlib.symbol.element.polygon(
+                    pykicadlib.config.symbol.DECORATION_THICKNESS,
+                    pykicadlib.symbol.type.fill.none,
                     unit
                 )
-                line.add(pykicad.symbols.element.point(start_x + line_offset_x, start_y + line_offset_y))
-                line.add(pykicad.symbols.element.point(end_x + line_offset_x, end_y + line_offset_y))
+                line.add(pykicadlib.symbol.element.point(start_x + line_offset_x, start_y + line_offset_y))
+                line.add(pykicadlib.symbol.element.point(end_x + line_offset_x, end_y + line_offset_y))
                 result.append(line)
             return result
 
         # Load pins and pinname size and order them by direction
         pins = {}
         size = {}
-        for direction in pykicad.symbols.type.direction:
+        for direction in pykicadlib.symbol.type.direction:
             pins[direction] = []
             size[direction] = 0
 
@@ -286,39 +286,39 @@ class symbol(object):
                     data = dict(zip(header, row))
 
                     # Order pins by direction
-                    direction = pykicad.symbols.type.direction.from_name(data['direction'])
+                    direction = pykicadlib.symbol.type.direction.from_name(data['direction'])
                     pins[direction].append(data)
                     if len(data['name']) and data['name'] != '~':
-                        size[direction] = max(size[direction], pykicad.config.symbols.PIN_OFFSET + len(data['name'].replace('~', '')) * pykicad.config.symbols.PIN_NAME_SIZE)
+                        size[direction] = max(size[direction], pykicadlib.config.symbol.PIN_OFFSET + len(data['name'].replace('~', '')) * pykicadlib.config.symbol.PIN_NAME_SIZE)
 
         # Set default size
-        for direction in pykicad.symbols.type.direction:
+        for direction in pykicadlib.symbol.type.direction:
             if len(pins[direction]):
-                if direction == pykicad.symbols.type.direction.left or pykicad.symbols.type.direction.right:
-                    size[direction] = max(size[direction], pykicad.config.symbols.PIN_GRID * 2)
+                if direction == pykicadlib.symbol.type.direction.left or pykicadlib.symbol.type.direction.right:
+                    size[direction] = max(size[direction], pykicadlib.config.symbol.PIN_GRID * 2)
                 else:
-                    size[direction] = max(size[direction], int(pykicad.config.symbols.PIN_GRID * 1.5))
+                    size[direction] = max(size[direction], int(pykicadlib.config.symbol.PIN_GRID * 1.5))
 
         # Adjust left and right pin count to satisfy zip function
-        if len(pins[pykicad.symbols.type.direction.left]) > len(pins[pykicad.symbols.type.direction.right]):
-            pins[pykicad.symbols.type.direction.right].extend([{'name': ''}] * (len(pins[pykicad.symbols.type.direction.left]) - len(pins[pykicad.symbols.type.direction.right])))
-        elif len(pins[pykicad.symbols.type.direction.right]) > len(pins[pykicad.symbols.type.direction.left]):
-            pins[pykicad.symbols.type.direction.left].extend([{'name': ''}] * (len(pins[pykicad.symbols.type.direction.right]) - len(pins[pykicad.symbols.type.direction.left])))
+        if len(pins[pykicadlib.symbol.type.direction.left]) > len(pins[pykicadlib.symbol.type.direction.right]):
+            pins[pykicadlib.symbol.type.direction.right].extend([{'name': ''}] * (len(pins[pykicadlib.symbol.type.direction.left]) - len(pins[pykicadlib.symbol.type.direction.right])))
+        elif len(pins[pykicadlib.symbol.type.direction.right]) > len(pins[pykicadlib.symbol.type.direction.left]):
+            pins[pykicadlib.symbol.type.direction.left].extend([{'name': ''}] * (len(pins[pykicadlib.symbol.type.direction.right]) - len(pins[pykicadlib.symbol.type.direction.left])))
 
         # Two grid spaces above first pin and below last pin
-        height = (max(len(pins[pykicad.symbols.type.direction.left]), len(pins[pykicad.symbols.type.direction.right])) + 1) * pykicad.config.symbols.PIN_GRID
-        height = max(height, pykicad.config.symbols.PIN_GRID * 3)
-        if len(pins[pykicad.symbols.type.direction.up]) and len(pins[pykicad.symbols.type.direction.down]):
-            height = max(height, pykicad.config.symbols.PIN_GRID * 4)
+        height = (max(len(pins[pykicadlib.symbol.type.direction.left]), len(pins[pykicadlib.symbol.type.direction.right])) + 1) * pykicadlib.config.symbol.PIN_GRID
+        height = max(height, pykicadlib.config.symbol.PIN_GRID * 3)
+        if len(pins[pykicadlib.symbol.type.direction.up]) and len(pins[pykicadlib.symbol.type.direction.down]):
+            height = max(height, pykicadlib.config.symbol.PIN_GRID * 4)
 
-        width = size[pykicad.symbols.type.direction.left] + size[pykicad.symbols.type.direction.right]
+        width = size[pykicadlib.symbol.type.direction.left] + size[pykicadlib.symbol.type.direction.right]
         if len(map['section']):
-            width = max(width, pykicad.config.symbols.PIN_GRID + len(map['section']) * pykicad.config.symbols.FIELD_TEXT_SIZE)
+            width = max(width, pykicadlib.config.symbol.PIN_GRID + len(map['section']) * pykicadlib.config.symbol.FIELD_TEXT_SIZE)
         if width == 0:
-            width = (max(len(pins[pykicad.symbols.type.direction.up]), len(pins[pykicad.symbols.type.direction.down])) + 1) * pykicad.config.symbols.PIN_GRID
+            width = (max(len(pins[pykicadlib.symbol.type.direction.up]), len(pins[pykicadlib.symbol.type.direction.down])) + 1) * pykicadlib.config.symbol.PIN_GRID
 
         # Round up to next grid
-        width = (((width + (pykicad.config.symbols.PIN_GRID - 1)) // (pykicad.config.symbols.PIN_GRID)) * pykicad.config.symbols.PIN_GRID)
+        width = (((width + (pykicadlib.config.symbol.PIN_GRID - 1)) // (pykicadlib.config.symbol.PIN_GRID)) * pykicadlib.config.symbol.PIN_GRID)
 
         center_x = 0
         center_y = 0
@@ -326,73 +326,73 @@ class symbol(object):
         height_half = height // 2
 
         self.elements.append(
-            pykicad.symbols.element.rectangle(
+            pykicadlib.symbol.element.rectangle(
                 center_x - width_half,
                 center_y - height_half,
                 center_x + width_half,
                 center_y + height_half,
-                pykicad.config.symbols.ELEMENT_THICKNESS,
-                pykicad.symbols.type.fill.background,
+                pykicadlib.config.symbol.ELEMENT_THICKNESS,
+                pykicadlib.symbol.type.fill.background,
                 unit
             )
         )
 
-        if len(pins[pykicad.symbols.type.direction.up]) > 1:
-            up_x = (len(pins[pykicad.symbols.type.direction.up]) - 1) * pykicad.config.symbols.PIN_GRID // 2
+        if len(pins[pykicadlib.symbol.type.direction.up]) > 1:
+            up_x = (len(pins[pykicadlib.symbol.type.direction.up]) - 1) * pykicadlib.config.symbol.PIN_GRID // 2
         else:
             up_x = 0
 
-        if len(pins[pykicad.symbols.type.direction.down]) > 1:
-            down_x = (len(pins[pykicad.symbols.type.direction.down]) - 1) * pykicad.config.symbols.PIN_GRID // 2
+        if len(pins[pykicadlib.symbol.type.direction.down]) > 1:
+            down_x = (len(pins[pykicadlib.symbol.type.direction.down]) - 1) * pykicadlib.config.symbol.PIN_GRID // 2
         else:
             down_x = 0
 
-        self.elements.extend(create_pins(center_x - width_half, center_y + height_half - pykicad.config.symbols.PIN_GRID, 0, -pykicad.config.symbols.PIN_GRID, pins[pykicad.symbols.type.direction.left], pykicad.symbols.type.direction.left))
-        self.elements.extend(create_pins(center_x + width_half, center_y + height_half - pykicad.config.symbols.PIN_GRID, 0, -pykicad.config.symbols.PIN_GRID, pins[pykicad.symbols.type.direction.right], pykicad.symbols.type.direction.right))
-        self.elements.extend(create_pins(center_x - up_x, center_y + height_half, pykicad.config.symbols.PIN_GRID, 0, pins[pykicad.symbols.type.direction.up], pykicad.symbols.type.direction.up))
-        self.elements.extend(create_pins(center_x - down_x, center_y - height_half, pykicad.config.symbols.PIN_GRID, 0, pins[pykicad.symbols.type.direction.down], pykicad.symbols.type.direction.down))
+        self.elements.extend(create_pins(center_x - width_half, center_y + height_half - pykicadlib.config.symbol.PIN_GRID, 0, -pykicadlib.config.symbol.PIN_GRID, pins[pykicadlib.symbol.type.direction.left], pykicadlib.symbol.type.direction.left))
+        self.elements.extend(create_pins(center_x + width_half, center_y + height_half - pykicadlib.config.symbol.PIN_GRID, 0, -pykicadlib.config.symbol.PIN_GRID, pins[pykicadlib.symbol.type.direction.right], pykicadlib.symbol.type.direction.right))
+        self.elements.extend(create_pins(center_x - up_x, center_y + height_half, pykicadlib.config.symbol.PIN_GRID, 0, pins[pykicadlib.symbol.type.direction.up], pykicadlib.symbol.type.direction.up))
+        self.elements.extend(create_pins(center_x - down_x, center_y - height_half, pykicadlib.config.symbol.PIN_GRID, 0, pins[pykicadlib.symbol.type.direction.down], pykicadlib.symbol.type.direction.down))
 
         # Add decoration
-        for direction in pykicad.symbols.type.direction.left, pykicad.symbols.type.direction.right:
-            y = center_y + height_half - pykicad.config.symbols.PIN_GRID
+        for direction in pykicadlib.symbol.type.direction.left, pykicadlib.symbol.type.direction.right:
+            y = center_y + height_half - pykicadlib.config.symbol.PIN_GRID
             for item in pins[direction]:
                 if 'decoration' in item and len(item['decoration']):
-                    if item['decoration'] in pykicad.symbols.decorator.registry.keys():
-                        sign = -1 if direction == pykicad.symbols.type.direction.left else 1
-                        decorator = pykicad.symbols.decorator.registry[item['decoration']](center_x + sign * width_half, y, direction, unit)
+                    if item['decoration'] in pykicadlib.symbol.decorator.registry.keys():
+                        sign = -1 if direction == pykicadlib.symbol.type.direction.left else 1
+                        decorator = pykicadlib.symbol.decorator.registry[item['decoration']](center_x + sign * width_half, y, direction, unit)
                         self.elements.extend(decorator.elements)
                         self.decorated = True
                     else:
                         print("Warning: Unknown decorator '{}'".format(item['decoration']))
-                y -= pykicad.config.symbols.PIN_GRID
+                y -= pykicadlib.config.symbol.PIN_GRID
 
         # Add line between empty pin slots on left and right side
-        y = center_y + height_half - pykicad.config.symbols.PIN_GRID
-        for left, right in zip(pins[pykicad.symbols.type.direction.left], pins[pykicad.symbols.type.direction.right]):
+        y = center_y + height_half - pykicadlib.config.symbol.PIN_GRID
+        for left, right in zip(pins[pykicadlib.symbol.type.direction.left], pins[pykicadlib.symbol.type.direction.right]):
             if len(left['name']) == 0 and len(right['name']) == 0:
-                line = pykicad.symbols.element.polygon(
-                    pykicad.config.symbols.DECORATION_THICKNESS,
-                    pykicad.symbols.type.fill.none,
+                line = pykicadlib.symbol.element.polygon(
+                    pykicadlib.config.symbol.DECORATION_THICKNESS,
+                    pykicadlib.symbol.type.fill.none,
                     unit
                 )
-                line.add(pykicad.symbols.element.point(center_x - width_half, y))
-                line.add(pykicad.symbols.element.point(center_x + width_half, y))
+                line.add(pykicadlib.symbol.element.point(center_x - width_half, y))
+                line.add(pykicadlib.symbol.element.point(center_x + width_half, y))
                 self.elements.append(line)
-            y -= pykicad.config.symbols.PIN_GRID
+            y -= pykicadlib.config.symbol.PIN_GRID
 
         # Section name right top corner
         if len(map['section']):
             self.elements.append(
-                pykicad.symbols.element.text(
-                    center_x + width_half - pykicad.config.symbols.PIN_GRID // 2,
-                    center_y + height_half - pykicad.config.symbols.PIN_GRID // 2,
+                pykicadlib.symbol.element.text(
+                    center_x + width_half - pykicadlib.config.symbol.PIN_GRID // 2,
+                    center_y + height_half - pykicadlib.config.symbol.PIN_GRID // 2,
                     map['section'],
-                    pykicad.config.symbols.FIELD_TEXT_SIZE,
+                    pykicadlib.config.symbol.FIELD_TEXT_SIZE,
                     0.0,
-                    pykicad.symbols.type.italic.off,
-                    pykicad.symbols.type.bold.off,
-                    pykicad.symbols.type.hjustify.right,
-                    pykicad.symbols.type.vjustify.top,
+                    pykicadlib.symbol.type.italic.off,
+                    pykicadlib.symbol.type.bold.off,
+                    pykicadlib.symbol.type.hjustify.right,
+                    pykicadlib.symbol.type.vjustify.top,
                     unit
                 )
             )
@@ -402,20 +402,20 @@ class symbol(object):
 
         # Count device pins
         direction_pins = {}
-        for direction in pykicad.symbols.type.direction:
+        for direction in pykicadlib.symbol.type.direction:
             direction_pins[direction] = 0
 
         # Collect number of units and their pins used in symbol
         unit_pins = {}
         unit_count = 1
-        bounds = pykicad.symbols.element.boundary(0, 0, 0, 0)
-        pinname = pykicad.symbols.type.visible.no
+        bounds = pykicadlib.symbol.element.boundary(0, 0, 0, 0)
+        pinname = pykicadlib.symbol.type.visible.no
         for element in self.elements:
             unit_count = max(unit_count, element.unit)
-            bounds = pykicad.symbols.element.boundary.add(bounds, element.bounds)
-            if isinstance(element, pykicad.symbols.element.pin):
+            bounds = pykicadlib.symbol.element.boundary.add(bounds, element.bounds)
+            if isinstance(element, pykicadlib.symbol.element.pin):
                 if element.name != '~':
-                    pinname = pykicad.symbols.type.visible.yes
+                    pinname = pykicadlib.symbol.type.visible.yes
 
                 if element.unit in unit_pins:
                     unit_pins[element.unit] += 1
@@ -423,57 +423,57 @@ class symbol(object):
                     unit_pins[element.unit] = 1
                 direction_pins[element.direction] += 1
 
-        # Override pinname visibility on table based symbols
+        # Override pinname visibility on table based symbol
         if self.tables:
             self.pinname = pinname
 
-        # Table generated symbols have their pin names inside, if pin names exists and no decorators are used
-        if self.tables and self.decorated == False and self.pinname == pykicad.symbols.type.visible.yes:
-            self.offset = pykicad.config.symbols.PIN_OFFSET
+        # Table generated symbol have their pin names inside, if pin names exists and no decorators are used
+        if self.tables and self.decorated == False and self.pinname == pykicadlib.symbol.type.visible.yes:
+            self.offset = pykicadlib.config.symbol.PIN_OFFSET
 
         # Set pin name offset to zero, if pin names not visible
-        if self.pinname == pykicad.symbols.type.visible.no:
+        if self.pinname == pykicadlib.symbol.type.visible.no:
             self.offset = 0
 
         # Pin numbers are visible, if symbol has more than one unit or was table generated
         if (self.templates and unit_count > 1) or self.tables:
-            self.pinnumber = pykicad.symbols.type.visible.yes
+            self.pinnumber = pykicadlib.symbol.type.visible.yes
 
         # Check, if every unit has same number of pins. Then units should be swappable!
-        units = pykicad.symbols.type.units.locked
+        units = pykicadlib.symbol.type.units.locked
         if len(unit_pins) and 0 not in unit_pins and min(unit_pins.values()) == max(unit_pins.values()):
-            units = pykicad.symbols.type.units.swappable
+            units = pykicadlib.symbol.type.units.swappable
 
         # If reference matches POWER_SYMBOL_REFERENCE, than we have a power symbol
-        flag = pykicad.symbols.type.flag.power if self.reference in pykicad.config.symbols.POWER_SYMBOL_REFERENCE else pykicad.symbols.type.flag.normal
+        flag = pykicadlib.symbol.type.flag.power if self.reference in pykicadlib.config.symbol.POWER_SYMBOL_REFERENCE else pykicadlib.symbol.type.flag.normal
 
         # Overwrite fields with symbol parameters
         for field in self.fields:
-            if field.type == pykicad.symbols.type.field.name:
+            if field.type == pykicadlib.symbol.type.field.name:
                 field.value = self.name
-            elif field.type == pykicad.symbols.type.field.reference:
+            elif field.type == pykicadlib.symbol.type.field.reference:
                 field.value = self.reference
 
                 # Hide reference field, if reference starts with #
                 if self.reference[0] == '#':
-                    field.visibility = pykicad.symbols.type.visibility.invisible
-            elif field.type == pykicad.symbols.type.field.footprint:
+                    field.visibility = pykicadlib.symbol.type.visibility.invisible
+            elif field.type == pykicadlib.symbol.type.field.footprint:
                 field.value = self.footprint
-            elif field.type == pykicad.symbols.type.field.document:
+            elif field.type == pykicadlib.symbol.type.field.document:
                 field.value = self.document
 
         # Reposition visible fields
         y = bounds.y1
         for field in self.fields:
-            if field.visibility == pykicad.symbols.type.visibility.visible:
-                y -= pykicad.config.symbols.PIN_GRID
+            if field.visibility == pykicadlib.symbol.type.visibility.visible:
+                y -= pykicadlib.config.symbol.PIN_GRID
                 field.x = 0
                 field.y = y
 
         # Reposition invisible fields
         for field in self.fields:
-            if field.visibility == pykicad.symbols.type.visibility.invisible:
-                y -= pykicad.config.symbols.PIN_GRID
+            if field.visibility == pykicadlib.symbol.type.visibility.invisible:
+                y -= pykicadlib.config.symbol.PIN_GRID
                 field.x = 0
                 field.y = y
 
@@ -494,20 +494,20 @@ class symbol(object):
         return result
 
 
-class symbols(object):
-    '''List of symbols'''
+class symbol(object):
+    '''List of symbol'''
 
     def __init__(self):
-        self.symbols = []
+        self.symbol = []
 
     def add(self, symbol):
-        self.symbols.append(symbol)
+        self.symbol.append(symbol)
 
     def __str__(self):
-        result = pykicad.config.symbols.LIBRARY_START
-        for symbol in self.symbols:
+        result = pykicadlib.config.symbol.LIBRARY_START
+        for symbol in self.symbol:
             result += str(symbol)
-        result += pykicad.config.symbols.LIBRARY_END
+        result += pykicadlib.config.symbol.LIBRARY_END
         return result
 
 
@@ -546,8 +546,8 @@ class descriptions(object):
         self.descriptions.append(description)
 
     def __str__(self):
-        result = pykicad.config.symbols.DESCRIPTION_START
+        result = pykicadlib.config.symbol.DESCRIPTION_START
         for descriptions in self.descriptions:
             result += str(descriptions)
-        result += pykicad.config.symbols.DESCRIPTION_END
+        result += pykicadlib.config.symbol.DESCRIPTION_END
         return result

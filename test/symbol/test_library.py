@@ -1,5 +1,5 @@
 import unittest
-import pykicad
+import pykicadlib.symbol.library
 
 
 class TestSymbolLibrarySymbol(unittest.TestCase):
@@ -53,7 +53,7 @@ ENDDEF
             'color': 'red',
         }
 
-        test = pykicad.symbols.library.symbol('TEST', 'IC', 'SOIC:soic_8', '')
+        test = pykicadlib.symbol.library.symbol('TEST', 'IC', 'SOIC:soic_8', '')
         test.from_str(text1, map, 1)
         self.assertEqual(len(test.fields), 4)
         self.assertEqual(len(test.elements), 5)
@@ -76,5 +76,5 @@ ENDDEF
 
 class TestSymbolLibraryDescription(unittest.TestCase):
     def test_description(self):
-        test = pykicad.symbols.library.description('TEST', 'IC', 'SOIC:soic_8', '')
+        test = pykicadlib.symbol.library.description('TEST', 'IC', 'SOIC:soic_8', '')
         print(test)
