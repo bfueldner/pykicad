@@ -1,5 +1,5 @@
 """
-.. module:: pykicadlib.symbol.type
+.. module:: pykicadlib.symbol.types
    :synopsis: KiCAD symbol types
 
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
