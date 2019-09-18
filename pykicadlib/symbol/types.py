@@ -1,9 +1,11 @@
 """
-.. module:: pykicadlib.symbol.types
+.. py:module:: pykicadlib.symbol.types
    :synopsis: KiCAD symbol types
+   :noindex:
 
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
 """
+
 from enum import Enum
 
 
@@ -12,6 +14,7 @@ class SymbolEnum(Enum):
 
     .. automethod:: __str__
     .. automethod:: from_str
+    .. autodoc-skip-member::
     """
 
     def __str__(self):

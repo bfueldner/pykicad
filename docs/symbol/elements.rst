@@ -10,15 +10,12 @@ Examples
 
 Here is a simple example::
 
-    >>> el = symbol.element.arc(1, 2, 3)
-    >>> print(el)
-    A(1, 2, 3)
-
+    >>> element = pykicadlib.symbol.elements.Rectangle(10, 10, 20, 20, 5, pykicadlib.symbol.types.Fill.none)
+    >>> print(element)
+    S 10 10 20 20 0 1 5 N
 
 API
 ---
 
-.. automodule:: pykicadlib.symbol.element
+.. automodule:: pykicadlib.symbol.elements
     :members:
-
-.. automethod:: pykicadlib.symbol.element.arc.__str__

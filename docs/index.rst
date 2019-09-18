@@ -3,27 +3,21 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-CANopen for Python
-==================
+KiCAD library for Python
+========================
 
-This package provides support for interacting with a network of CANopen_ nodes.
+This package provides support to generate and manipulate schematic symbols and layout footprints
+for KiCAD_.
 
 .. note::
 
    Most of the documentation here is directly stolen from the
-   CANopen_ Wikipedia page.
+   KiCAD_ fileformat documetation.
 
    This documentation is a work in progress.
    Feedback and revisions are most welcome!
 
-CANopen is a communication protocol and device profile specification for
-embedded systems used in automation. In terms of the OSI model, CANopen
-implements the layers above and including the network layer.
-The CANopen standard consists of an addressing scheme, several small
-communication protocols and an application layer defined by a device profile.
-The communication protocols have support for network management, device
-monitoring and communication between nodes, including a simple transport layer
-for message segmentation/desegmentation.
+KiCAD is an opensource EDA program.
 
 Easiest way to install is to use pip_::
 
@@ -31,12 +25,13 @@ Easiest way to install is to use pip_::
 
 
 .. toctree::
-   :maxdepth: 2
+    :hidden:
+    :maxdepth: 2
 
-   symbol/type
-.. symbol/element
+    symbol
+    footprint
 
-.. _CANopen: https://en.wikipedia.org/wiki/CANopen
+.. _KiCAD: http://kicad-pcb.org/
 .. _pip: https://pip.pypa.io/en/stable/
 
 

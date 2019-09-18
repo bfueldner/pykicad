@@ -5,4 +5,4 @@
 ;max-line-length=100
 
 [BASIC]
-good-names=i,j,k,ex,Run,_,x,y
+good-names=i,j,k,ex,Run,_,x,y,x1,y1,x2,y2,id
