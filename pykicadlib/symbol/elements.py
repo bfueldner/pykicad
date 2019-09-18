@@ -1,7 +1,6 @@
 """
-.. module:: symbol.element
-   :platform: Unix, Windows
-   :synopsis: Symbol elements
+.. module:: pykicadlib.symbol.elements
+   :synopsis: KiCAD symbol elements
 
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
 
@@ -9,13 +8,12 @@
 
 import re
 import shlex
-import datetime
 
 import pykicadlib
 
 
-def pin_value(value):
-    '''Convert pin number into value (especially for BGA numbering scheme)'''
+def PinValue(value):
+    """Convert pin number into value (especially for BGA numbering scheme)"""
 
     res = re.match(r"[~0-9A-Z]+", value)
     if res:
@@ -27,15 +25,15 @@ def pin_value(value):
         raise ValueError("'{}' is no valid pin value".format(value))
 
 
-class alias(object):
-    '''2.3.1 Aliases'''
+class Alias():
+    """2.3.1 Aliases"""
     pass
 
 
-class field(object):
-    '''2.3.2 Component field
+class Field():
+    """2.3.2 Component field
 
-    :param pykicadlib.symbol.type.field type:
+    :param pykicadlib.symbol.types.field type:
         Type of :class:`field`
     :param str value:
         Value of :class:`field`
@@ -45,15 +43,27 @@ class field(object):
         Y coordinate
     :param int size:
         Field value size
-    :param pykicadlib.symbol.type.orientation orientation:
+    :param pykicadlib.symbol.types.orientation orientation:
         Orientation of field value
     :returns:  int -- the return code.
     :raises: AttributeError, KeyError
-    '''
+    """
 
     fmt = 'F{:d} "{:s}" {:d} {:d} {:d} {:s} {:s} {:s} {:s}{:s} "{:s}"'
 
-    def __init__(self, type, value, x, y, size, orientation, visibility, hjustify, vjustify, style):
+    def __init__(
+        self,
+        type,
+        value,
+        x,
+        y,
+        size,
+        orientation,
+        visibility,
+        hjustify,
+        vjustify,
+        style
+    ):
         self.type = type
         self.value = str(value)
         self.x = x
@@ -66,12 +76,12 @@ class field(object):
         self.style = style
 
     def __str__(self):
-        '''Test
+        """Test
 
         Return :class:`field` as str.
-        '''
+        """
 
-        return field.fmt.format(
+        return Field.fmt.format(
             self.type.value,
             self.value,
             self.x,
@@ -86,8 +96,8 @@ class field(object):
         )
 
 
-class point(object):
-    '''Point helper'''
+class Point():
+    """Point helper"""
 
     fmt = "{:d} {:d}"
 
@@ -96,21 +106,21 @@ class point(object):
         self.y = y
 
     def __eq__(self, other):
-        '''Compare only same instances'''
+        """Compare only same instances"""
 
-        if not isinstance(other, point):
+        if not isinstance(other, Point):
             return False
 
         return self.x == other.x and self.y == other.y
 
     def __str__(self):
-        return point.fmt.format(
+        return Point.fmt.format(
             self.x,
             self.y,
         )
 
 
-class boundary(object):
+class Boundary(object):
 
     def __init__(self, x1, y1, x2, y2):
         self.x1 = x1
@@ -120,19 +130,19 @@ class boundary(object):
 
     @staticmethod
     def add(lhs, rhs):
-        if isinstance(lhs, boundary) and isinstance(rhs, boundary):
-            return boundary(
+        if isinstance(lhs, Boundary) and isinstance(rhs, Boundary):
+            return Boundary(
                 min(lhs.x1, rhs.x1),
                 min(lhs.y1, rhs.y1),
                 max(lhs.x2, rhs.x2),
                 max(lhs.y2, rhs.y2),
             )
         else:
-            return boundary(0, 0, 0, 0)
+            return Boundary(0, 0, 0, 0)
 
 
-class element(object):
-    '''Component element'''
+class Element(object):
+    """Component element"""
 
     def __init__(self, unit, representation, order):
         self.unit = unit
@@ -147,17 +157,23 @@ class element(object):
 
     @property
     def bounds(self):
-        return boundary(0, 0, 0, 0)
+        return Boundary(0, 0, 0, 0)
 
 
-class polygon(element):
-    '''2.3.3.1 Polygon'''
+class Polygon(Element):
+    """2.3.3.1 Polygon"""
 
     fmt = "P {:d} {:d} {:d} {:d} {:s}{:s}"
     order = 2
 
-    def __init__(self, thickness, fill, unit = 0, representation = pykicadlib.symbol.type.representation.normal):
-        super().__init__(unit, representation, polygon.order)
+    def __init__(
+        self,
+        thickness,
+        fill,
+        unit=0,
+        representation=pykicadlib.symbol.types.Representation.normal
+    ):
+        super().__init__(unit, representation, Polygon.order)
 
         self.thickness = thickness
         self.fill = fill
@@ -169,7 +185,7 @@ class polygon(element):
 
     @property
     def bounds(self):
-        result = boundary(0, 0, 0, 0)
+        result = Boundary(0, 0, 0, 0)
         for point in self.points:
             result.x1 = min(point.x, result.x1)
             result.y1 = min(point.y, result.y1)
@@ -178,20 +194,20 @@ class polygon(element):
         return result
 
     def add(self, point):
-        '''Add point to polygon'''
+        """Add point to polygon"""
 
         self.points.append(point)
 
     def remove(self, index):
-        '''Remove element from polygon'''
+        """Remove element from polygon"""
 
         del self.points[index]
     #    self.points.remove(index)
 
     def __eq__(self, other):
-        '''Compare only same instances'''
+        """Compare only same instances"""
 
-        if not isinstance(other, polygon):
+        if not isinstance(other, Polygon):
             return False
 
         if len(self.points) != len(other.points):
@@ -207,7 +223,7 @@ class polygon(element):
         for point in self.points:
             points += str(point) + ' '
 
-        return polygon.fmt.format(
+        return Polygon.fmt.format(
             len(self.points),
             self.unit,
             self.representation.value,
@@ -217,14 +233,24 @@ class polygon(element):
         )
 
 
-class rectangle(element):
-    '''2.3.3.2 Rectangle'''
+class Rectangle(Element):
+    """2.3.3.2 Rectangle"""
 
     fmt = 'S {:d} {:d} {:d} {:d} {:d} {:d} {:d} {:s}'
     order = 1
 
-    def __init__(self, x1, y1, x2, y2, thickness, fill, unit = 0, representation = pykicadlib.symbol.type.representation.normal):
-        super().__init__(unit, representation, rectangle.order)
+    def __init__(
+        self,
+        x1,
+        y1,
+        x2,
+        y2,
+        thickness,
+        fill,
+        unit=0,
+        representation=pykicadlib.symbol.types.Representation.normal
+    ):
+        super().__init__(unit, representation, Rectangle.order)
 
         # Swap x coordinates of second values are less than first values to make optimization possible
         if x1 > x2:
@@ -247,18 +273,19 @@ class rectangle(element):
 
     @property
     def bounds(self):
-        return boundary(self.x1, self.y1, self.x2, self.y2)
+        return Boundary(self.x1, self.y1, self.x2, self.y2)
 
     def __eq__(self, other):
-        '''Compare only same instances'''
+        """Compare only same instances"""
 
-        if not isinstance(other, rectangle):
+        if not isinstance(other, Rectangle):
             return False
 
-        return self.x1 == other.x1 and self.y1 == other.y1 and self.x2 == other.x2 and self.y2 == other.y2
+        return self.x1 == other.x1 and self.y1 == other.y1 and \
+            self.x2 == other.x2 and self.y2 == other.y2
 
     def __str__(self):
-        return rectangle.fmt.format(
+        return Rectangle.fmt.format(
             self.x1,
             self.y1,
             self.x2,
@@ -270,14 +297,22 @@ class rectangle(element):
         )
 
 
-class circle(element):
-    '''2.3.3.3 Circle'''
+class Circle(Element):
+    """2.3.3.3 Circle"""
 
     fmt = 'C {:d} {:d} {:d} {:d} {:d} {:d} {:s}'
     order = 3
 
-    def __init__(self, x, y, radius, thickness, fill, unit = 0, representation = pykicadlib.symbol.type.representation.normal):
-        super().__init__(unit, representation, circle.order)
+    def __init__(
+        self,
+        x,
+        y,
+        radius,
+        thickness,
+        fill,
+        unit=0,
+        representation=pykicadlib.symbol.types.Representation.normal):
+        super().__init__(unit, representation, Circle.order)
 
         self.x = x
         self.y = y
@@ -287,18 +322,19 @@ class circle(element):
 
     @property
     def bounds(self):
-        return boundary(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius)
+        return Boundary(
+            self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius)
 
     def __eq__(self, other):
-        '''Compare only same instances'''
+        """Compare only same instances"""
 
-        if not isinstance(other, circle):
+        if not isinstance(other, Circle):
             return False
 
         return self.x == other.x and self.y == other.y and self.radius == other.radius
 
     def __str__(self):
-        return circle.fmt.format(
+        return Circle.fmt.format(
             self.x,
             self.y,
             self.radius,
@@ -309,14 +345,24 @@ class circle(element):
         )
 
 
-class arc(element):
-    '''2.3.3.4 Arc'''
+class Arc(Element):
+    """2.3.3.4 Arc"""
 
     fmt = 'A {:d} {:d} {:d} {:.0f} {:.0f} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d}'
     order = 4
 
-    def __init__(self, x, y, startX, startY, endX, endY, startAngle, endAngle, radius, thickness, fill, unit = 0, representation = pykicadlib.symbol.type.representation.normal):
-        super().__init__(unit, representation, arc.order)
+    def __init__(
+        self,
+        x, y,
+        startX, startY,
+        endX, endY,
+        startAngle, endAngle,
+        radius,
+        thickness,
+        fill,
+        unit=0,
+        representation=pykicadlib.symbol.types.Representation.normal):
+        super().__init__(unit, representation, Arc.order)
 
         # Swap x coordinates of second values are less than first values to make optimization possible
         if startX > endX:
@@ -349,18 +395,26 @@ class arc(element):
     @property
     def bounds(self):
         # FIXME: Not exact!
-        return boundary(self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius)
+        return Boundary(
+            self.x - self.radius,
+            self.y - self.radius,
+            self.x + self.radius,
+            self.y + self.radius)
 
     def __eq__(self, other):
-        '''Compare only same instances'''
+        """Compare only same instances"""
 
-        if not isinstance(other, arc):
+        if not isinstance(other, Arc):
             return False
 
-        return self.x == other.x and self.y == other.y and self.startX == other.startX and self.startY == other.startY and self.endX == other.endX and self.endY == other.endY and self.startAngle == other.startAngle and self.endAngle == other.endAngle and self.radius == other.radius
+        return self.x == other.x and self.y == other.y and \
+            self.startX == other.startX and self.startY == other.startY and \
+            self.endX == other.endX and self.endY == other.endY and \
+            self.startAngle == other.startAngle and self.endAngle == other.endAngle and \
+            self.radius == other.radius
 
     def __str__(self):
-        return arc.fmt.format(
+        return Arc.fmt.format(
             self.x,
             self.y,
             self.radius,
@@ -377,8 +431,8 @@ class arc(element):
         )
 
 
-class text(element):
-    '''2.3.3.5 Text
+class Text(Element):
+    """2.3.3.5 Text
         New format since 2.4?
 
         x, y - Position
@@ -387,13 +441,13 @@ class text(element):
         angle - Angle in centidegree (supported, but not documented!)
         unit - Unit number
         convert - Shape number
-    '''
+    """
 
     fmt = 'T {:.0f} {:d} {:d} {:d} 0 {:d} {:d} "{:s}" {:s} {:d} {:s} {:s}'
     order = 0
 
-    def __init__(self, x, y, value, size, angle, italic = pykicadlib.symbol.type.italic.off, bold = pykicadlib.symbol.type.bold.off, hjustify = pykicadlib.symbol.type.hjustify.center, vjustify = pykicadlib.symbol.type.vjustify.center, unit = 0, representation = pykicadlib.symbol.type.representation.normal):
-        super().__init__(unit, representation, text.order)
+    def __init__(self, x, y, value, size, angle, italic=pykicadlib.symbol.types.Italic.off, bold=pykicadlib.symbol.types.Bold.off, hjustify=pykicadlib.symbol.types.HJustify.center, vjustify=pykicadlib.symbol.types.VJustify.center, unit=0, representation=pykicadlib.symbol.types.Representation.normal):
+        super().__init__(unit, representation, Text.order)
 
         self.x = x
         self.y = y
@@ -408,18 +462,18 @@ class text(element):
     @property
     def bounds(self):
         # NOTE: Ignore for the moment!
-        return boundary(self.x, self.y, self.x, self.y)
+        return Boundary(self.x, self.y, self.x, self.y)
 
     def __eq__(self, other):
-        '''Compare only same instances'''
+        """Compare only same instances"""
 
-        if not isinstance(other, text):
+        if not isinstance(other, Text):
             return False
 
         return self.x == other.x and self.y == other.y and self.value == other.value
 
     def __str__(self):
-        return text.fmt.format(
+        return Text.fmt.format(
             self.angle * 10,
             self.x,
             self.y,
@@ -434,14 +488,14 @@ class text(element):
         )
 
 
-class pin(element):
-    '''2.3.4 Pin'''
+class Pin(Element):
+    """2.3.4 Pin"""
 
     fmt = 'X {:s} {:s} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d} {:s} {:s}{:s}'
     order = 10
 
-    def __init__(self, x, y, name, number, length, direction, nameSize, numberSize, electric = pykicadlib.symbol.type.electric.input, shape = pykicadlib.symbol.type.shape.line, visible = True, unit = 0, representation = pykicadlib.symbol.type.representation.normal):
-        super().__init__(unit, representation, pin.order)
+    def __init__(self, x, y, name, number, length, direction, nameSize, numberSize, electric=pykicadlib.symbol.types.Electric.input, shape=pykicadlib.symbol.types.Shape.line, visible=True, unit=0, representation=pykicadlib.symbol.types.Representation.normal):
+        super().__init__(unit, representation, Pin.order)
 
         self.x = x
         self.y = y
@@ -461,28 +515,28 @@ class pin(element):
 
     @property
     def bounds(self):
-        result = boundary(self.x, self.y, self.x, self.y)
-        if self.direction == pykicadlib.symbol.type.direction.left:
+        result = Boundary(self.x, self.y, self.x, self.y)
+        if self.direction == pykicadlib.symbol.types.Direction.left:
             result.x1 -= self.length
-        elif self.direction == pykicadlib.symbol.type.direction.right:
+        elif self.direction == pykicadlib.symbol.types.Direction.right:
             result.x2 += self.length
-        elif self.direction == pykicadlib.symbol.type.direction.up:
+        elif self.direction == pykicadlib.symbol.types.Direction.up:
             result.y1 -= self.length
-        elif self.direction == pykicadlib.symbol.type.direction.down:
+        elif self.direction == pykicadlib.symbol.types.Direction.down:
             result.y2 += self.length
         return result
 
     def __eq__(self, other):
-        '''Compare only same instances'''
+        """Compare only same instances"""
 
-        if not isinstance(other, pin):
+        if not isinstance(other, Pin):
             return False
 
     #   return self.x == other.x and self.y == other.y and self.length == other.length and self.name == other.name and self.number == other.number
         return False
 
     def __str__(self):
-        return pin.fmt.format(
+        return Pin.fmt.format(
             self.name,
             self.number,
             self.x,
@@ -499,8 +553,8 @@ class pin(element):
         ).rstrip()
 
 
-def from_str(string, unify = True):
-    '''Generate elements out of string lines. Used to load a symbol file'''
+def from_str(string):
+    """Generate elements out of string lines. Used to load a symbol file"""
 
     string = string.strip()
     char = string[0]
@@ -510,142 +564,142 @@ def from_str(string, unify = True):
 
     if char == 'F':
         if len(part) < 9:
-            raise ValueError("Not enough parts for 'field' element")
+            raise ValueError("Not enough parts for 'Field' element")
 
         # NOTE: Optional name field is ignored!
-        return field(
-            pykicadlib.symbol.type.field.from_str(int(part[0])),
+        return Field(
+            pykicadlib.symbol.types.Field.from_str(int(part[0])),
             str(part[1]),
             int(part[2]),
             int(part[3]),
-            pykicadlib.config.symbol.FIELD_TEXT_SIZE if unify else int(part[4]),
-            pykicadlib.symbol.type.orientation.from_str(part[5]),
-            pykicadlib.symbol.type.visibility.from_str(part[6]),
-            pykicadlib.symbol.type.hjustify.from_str(part[7]),
-            pykicadlib.symbol.type.vjustify.from_str(part[8][:1]),
-            pykicadlib.symbol.type.style.from_str(part[8][1:])
+            int(part[4]),
+            pykicadlib.symbol.types.Orientation.from_str(part[5]),
+            pykicadlib.symbol.types.Visibility.from_str(part[6]),
+            pykicadlib.symbol.types.HJustify.from_str(part[7]),
+            pykicadlib.symbol.types.VJustify.from_str(part[8][:1]),
+            pykicadlib.symbol.types.Style.from_str(part[8][1:])
         )
     elif char == 'P':
         if len(part) < 6:
-            raise ValueError("Not enough parts for 'polygon' element")
+            raise ValueError("Not enough parts for 'Polygon' element")
 
         count = int(part[0])
-        result = polygon(
+        result = Polygon(
             int(part[3]),
-            pykicadlib.symbol.type.fill.from_str(part[-1]),
+            pykicadlib.symbol.types.Fill.from_str(part[-1]),
             int(part[1]),
-            pykicadlib.symbol.type.representation.from_str(part[2])
+            pykicadlib.symbol.types.Representation.from_str(part[2])
         )
 
         for index in range(count):
-            result.add(point(int(part[index * 2 + 4]), int(part[index * 2 + 5])))
+            result.add(Point(int(part[index * 2 + 4]), int(part[index * 2 + 5])))
         return result
     elif char == 'S':
         if len(part) != 8:
-            raise ValueError("Not enough parts for 'rectangle' element")
+            raise ValueError("Not enough parts for 'Rectangle' element")
 
-        return rectangle(
+        return Rectangle(
             int(part[0]),
             int(part[1]),
             int(part[2]),
             int(part[3]),
             int(part[6]),
-            pykicadlib.symbol.type.fill.from_str(part[7]),
+            pykicadlib.symbol.types.Fill.from_str(part[7]),
             int(part[4]),
-            pykicadlib.symbol.type.representation.from_str(part[5])
+            pykicadlib.symbol.types.Representation.from_str(part[5])
         )
     elif char == 'C':
         if len(part) != 7:
-            raise ValueError("Not enough parts for 'circle' element")
+            raise ValueError("Not enough parts for 'Circle' element")
 
-        return circle(
+        return Circle(
             int(part[0]),
             int(part[1]),
             int(part[2]),
             int(part[5]),
-            pykicadlib.symbol.type.fill.from_str(part[6]),
+            pykicadlib.symbol.types.Fill.from_str(part[6]),
             int(part[3]),
-            pykicadlib.symbol.type.representation.from_str(part[4])
+            pykicadlib.symbol.types.Representation.from_str(part[4])
         )
     elif char == 'A':
         if len(part) != 13:
-            raise ValueError("Not enough parts for 'arc' element")
+            raise ValueError("Not enough parts for 'Arc' element")
 
-        return arc(
-            int(part[0]), # x
-            int(part[1]), # y
-            int(part[9]), # startX
-            int(part[10]), # startY
-            int(part[11]), # endX
-            int(part[12]), # endY
-            int(part[3]) / 10, # startAngle
-            int(part[4]) / 10, # endAngle
-            int(part[2]), # radius
-            int(part[7]), # thickness
-            pykicadlib.symbol.type.fill.from_str(part[8]), # fill
-            int(part[5]), # unit
-            pykicadlib.symbol.type.representation.from_str(part[6]) # representation
+        return Arc(
+            int(part[0]),           # x
+            int(part[1]),           # y
+            int(part[9]),           # startX
+            int(part[10]),          # startY
+            int(part[11]),          # endX
+            int(part[12]),          # endY
+            int(part[3]) / 10,      # startAngle
+            int(part[4]) / 10,      # endAngle
+            int(part[2]),           # radius
+            int(part[7]),           # thickness
+            pykicadlib.symbol.types.Fill.from_str(part[8]),                  # fill
+            int(part[5]),           # unit
+            pykicadlib.symbol.types.Representation.from_str(part[6])        # representation
         )
     elif char == 'T':
         # Old format
         if len(part) == 8:
-            return text(
-                int(part[1]), # x
-                int(part[2]), # y
-                part[7].replace('~', ' '), # value
-                int(part[3]), # size
-                int(part[0]) * 90.0, # angle
-                pykicadlib.symbol.type.italic.off,
-                pykicadlib.symbol.type.bold.off,
-                pykicadlib.symbol.type.hjustify.center,
-                pykicadlib.symbol.type.vjustify.center,
-                int(part[5]), # unit
-                pykicadlib.symbol.type.representation.from_str(part[6]) # representation
+            return Text(
+                int(part[1]),       # x
+                int(part[2]),       # y
+                part[7].replace('~', ' '),                                  # value
+                int(part[3]),       # size
+                int(part[0]) * 90.0,                                        # angle
+                pykicadlib.symbol.types.Italic.off,
+                pykicadlib.symbol.types.Bold.off,
+                pykicadlib.symbol.types.HJustify.center,
+                pykicadlib.symbol.types.VJustify.center,
+                int(part[5]),       # unit
+                pykicadlib.symbol.types.Representation.from_str(part[6])    # representation
             )
         # New format
         elif len(part) == 12:
-            return text(
-                int(part[1]), # x
-                int(part[2]), # y
-                part[7].replace("''", '"'), # value
-                int(part[3]), # size
-                int(part[0]) / 10, # angle
-                pykicadlib.symbol.type.italic.from_str(part[8]), # italic
-                pykicadlib.symbol.type.bold.from_str(part[9]), # bold
-                pykicadlib.symbol.type.hjustify.from_str(part[10]), # horizontal justify
-                pykicadlib.symbol.type.vjustify.from_str(part[11]), # vertical justify
-                int(part[5]), # unit
-                pykicadlib.symbol.type.representation.from_str(part[6]) # representation
+            return Text(
+                int(part[1]),       # x
+                int(part[2]),       # y
+                part[7].replace("''", '"'),                                 # value
+                int(part[3]),       # size
+                int(part[0]) / 10,  # angle
+                pykicadlib.symbol.types.Italic.from_str(part[8]),            # italic
+                pykicadlib.symbol.types.Bold.from_str(part[9]),              # bold
+                pykicadlib.symbol.types.HJustify.from_str(part[10]),         # horizontal justify
+                pykicadlib.symbol.types.VJustify.from_str(part[11]),         # vertical justify
+                int(part[5]),       # unit
+                pykicadlib.symbol.types.Representation.from_str(part[6])    # representation
             )
         else:
-            raise ValueError("Not enough parts for 'text' element")
+            raise ValueError("Not enough parts for 'Text' element")
     elif char == 'X':
         if len(part) == 12:
             visible = True
             if part[11][0] == 'N':
                 visible = False
                 part[11] = part[11][1:]
-            shape = pykicadlib.symbol.type.shape.line.from_str(part[11])
+            shape = pykicadlib.symbol.types.Shape.line.from_str(part[11])
         elif len(part) == 11:
             visible = True
-            shape = pykicadlib.symbol.type.shape.line
+            shape = pykicadlib.symbol.types.Shape.line
         else:
-            raise ValueError("Not enough parts for 'pin' element")
+            raise ValueError("Not enough parts for 'Pin' element")
 
-        return pin(
-            int(part[2]), # x
-            int(part[3]), # y
-            part[0], # name
-            part[1], # number
-            int(part[4]), # length
-            pykicadlib.symbol.type.direction.from_str(part[5]), # direction
-            pykicadlib.config.symbol.PIN_NAME_SIZE if unify else int(part[6]), # nameSize
-            pykicadlib.config.symbol.PIN_NUMBER_SIZE if unify else int(part[7]), # numberSize
-            pykicadlib.symbol.type.electric.from_str(part[10]), # electric
+        return Pin(
+            int(part[2]),   # x
+            int(part[3]),   # y
+            part[0],        # name
+            part[1],        # number
+            int(part[4]),   # length
+            pykicadlib.symbol.types.Direction.from_str(part[5]),                     # direction
+            int(part[6]),   # nameSize
+            int(part[7]),   # numberSize
+            pykicadlib.symbol.types.Electric.from_str(part[10]),                     # electric
             shape,
             visible,
-            int(part[8]), # unit
-            pykicadlib.symbol.type.representation.from_str(part[9]), # representation
+            int(part[8]),   # unit
+            pykicadlib.symbol.types.Representation.from_str(part[9]),               # representation
         )
     else:
         raise KeyError

@@ -5,7 +5,9 @@
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
 """
 
+import pykicadlib.config
 import pykicadlib.symbol.types      # noqa: F401
+import pykicadlib.symbol.elements   # noqa: F401
 from .version import __version__    # noqa: F401
 
 # import pykicadlib.footprint.helper
