@@ -5,6 +5,8 @@
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
 """
 
+# pragma pylint: disable=too-few-public-methods, pointless-string-statement
+
 
 class Symbol():
     '''Symbol configuration'''
