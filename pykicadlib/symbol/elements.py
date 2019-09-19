@@ -1,5 +1,5 @@
 """
-.. module:: symbol.elements
+.. py::module:: pykicadlib.symbol.elements
    :synopsis: KiCAD symbol elements
 
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
@@ -23,27 +23,35 @@ def pin_value(value):
     raise ValueError("'{}' is no valid pin value".format(value))
 
 
+# Section 2.3.1 in fileformat.pdf
 class Alias():
-    """2.3.1 Aliases"""
+    """Aliases"""
 
 
+# Section 2.3.2 in fileformat.pdf
 class Field():
-    """2.3.2 Component field
+    """Component field
 
     :param types.Field type:
         Type of :class:`Field`
     :param str value:
-        Value of :class:`Field`
+        Value of :class:`Field` text
     :param int x:
         X coordinate
     :param int y:
         Y coordinate
     :param int size:
-        Field value size
+        Text size
     :param Orientation orientation:
-        Orientation of field value
-    :returns:  int -- the return code.
-    :raises: AttributeError, KeyError
+        Text orientation
+    :param Visibility visibility:
+        Text visibility
+    :param HJustify hjustify:
+        Horizontal text justify
+    :param VJustify vjustify:
+        Vertical text justify
+    :param Style style:
+        Text style
 
     .. automethod:: __str__
     """
@@ -61,19 +69,19 @@ class Field():
             hjustify,
             vjustify,
             style):
-        self.type = type
-        self.value = str(value)
-        self.x = x
-        self.y = y
-        self.size = size
-        self.orientation = orientation
-        self.visibility = visibility
-        self.hjustify = hjustify
-        self.vjustify = vjustify
-        self.style = style
+        self.type = type                #: Type of :class:`Field`
+        self.value = value              #: Value of :class:`Field` text
+        self.x = x                      #: X coordinate
+        self.y = y                      #: Y coordinate
+        self.size = size                #: Text size
+        self.orientation = orientation  #: Text orientation
+        self.visibility = visibility    #: Text visibility
+        self.hjustify = hjustify        #: Horizontal text justify
+        self.vjustify = vjustify        #: Vertical text justify
+        self.style = style              #: Text style
 
     def __str__(self):
-        """Return KiCAD value of :class:`Field`"""
+        """Return :class:`Field` in KiCAD format"""
 
         return Field.fmt.format(
             self.type.value,
@@ -93,6 +101,14 @@ class Field():
 class Point():
     """Point helper
 
+    :param int x:
+        X coordinate
+    :param int y:
+        Y coordinate
+
+    :attributes:
+        * x (int) - X cord
+
     .. automethod:: __eq__
     .. automethod:: __str__
     """
@@ -100,11 +116,15 @@ class Point():
     fmt = "{:d} {:d}"
 
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
+        self.x = x  #: X coordinate
+        self.y = y  #: Y coordinate
 
     def __eq__(self, other):
-        """Compare only same instances"""
+        """Compare :class:`Point` instances
+
+        :returns:
+            ``True``, if ``other`` == :class:`Point` and all attributes match. Otherwise ``False``.
+        """
 
         if not isinstance(other, Point):
             return False
@@ -112,7 +132,7 @@ class Point():
         return self.x == other.x and self.y == other.y
 
     def __str__(self):
-        """Return KiCAD value of :class:`Point`"""
+        """Return :class:`Point` in KiCAD format"""
 
         return Point.fmt.format(
             self.x,
@@ -123,17 +143,43 @@ class Point():
 class Boundary():
     """Element/symbol boundary class
 
+    :param int x1:
+        X1 coordinate
+    :param int y1:
+        Y1 coordinate
+    :param int x2:
+        X2 coordinate
+    :param int y2:
+        Y2 coordinate
+
     .. automethod:: __add__
     """
 
     def __init__(self, x1, y1, x2, y2):
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
+        self.x1 = x1    #: X1 coordinate
+        self.y1 = y1    #: Y1 coordinate
+        self.x2 = x2    #: X2 coordinate
+        self.y2 = y2    #: Y2 coordinate
 
     def __add__(self, other):
-        raise NotImplementedError
+        """Merge boundary from ``other`` object with own boundary.
+
+        :param Boundary other:
+            Object to merge with
+        :returns:
+            Boundary of both merged objects
+        :rtype:
+            Boundary
+        """
+
+        if isinstance(other, Boundary):
+            return Boundary(
+                min(self.x1, other.x1),
+                min(self.y1, other.y1),
+                max(self.x2, other.x2),
+                max(self.y2, other.y2),
+            )
+        return Boundary(self.x1, self.y1, self.x2, self.y2)
 
     @staticmethod
     def add(lhs, rhs):
@@ -169,15 +215,37 @@ class Element():
 
     @property
     def priority(self):
+        """Element priority depending on order and unit.
+
+        :type:
+            int
+        """
+
         return self.unit * 0x100000 + self.order * 0x10000
 
     @property
     def bounds(self):
+        """Element boundary.
+
+        :type:
+            Boundary
+        """
+
         return Boundary(0, 0, 0, 0)
 
 
+# Section 2.3.3.1 in fileformat.pdf
 class Polygon(Element):
-    """2.3.3.1 Polygon
+    """Polygon
+
+    :param int thickness:
+        Thickness of outline
+    :param Fill fill:
+        Fill type
+    :param int unit:
+        Unit index
+    :param Representation representation:
+        Representation type
 
     .. automethod:: __eq__
     .. automethod:: __str__
@@ -194,9 +262,9 @@ class Polygon(Element):
             representation=pykicadlib.symbol.types.Representation.normal):
         super().__init__(unit, representation, Polygon.order)
 
-        self.thickness = thickness
-        self.fill = fill
-        self.points = []
+        self.thickness = thickness  #: Thickness of outline
+        self.fill = fill            #: Fill type
+        self.points = []            #: Outline points
 
     @property
     def priority(self):
@@ -245,7 +313,7 @@ class Polygon(Element):
         return True
 
     def __str__(self):
-        """Return KiCAD value of :class:`Polygon`"""
+        """Return :class:`Polygon` in KiCAD format"""
 
         points = ''
         for point in self.points:
@@ -261,8 +329,26 @@ class Polygon(Element):
         )
 
 
+# Section 2.3.3.2 in fileformat.pdf
 class Rectangle(Element):
-    """2.3.3.2 Rectangle
+    """Rectangle from ``x1``/``y1`` to ``x2``/``y2``.
+
+    :param int x1:
+        X1 coordinate
+    :param int y1:
+        Y1 coordinate
+    :param int x2:
+        X2 coordinate
+    :param int y2:
+        Y2 coordinate
+    :param int thickness:
+        Thickness of outline
+    :param Fill fill:
+        Fill type
+    :param int unit:
+        Unit index
+    :param Representation representation:
+        Representation type
 
     .. automethod:: __eq__
     .. automethod:: __str__
@@ -273,8 +359,10 @@ class Rectangle(Element):
 
     def __init__(
             self,
-            x1, y1,
-            x2, y2,
+            x1,
+            y1,
+            x2,
+            y2,
             thickness,
             fill,
             unit=0,
@@ -284,8 +372,8 @@ class Rectangle(Element):
         # Swap x coordinates of second values are less than first
         # values to make optimization possible
         if x1 > x2:
-            self.x1 = x2
-            self.x2 = x1
+            self.x1 = x2            #: X1 coordinate
+            self.x2 = x1            #: X2 coordinate
         else:
             self.x1 = x1
             self.x2 = x2
@@ -293,14 +381,14 @@ class Rectangle(Element):
         # Swap y coordinates of second values are less than first
         # values to make optimization possible
         if y1 > y2:
-            self.y1 = y2
-            self.y2 = y1
+            self.y1 = y2            #: Y1 coordinate
+            self.y2 = y1            #: Y2 coordinate
         else:
             self.y1 = y1
             self.y2 = y2
 
-        self.thickness = thickness
-        self.fill = fill
+        self.thickness = thickness  #: Thickness of outline
+        self.fill = fill            #: Fill type
 
     @property
     def bounds(self):
@@ -316,7 +404,7 @@ class Rectangle(Element):
             self.x2 == other.x2 and self.y2 == other.y2
 
     def __str__(self):
-        """Return KiCAD value of :class:`Rectangle`"""
+        """Return :class:`Rectangle` in KiCAD format"""
 
         return Rectangle.fmt.format(
             self.x1,
@@ -330,8 +418,24 @@ class Rectangle(Element):
         )
 
 
+# Section 2.3.3.3 in fileformat.pdf
 class Circle(Element):
-    """2.3.3.3 Circle
+    """Circle with center at ``x``/``y`` and ``radius``.
+
+    :param int x:
+        X coordinate
+    :param int y:
+        Y coordinate
+    :param int radius:
+        Circle radius
+    :param int thickness:
+        Thickness of outline
+    :param Fill fill:
+        Fill type
+    :param int unit:
+        Unit index
+    :param Representation representation:
+        Representation type
 
     .. automethod:: __eq__
     .. automethod:: __str__
@@ -342,7 +446,8 @@ class Circle(Element):
 
     def __init__(
             self,
-            x, y,
+            x,
+            y,
             radius,
             thickness,
             fill,
@@ -350,11 +455,11 @@ class Circle(Element):
             representation=pykicadlib.symbol.types.Representation.normal):
         super().__init__(unit, representation, Circle.order)
 
-        self.x = x
-        self.y = y
-        self.radius = radius
-        self.thickness = thickness
-        self.fill = fill
+        self.x = x                  #: X coordinate
+        self.y = y                  #: Y coordinate
+        self.radius = radius        #: Circle radius
+        self.thickness = thickness  #: Thickness of outline
+        self.fill = fill            #: Fill type
 
     @property
     def bounds(self):
@@ -370,7 +475,7 @@ class Circle(Element):
         return self.x == other.x and self.y == other.y and self.radius == other.radius
 
     def __str__(self):
-        """Return KiCAD value of :class:`Circle`"""
+        """Return :class:`Circle` in KiCAD format"""
 
         return Circle.fmt.format(
             self.x,
@@ -383,8 +488,36 @@ class Circle(Element):
         )
 
 
+# Section 2.3.3.4 in fileformat.pdf
 class Arc(Element):
-    """2.3.3.4 Arc
+    """Arc with center at ``x``/``y`` and ``radius``.
+
+    :param int x:
+        X coordinate
+    :param int y:
+        Y coordinate
+    :param int start_x:
+        Start X coordinate
+    :param int start_y:
+        Start Y coordinate
+    :param int end_x:
+        End X coordinate
+    :param int end_y:
+        End Y coordinate
+    :param int start_angle:
+        Start angle (?..?)
+    :param int end_angle:
+        End angle (?..?)
+    :param int radius:
+        Arc radius
+    :param int thickness:
+        Thickness of outline
+    :param Fill fill:
+        Fill type
+    :param int unit:
+        Unit index
+    :param Representation representation:
+        Representation type
 
     .. automethod:: __eq__
     .. automethod:: __str__
@@ -424,17 +557,17 @@ class Arc(Element):
         #    self.start_y = start_y
         #    self.end_y = end_y
 
-        self.x = x
-        self.y = y
-        self.start_x = start_x
-        self.start_y = start_y
-        self.end_x = end_x
-        self.end_y = end_y
-        self.start_angle = start_angle
-        self.end_angle = end_angle
-        self.radius = radius
-        self.thickness = thickness
-        self.fill = fill
+        self.x = x                      #: X coordinate
+        self.y = y                      #: Y coordinate
+        self.start_x = start_x          #: Start X coordinate
+        self.start_y = start_y          #: Start Y coordinate
+        self.end_x = end_x              #: End X coordinate
+        self.end_y = end_y              #: End Y coordinate
+        self.start_angle = start_angle  #: Start angle
+        self.end_angle = end_angle      #: End angle
+        self.radius = radius            #: Arc radius
+        self.thickness = thickness      #: Thickness of outline
+        self.fill = fill                #: Fill type
 
     @property
     def bounds(self):
@@ -458,7 +591,7 @@ class Arc(Element):
             self.radius == other.radius
 
     def __str__(self):
-        """Return KiCAD value of :class:`Arc`"""
+        """Return :class:`Arc` in KiCAD format"""
 
         return Arc.fmt.format(
             self.x,
@@ -477,16 +610,33 @@ class Arc(Element):
         )
 
 
+# Section 2.3.3.5 in fileformat.pdf
 class Text(Element):
-    """2.3.3.5 Text
-        New format since 2.4?
+    """Text at ``x``/``y`` with ``value``, ``size``, ``angle`` and multiple style options.
+    New format since 2.4?
 
-        x, y - Position
-        text - Text
-        size - Size in mil
-        angle - Angle in centidegree (supported, but not documented!)
-        unit - Unit number
-        convert - Shape number
+    :param int x:
+        X coordinate
+    :param int y:
+        Y coordinate
+    :param str value:
+        Text value
+    :param int size:
+        Text size
+    :param int angle:
+        Text angle
+    :param Italic italic:
+        Text italic style
+    :param Bold bold:
+        Text bold style
+    :param HJustify hjustify:
+        Horizontal text justify
+    :param VJustify vjustify:
+        Vertical text justify
+    :param int unit:
+        Unit index
+    :param Representation representation:
+        Representation type
 
     .. automethod:: __eq__
     .. automethod:: __str__
@@ -497,10 +647,12 @@ class Text(Element):
 
     def __init__(
             self,
-            x, y,
+            x,
+            y,
             value,
             size,
-            angle, italic=pykicadlib.symbol.types.Italic.off,
+            angle,
+            italic=pykicadlib.symbol.types.Italic.off,
             bold=pykicadlib.symbol.types.Bold.off,
             hjustify=pykicadlib.symbol.types.HJustify.center,
             vjustify=pykicadlib.symbol.types.VJustify.center,
@@ -508,15 +660,15 @@ class Text(Element):
             representation=pykicadlib.symbol.types.Representation.normal):
         super().__init__(unit, representation, Text.order)
 
-        self.x = x
-        self.y = y
-        self.value = value
-        self.size = size
-        self.angle = angle
-        self.italic = italic
-        self.bold = bold
-        self.hjustify = hjustify
-        self.vjustify = vjustify
+        self.x = x                  #: X coordinate
+        self.y = y                  #: Y coordinate
+        self.value = value          #: Text value
+        self.size = size            #: Text size
+        self.angle = angle          #: Text angle
+        self.italic = italic        #: Text italic style
+        self.bold = bold            #: Text bold style
+        self.hjustify = hjustify    #: Horizontal text justify
+        self.vjustify = vjustify    #: Vertical text justify
 
     @property
     def bounds(self):
@@ -532,7 +684,7 @@ class Text(Element):
         return self.x == other.x and self.y == other.y and self.value == other.value
 
     def __str__(self):
-        """Return KiCAD value of :class:`Text`"""
+        """Return :class:`Text` in KiCAD format"""
 
         return Text.fmt.format(
             self.angle * 10,
@@ -549,8 +701,36 @@ class Text(Element):
         )
 
 
+# Section 2.3.4 in fileformat.pdf
 class Pin(Element):
-    """2.3.4 Pin
+    """Pin at ``x``/``y`` with ``name``/``number``.
+
+    :param int x:
+        X coordinate
+    :param int y:
+        Y coordinate
+    :param str name:
+        Pin name
+    :param str number:
+        Pin number
+    :param int length:
+        Pin length
+    :param Direction direction:
+        Pin direction
+    :param int name_size:
+        Pin name size
+    :param int number_size:
+        Pin number size
+    :param Electric electric:
+        Electric type
+    :param Shape shape:
+        Shape type
+    :param bool visible:
+        Visibility
+    :param int unit:
+        Unit index
+    :param Representation representation:
+        Representation type
 
     .. automethod:: __eq__
     .. automethod:: __str__
@@ -561,12 +741,14 @@ class Pin(Element):
 
     def __init__(
             self,
-            x, y,
+            x,
+            y,
             name,
             number,
             length,
             direction,
-            name_size, number_size,
+            name_size,
+            number_size,
             electric=pykicadlib.symbol.types.Electric.input,
             shape=pykicadlib.symbol.types.Shape.line,
             visible=True,
@@ -574,17 +756,17 @@ class Pin(Element):
             representation=pykicadlib.symbol.types.Representation.normal):
         super().__init__(unit, representation, Pin.order)
 
-        self.x = x
-        self.y = y
-        self.name = name
-        self.number = number
-        self.length = length
-        self.direction = direction
-        self.name_size = name_size
-        self.number_size = number_size
-        self.electric = electric
-        self.shape = shape
-        self.visible = visible
+        self.x = x                      #: X coordinate
+        self.y = y                      #: Y coordinate
+        self.name = name                #: Pin name
+        self.number = number            #: Pin number
+        self.length = length            #: Pin length
+        self.direction = direction      #: Pin direction
+        self.name_size = name_size      #: Pin name size
+        self.number_size = number_size  #: Pin number size
+        self.electric = electric        #: Electric type
+        self.shape = shape              #: Shape type
+        self.visible = visible          #: Visibility
 
     @property
     def priority(self):
@@ -614,7 +796,7 @@ class Pin(Element):
         return False
 
     def __str__(self):
-        """Return KiCAD value of :class:`Pin`"""
+        """Return :class:`Pin` in KiCAD format"""
 
         return Pin.fmt.format(
             self.name,
@@ -635,13 +817,28 @@ class Pin(Element):
 
 # pylint: disable=too-many-return-statements,too-many-branches
 def from_str(string):
-    """Generate elements out of string statements. Used to load a symbol file.
+    """Generate elements out of string statements. Used to load a KiCAD symbol file line by line.
 
     >>> element = pykicadlib.symbol.elements.from_str("S 10 10 20 20 0 1 5 N")
     >>> type(element)
     <class 'pykicadlib.symbol.elements.Rectangle'>
     >>> print(element)
     S 10 10 20 20 0 1 5 N
+
+    :param str string:
+        KiCAD symbol line to parse.
+    :return:
+        Element object depending on input string.
+    :rtype:
+        symbol.elements.Arc,
+        symbol.elements.Circle,
+        symbol.elements.Field,
+        symbol.elements.Pin,
+        symbol.elements.Polygon,
+        symbol.elements.Rectangle,
+        symbol.elements.Text
+    :raises:
+        KeyError, ValueError
     """
 
     string = string.strip()

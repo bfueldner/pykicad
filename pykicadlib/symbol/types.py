@@ -1,5 +1,5 @@
 """
-.. py:module:: pykicadlib.symbol.types
+.. py::module:: pykicadlib.symbol.types
    :synopsis: KiCAD symbol types
    :noindex:
 
