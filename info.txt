@@ -1,0 +1,26 @@
+F0 $REFERENCE
+F1 $NAME - Upper case
+F2 $FOOTPRINT
+F3 $DOCUMENT - doc/logic/74HC04.pdf $DOC_DIR/$LIBRARY/$DOCUMENT
+F4 $VALUE
+F5 $MANUFACTURER
+F5 $TOLERANCE
+F7 $TEMPERATURE
+F8 $POWER
+$DESCRIPTION
+$KEYWORDS - Lower case, comma separated
+
+symbol
+
+reference
+name
+footprint
+document
+value
+tolerance
+power
+description
+keywords
+
+
+
