@@ -1,3 +1,4 @@
+# pylint: disable=too-many-instance-attributes, too-few-public-methods
 """
 .. py::module:: pykicadlib.symbol.elements
    :synopsis: KiCAD symbol elements
@@ -58,6 +59,7 @@ class Field():
 
     fmt = 'F{:d} "{:s}" {:d} {:d} {:d} {:s} {:s} {:s} {:s}{:s} "{:s}"'
 
+    # pylint: disable=too-many-arguments, redefined-builtin
     def __init__(
             self,
             type,
@@ -180,17 +182,6 @@ class Boundary():
                 max(self.y2, other.y2),
             )
         return Boundary(self.x1, self.y1, self.x2, self.y2)
-
-    @staticmethod
-    def add(lhs, rhs):
-        if isinstance(lhs, Boundary) and isinstance(rhs, Boundary):
-            return Boundary(
-                min(lhs.x1, rhs.x1),
-                min(lhs.y1, rhs.y1),
-                max(lhs.x2, rhs.x2),
-                max(lhs.y2, rhs.y2),
-            )
-        return Boundary(0, 0, 0, 0)
 
 
 class Element():
@@ -357,6 +348,7 @@ class Rectangle(Element):
     fmt = 'S {:d} {:d} {:d} {:d} {:d} {:s} {:d} {:s}'
     order = 1
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             x1,
@@ -444,6 +436,7 @@ class Circle(Element):
     fmt = 'C {:d} {:d} {:d} {:d} {:d} {:d} {:s}'
     order = 3
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             x,
@@ -526,6 +519,7 @@ class Arc(Element):
     fmt = 'A {:d} {:d} {:d} {:.0f} {:.0f} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d}'
     order = 4
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             x, y,
@@ -571,7 +565,7 @@ class Arc(Element):
 
     @property
     def bounds(self):
-        # FIXME: Not exact!
+        # Not exact!
         return Boundary(
             self.x - self.radius,
             self.y - self.radius,
@@ -645,6 +639,7 @@ class Text(Element):
     fmt = 'T {:.0f} {:d} {:d} {:d} 0 {:d} {:d} "{:s}" {:s} {:d} {:s} {:s}'
     order = 0
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             x,
@@ -739,6 +734,7 @@ class Pin(Element):
     fmt = 'X {:s} {:s} {:d} {:d} {:d} {:s} {:d} {:d} {:d} {:d} {:s} {:s}{:s}'
     order = 10
 
+    # pylint: disable=too-many-arguments
     def __init__(
             self,
             x,
@@ -969,7 +965,7 @@ def from_str(string):
             if part[11][0] == 'N':
                 visible = False
                 part[11] = part[11][1:]
-            shape = pykicadlib.symbol.types.Shape.line.from_str(part[11])
+            shape = pykicadlib.symbol.types.Shape.from_str(part[11])
         elif len(part) == 11:
             visible = True
             shape = pykicadlib.symbol.types.Shape.line

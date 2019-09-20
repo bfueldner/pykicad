@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 """
 .. module:: test.symbol.elements
    :synopsis: Symbol elements "from_str" test

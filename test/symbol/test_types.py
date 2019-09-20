@@ -1,3 +1,4 @@
+# pylint: disable=too-few-public-methods
 """
 .. module:: test.symbol.types
    :synopsis: Symbol types test
