@@ -18,6 +18,9 @@
     :target: https://coveralls.io/github/bfueldner/pykicadlib?branch=master
     :alt: Coverage
 
+.. image:: https://readthedocs.org/projects/pykicadlib/badge/?version=latest
+    :target: https://pykicadlib.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 pykicadlib
 ==========

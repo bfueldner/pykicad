@@ -19,7 +19,7 @@ def string_to_int_or_float(value):
         except:
             return value
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description = 'Symbols generator from csv table.')
     parser.add_argument('--csv', type = str, help = 'CSV formatted input table', required = True)
     parser.add_argument('--template-path', type = str, help = 'Path to symbol templates', required = True)
@@ -142,3 +142,6 @@ if __name__ == "__main__":
     description = open(args.description, "w")
     description.write(str(descriptions))
     description.close()
+
+if __name__ == "__main__":
+    main()

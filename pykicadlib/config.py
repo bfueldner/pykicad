@@ -1,11 +1,10 @@
+# pragma pylint: disable=too-few-public-methods, pointless-string-statement
 """
 .. module:: pykicad.config
    :synopsis: pykicadlib configuration
 
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
 """
-
-# pragma pylint: disable=too-few-public-methods, pointless-string-statement
 
 
 class Symbol():

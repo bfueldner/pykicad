@@ -8,8 +8,7 @@
 
 import re
 import shlex
-
-import pykicadlib
+import pykicadlib.symbol.types
 
 
 def pin_value(value):

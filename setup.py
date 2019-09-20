@@ -37,11 +37,11 @@ setuptools.setup(
         "Topic :: Home Automation",
     ],
     python_requires='>=3.5',
-#    entry_points={
-#        'console_scripts': [
-#            'svd2rst = scripts.svd2rst:main',
-#        ],
-#    },
+    entry_points={
+        'console_scripts': [
+            'kicadlib-symbols = scripts.symbols:main',
+        ],
+    },
     setup_requires=["pytest-runner"],
     tests_require=["pytest"]
 )

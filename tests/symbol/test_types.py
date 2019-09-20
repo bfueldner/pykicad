@@ -5,8 +5,9 @@
 
 .. moduleauthor:: Benjamin Füldner <benjamin@fueldner.net>
 """
+
 import unittest
-import pykicadlib
+import pykicadlib.symbol.types
 
 
 class TestSymbolTypeVisible(unittest.TestCase):
