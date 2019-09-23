@@ -1,5 +1,6 @@
 # pragma pylint: disable=too-few-public-methods, pointless-string-statement
-"""
+"""KiCAD configuration.
+
 .. module:: pykicad.config
    :synopsis: pykicadlib configuration
 
@@ -8,7 +9,7 @@
 
 
 class Symbol():
-    '''Symbol configuration'''
+    """Symbol configuration."""
 
     ROOT = '${KICAD_SYMBOL_DIR}'
 
@@ -35,13 +36,13 @@ class Symbol():
 
 
 class Documents():
-    '''Documents configuration'''
+    """Documents configuration."""
 
     ROOT = '${KICAD_DOCUMENT_DIR}'
 
 
 class Packages3d():
-    '''3D packages configuration'''
+    """3D packages configuration."""
 
     ROOT = '${KISYS3DMOD}'
     FOLDER_EXTENSION = '.3dshapes'
@@ -49,7 +50,7 @@ class Packages3d():
 
 
 class Footprint():
-    '''Footprint configuration'''
+    """Footprint configuration."""
 
     # Footprint
     ROOT = '${KISYSMOD}'

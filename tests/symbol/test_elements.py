@@ -1,5 +1,6 @@
 # pylint: disable=too-few-public-methods
-"""
+"""Test KiCAD symbol elements.
+
 .. module:: test.symbol.elements
    :synopsis: Symbol elements test
 
@@ -11,19 +12,17 @@ import pykicadlib.symbol.elements
 
 
 class TestSymbolElementPinValue(unittest.TestCase):
-    """Test function pykicadlib.symbol.elements.pin_value"""
+    """Test function pykicadlib.symbol.elements.pin_value."""
 
     def test_result(self):
-        """Test result calculation"""
-
+        """Test result calculation."""
         self.assertEqual(pykicadlib.symbol.elements.pin_value('0'), 48)
         self.assertEqual(pykicadlib.symbol.elements.pin_value('9'), 48 + 9)
         self.assertEqual(pykicadlib.symbol.elements.pin_value('A0'), 8320 + 48)
         self.assertEqual(pykicadlib.symbol.elements.pin_value('A1'), 8320 + 48 + 1)
 
     def test_exception(self):
-        """Test exception"""
-
+        """Test exception."""
         with self.assertRaises(ValueError):
             pykicadlib.symbol.elements.pin_value('')
 
@@ -35,11 +34,10 @@ class TestSymbolElementPinValue(unittest.TestCase):
 
 
 class TestSymbolElementField(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Field"""
+    """Test class pykicadlib.symbol.elements.Field."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Field(
             pykicadlib.symbol.types.Field.name,
             "Text",
@@ -54,13 +52,11 @@ class TestSymbolElementField(unittest.TestCase):
         )
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), 'F1 "Text" 10 20 50 H V C CNN "Name"')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.x = 100
         self.element.y = 200
         self.element.size = 25
@@ -68,41 +64,36 @@ class TestSymbolElementField(unittest.TestCase):
 
 
 class TestSymbolElementPoint(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Point"""
+    """Test class pykicadlib.symbol.elements.Point."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Point(
             -100,
             100
         )
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), '-100 100')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.x = 10
         self.element.y = 20
         self.assertEqual(str(self.element), '10 20')
 
     def test_compare(self):
-        """Test object compare"""
-
+        """Test object compare."""
         self.assertNotEqual(self.element, pykicadlib.symbol.elements.Point(0, 0))
         self.assertEqual(self.element, pykicadlib.symbol.elements.Point(-100, 100))
 
 
 class TestSymbolElementPolygon(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Polygon"""
+    """Test class pykicadlib.symbol.elements.Polygon."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Polygon(
             0,
             pykicadlib.symbol.types.Fill.foreground
@@ -112,13 +103,11 @@ class TestSymbolElementPolygon(unittest.TestCase):
         self.element.add(pykicadlib.symbol.elements.Point(-50, -50))
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), 'P 3 0 1 0 -50 50 50 0 -50 -50 F')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.fill = pykicadlib.symbol.types.Fill.none
         self.element.remove(1)
         self.element.points[0].x = 50
@@ -126,8 +115,7 @@ class TestSymbolElementPolygon(unittest.TestCase):
         self.assertEqual(str(self.element), 'P 2 0 1 0 50 50 50 -50 N')
 
     def test_compare(self):
-        """Test object compare"""
-
+        """Test object compare."""
         self.assertNotEqual(
             self.element,
             pykicadlib.symbol.elements.Polygon(0, pykicadlib.symbol.types.Fill.none))
@@ -140,11 +128,10 @@ class TestSymbolElementPolygon(unittest.TestCase):
 
 
 class TestSymbolElementRectangle(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Rectangle"""
+    """Test class pykicadlib.symbol.elements.Rectangle."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Rectangle(
             -10,
             -20,
@@ -155,21 +142,18 @@ class TestSymbolElementRectangle(unittest.TestCase):
         )
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), 'S -10 -20 10 20 0 1 50 f')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.x1 = 0
         self.element.y2 = 40
         self.element.fill = pykicadlib.symbol.types.Fill.foreground
         self.assertEqual(str(self.element), 'S 0 -20 10 40 0 1 50 F')
 
     def test_compare(self):
-        """Test object compare"""
-
+        """Test object compare."""
         self.assertNotEqual(
             self.element,
             pykicadlib.symbol.elements.Rectangle(0, 0, 0, 0, 0, pykicadlib.symbol.types.Fill.none))
@@ -180,11 +164,10 @@ class TestSymbolElementRectangle(unittest.TestCase):
 
 
 class TestSymbolElementCircle(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Circle"""
+    """Test class pykicadlib.symbol.elements.Circle."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Circle(
             0,
             0,
@@ -194,20 +177,17 @@ class TestSymbolElementCircle(unittest.TestCase):
         )
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), 'C 0 0 70 0 1 0 F')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.radius = 20
         self.element.fill = pykicadlib.symbol.types.Fill.none
         self.assertEqual(str(self.element), 'C 0 0 20 0 1 0 N')
 
     def test_compare(self):
-        """Test object compare"""
-
+        """Test object compare."""
         self.assertNotEqual(
             self.element,
             pykicadlib.symbol.elements.Circle(0, 0, 0, 0, pykicadlib.symbol.types.Fill.none))
@@ -217,11 +197,10 @@ class TestSymbolElementCircle(unittest.TestCase):
 
 
 class TestSymbolElementArc(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Arc"""
+    """Test class pykicadlib.symbol.elements.Arc."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Arc(
             -1,
             -200,
@@ -237,13 +216,11 @@ class TestSymbolElementArc(unittest.TestCase):
         )
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), 'A -1 -200 49 900 -11 0 1 0 N -50 -200 0 -150')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.x = 0
         self.element.y = -199
         self.element.start_angle = 0.0
@@ -255,8 +232,7 @@ class TestSymbolElementArc(unittest.TestCase):
         self.assertEqual(str(self.element), 'A 0 -199 49 0 -911 0 1 0 N 0 -150 50 -200')
 
     def test_compare(self):
-        """Test object compare"""
-
+        """Test object compare."""
         self.assertNotEqual(
             self.element,
             pykicadlib.symbol.elements.Arc(
@@ -268,11 +244,10 @@ class TestSymbolElementArc(unittest.TestCase):
 
 
 class TestSymbolElementText(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Text"""
+    """Test class pykicadlib.symbol.elements.Text."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Text(
             200,
             100,
@@ -282,13 +257,11 @@ class TestSymbolElementText(unittest.TestCase):
         )
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), 'T 0 200 100 50 0 0 1 "Text with space" Normal 0 C C')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.value = 'A"B'
         self.element.angle = 45.0
         self.element.x = 10
@@ -309,8 +282,7 @@ class TestSymbolElementText(unittest.TestCase):
         self.assertEqual(str(self.element), 'T 450 10 20 50 0 0 1 "Test" Italic 1 R B')
 
     def test_compare(self):
-        """Test object compare"""
-
+        """Test object compare."""
         self.assertNotEqual(self.element, pykicadlib.symbol.elements.Text(0, 0, "", 0, 0.0))
         self.assertEqual(
             self.element,
@@ -324,11 +296,10 @@ class TestSymbolElementText(unittest.TestCase):
 
 
 class TestSymbolElementPin(unittest.TestCase):
-    """Test class pykicadlib.symbol.elements.Pin"""
+    """Test class pykicadlib.symbol.elements.Pin."""
 
     def setUp(self):
-        """Setup element"""
-
+        """Set-up element."""
         self.element = pykicadlib.symbol.elements.Pin(
             -200,
             0,
@@ -341,13 +312,11 @@ class TestSymbolElementPin(unittest.TestCase):
         )
 
     def test_str(self):
-        """Test __str__ output"""
-
+        """Test __str__ output."""
         self.assertEqual(str(self.element), 'X TO 1 -200 0 150 R 40 40 0 1 I')
 
     def test_modification(self):
-        """Test object modification"""
-
+        """Test object modification."""
         self.element.electric = pykicadlib.symbol.types.Electric.passive
         self.element.shape = pykicadlib.symbol.types.Shape.line
         self.element.unit = 1
@@ -360,8 +329,7 @@ class TestSymbolElementPin(unittest.TestCase):
         self.assertEqual(str(self.element), 'X TO 1 -200 0 150 R 40 40 1 1 P NC')
 
     def test_compare(self):
-        """Test object compare"""
-
+        """Test object compare."""
         self.assertNotEqual(
             self.element,
             pykicadlib.symbol.elements.Pin(

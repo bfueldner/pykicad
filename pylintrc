@@ -6,3 +6,6 @@
 
 [BASIC]
 good-names=i,j,k,ex,Run,_,x,y,x1,y1,x2,y2,id,setUp
+
+[SIMILARITIES]
+min-similarity-lines=5

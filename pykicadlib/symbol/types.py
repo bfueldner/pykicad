@@ -1,4 +1,5 @@
-"""
+"""KiCAD symbol types.
+
 .. py::module:: pykicadlib.symbol.types
    :synopsis: KiCAD symbol types
    :noindex:
@@ -10,7 +11,7 @@ from enum import Enum
 
 
 class SymbolEnum(Enum):
-    """Symbol enumeration base class
+    """Symbol enumeration base class.
 
     .. automethod:: __str__
     .. automethod:: from_str
@@ -18,8 +19,7 @@ class SymbolEnum(Enum):
     """
 
     def __str__(self):
-        """Return KiCAD value of :class:`SymbolEnum`"""
-
+        """Return KiCAD value of :class:`SymbolEnum`."""
         return self.value
 
     @classmethod
@@ -33,7 +33,6 @@ class SymbolEnum(Enum):
         :raises:
             NotImplementedError
         """
-
         for item in cls:
             if item.value == value:
                 return item

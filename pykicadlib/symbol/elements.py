@@ -1,5 +1,6 @@
 # pylint: disable=too-many-instance-attributes, too-few-public-methods
-"""
+"""KiCAD symbol elements.
+
 .. py::module:: pykicadlib.symbol.elements
    :synopsis: KiCAD symbol elements
 
@@ -12,8 +13,7 @@ import pykicadlib.symbol.types
 
 
 def pin_value(value):
-    """Convert pin number into value (especially for BGA numbering scheme)"""
-
+    """Convert pin number into value (especially for BGA numbering scheme)."""
     res = re.match(r'[~0-9A-Z]+', value)
     if res:
         _sum = 0
@@ -25,12 +25,12 @@ def pin_value(value):
 
 # Section 2.3.1 in fileformat.pdf
 class Alias():
-    """Aliases"""
+    """Aliases."""
 
 
 # Section 2.3.2 in fileformat.pdf
 class Field():
-    """Component field
+    """Component field.
 
     :param types.Field type:
         Type of :class:`Field`
@@ -70,6 +70,7 @@ class Field():
             hjustify,
             vjustify,
             style):
+        """Constructor."""
         self.type = type                #: Type of :class:`Field`
         self.value = value              #: Value of :class:`Field` text
         self.x = x                      #: X coordinate
@@ -82,8 +83,7 @@ class Field():
         self.style = style              #: Text style
 
     def __str__(self):
-        """Return :class:`Field` in KiCAD format"""
-
+        """Return :class:`Field` in KiCAD format."""
         return Field.fmt.format(
             self.type.value,
             self.value,
@@ -100,15 +100,12 @@ class Field():
 
 
 class Point():
-    """Point helper
+    """Point helper.
 
     :param int x:
         X coordinate
     :param int y:
         Y coordinate
-
-    :attributes:
-        * x (int) - X cord
 
     .. automethod:: __eq__
     .. automethod:: __str__
@@ -117,24 +114,23 @@ class Point():
     fmt = "{:d} {:d}"
 
     def __init__(self, x, y):
+        """Constructor."""
         self.x = x  #: X coordinate
         self.y = y  #: Y coordinate
 
     def __eq__(self, other):
-        """Compare :class:`Point` instances
+        """Compare :class:`Point` instances.
 
         :returns:
             ``True``, if ``other`` == :class:`Point` and all attributes match. Otherwise ``False``.
         """
-
         if not isinstance(other, Point):
             return False
 
         return self.x == other.x and self.y == other.y
 
     def __str__(self):
-        """Return :class:`Point` in KiCAD format"""
-
+        """Return :class:`Point` in KiCAD format."""
         return Point.fmt.format(
             self.x,
             self.y,
@@ -142,7 +138,7 @@ class Point():
 
 
 class Boundary():
-    """Element/symbol boundary class
+    """Element/symbol boundary class.
 
     :param int x1:
         X1 coordinate
@@ -157,6 +153,7 @@ class Boundary():
     """
 
     def __init__(self, x1, y1, x2, y2):
+        """Constructor."""
         self.x1 = x1    #: X1 coordinate
         self.y1 = y1    #: Y1 coordinate
         self.x2 = x2    #: X2 coordinate
@@ -172,7 +169,6 @@ class Boundary():
         :rtype:
             Boundary
         """
-
         if isinstance(other, Boundary):
             return Boundary(
                 min(self.x1, other.x1),
@@ -184,7 +180,7 @@ class Boundary():
 
 
 class Element():
-    """Element base class
+    """Element base class.
 
     :param int unit:
         Unit number
@@ -195,22 +191,20 @@ class Element():
     """
 
     def __init__(self, unit, representation, order):
-        self.unit = unit
-        self.representation = representation
-        self.order = order
-        self.id = None
-        """Element id"""
-
-        self.count = 0
+        """Constructor."""
+        self.unit = unit                        #: Unit
+        self.representation = representation    #: Representation
+        self.order = order                      #: Sort order
+        self.id = None                          #: ID
+        self.count = 0                          #: Count
 
     @property
     def priority(self):
-        """Element priority depending on order and unit.
+        """Element priority.
 
         :type:
             int
         """
-
         return self.unit * 0x100000 + self.order * 0x10000
 
     @property
@@ -220,13 +214,12 @@ class Element():
         :type:
             Boundary
         """
-
         return Boundary(0, 0, 0, 0)
 
 
 # Section 2.3.3.1 in fileformat.pdf
 class Polygon(Element):
-    """Polygon
+    """Polygon.
 
     :param int thickness:
         Thickness of outline
@@ -250,6 +243,7 @@ class Polygon(Element):
             fill,
             unit=0,
             representation=pykicadlib.symbol.types.Representation.normal):
+        """Constructor."""
         super().__init__(unit, representation, Polygon.order)
 
         self.thickness = thickness  #: Thickness of outline
@@ -258,10 +252,20 @@ class Polygon(Element):
 
     @property
     def priority(self):
-        return super() + len(self.points)
+        """Element priority.
+
+        :type:
+            int
+        """
+        return super().priority + len(self.points)
 
     @property
     def bounds(self):
+        """Element boundary.
+
+        :type:
+            Boundary
+        """
         result = Boundary(0, 0, 0, 0)
         for point in self.points:
             result.x1 = min(point.x, result.x1)
@@ -271,26 +275,23 @@ class Polygon(Element):
         return result
 
     def add(self, point):
-        """Add point to polygon
+        """Add point to polygon.
 
         :param Point point:
             Point to add
         """
-
         self.points.append(point)
 
     def remove(self, index):
-        """Remove element from polygon
+        """Remove element from polygon.
 
         :param int index:
             Index of point to remove
         """
-
         del self.points[index]
 
     def __eq__(self, other):
-        """Compare :class:`Polygon` instances"""
-
+        """Compare :class:`Polygon` instances."""
         if not isinstance(other, Polygon):
             return False
 
@@ -303,8 +304,7 @@ class Polygon(Element):
         return True
 
     def __str__(self):
-        """Return :class:`Polygon` in KiCAD format"""
-
+        """Return :class:`Polygon` in KiCAD format."""
         points = ''
         for point in self.points:
             points += str(point) + ' '
@@ -358,6 +358,7 @@ class Rectangle(Element):
             fill,
             unit=0,
             representation=pykicadlib.symbol.types.Representation.normal):
+        """Constructor."""
         super().__init__(unit, representation, Rectangle.order)
 
         # Swap x coordinates of second values are less than first
@@ -383,11 +384,15 @@ class Rectangle(Element):
 
     @property
     def bounds(self):
+        """Element boundary.
+
+        :type:
+            Boundary
+        """
         return Boundary(self.x1, self.y1, self.x2, self.y2)
 
     def __eq__(self, other):
-        """Compare :class:`Rectangle` instances"""
-
+        """Compare :class:`Rectangle` instances."""
         if not isinstance(other, Rectangle):
             return False
 
@@ -395,8 +400,7 @@ class Rectangle(Element):
             self.x2 == other.x2 and self.y2 == other.y2
 
     def __str__(self):
-        """Return :class:`Rectangle` in KiCAD format"""
-
+        """Return :class:`Rectangle` in KiCAD format."""
         return Rectangle.fmt.format(
             self.x1,
             self.y1,
@@ -445,6 +449,7 @@ class Circle(Element):
             fill,
             unit=0,
             representation=pykicadlib.symbol.types.Representation.normal):
+        """Constructor."""
         super().__init__(unit, representation, Circle.order)
 
         self.x = x                  #: X coordinate
@@ -455,20 +460,23 @@ class Circle(Element):
 
     @property
     def bounds(self):
+        """Element boundary.
+
+        :type:
+            Boundary
+        """
         return Boundary(
             self.x - self.radius, self.y - self.radius, self.x + self.radius, self.y + self.radius)
 
     def __eq__(self, other):
-        """Compare :class:`Circle` instances"""
-
+        """Compare :class:`Circle` instances."""
         if not isinstance(other, Circle):
             return False
 
         return self.x == other.x and self.y == other.y and self.radius == other.radius
 
     def __str__(self):
-        """Return :class:`Circle` in KiCAD format"""
-
+        """Return :class:`Circle` in KiCAD format."""
         return Circle.fmt.format(
             self.x,
             self.y,
@@ -530,25 +538,8 @@ class Arc(Element):
             fill,
             unit=0,
             representation=pykicadlib.symbol.types.Representation.normal):
+        """Constructor."""
         super().__init__(unit, representation, Arc.order)
-
-        # Swap x coordinates of second values are less than first
-        # values to make optimization possible
-        # if start_x > end_x:
-        #    self.start_x = end_x
-        #    self.end_x = start_x
-        # else:
-        #    self.start_x = start_x
-        #    self.end_x = end_x
-
-        # Swap y coordinates of second values are less than first
-        # values to make optimization possible
-        # if start_y > end_y:
-        #    self.start_y = end_y
-        #    self.end_y = start_y
-        # else:
-        #    self.start_y = start_y
-        #    self.end_y = end_y
 
         self.x = x                      #: X coordinate
         self.y = y                      #: Y coordinate
@@ -564,6 +555,11 @@ class Arc(Element):
 
     @property
     def bounds(self):
+        """Element boundary.
+
+        :type:
+            Boundary
+        """
         # Not exact!
         return Boundary(
             self.x - self.radius,
@@ -572,8 +568,7 @@ class Arc(Element):
             self.y + self.radius)
 
     def __eq__(self, other):
-        """Compare :class:`Arc` instances"""
-
+        """Compare :class:`Arc` instances."""
         if not isinstance(other, Arc):
             return False
 
@@ -584,8 +579,7 @@ class Arc(Element):
             self.radius == other.radius
 
     def __str__(self):
-        """Return :class:`Arc` in KiCAD format"""
-
+        """Return :class:`Arc` in KiCAD format."""
         return Arc.fmt.format(
             self.x,
             self.y,
@@ -606,6 +600,7 @@ class Arc(Element):
 # Section 2.3.3.5 in fileformat.pdf
 class Text(Element):
     """Text at ``x``/``y`` with ``value``, ``size``, ``angle`` and multiple style options.
+
     New format since 2.4?
 
     :param int x:
@@ -652,6 +647,7 @@ class Text(Element):
             vjustify=pykicadlib.symbol.types.VJustify.center,
             unit=0,
             representation=pykicadlib.symbol.types.Representation.normal):
+        """Constructor."""
         super().__init__(unit, representation, Text.order)
 
         self.x = x                  #: X coordinate
@@ -666,20 +662,23 @@ class Text(Element):
 
     @property
     def bounds(self):
+        """Element boundary.
+
+        :type:
+            Boundary
+        """
         # NOTE: Ignore for the moment!
         return Boundary(self.x, self.y, self.x, self.y)
 
     def __eq__(self, other):
-        """Compare :class:`Text` instances"""
-
+        """Compare :class:`Text` instances."""
         if not isinstance(other, Text):
             return False
 
         return self.x == other.x and self.y == other.y and self.value == other.value
 
     def __str__(self):
-        """Return :class:`Text` in KiCAD format"""
-
+        """Return :class:`Text` in KiCAD format."""
         return Text.fmt.format(
             self.angle * 10,
             self.x,
@@ -749,6 +748,7 @@ class Pin(Element):
             visible=True,
             unit=0,
             representation=pykicadlib.symbol.types.Representation.normal):
+        """Constructor."""
         super().__init__(unit, representation, Pin.order)
 
         self.x = x                      #: X coordinate
@@ -765,10 +765,20 @@ class Pin(Element):
 
     @property
     def priority(self):
+        """Element priority.
+
+        :type:
+            int
+        """
         return self.unit * 1048576 + self.order * 65536 + pin_value(self.number)
 
     @property
     def bounds(self):
+        """Element boundary.
+
+        :type:
+            Boundary
+        """
         result = Boundary(self.x, self.y, self.x, self.y)
         if self.direction == pykicadlib.symbol.types.Direction.left:
             result.x1 -= self.length
@@ -781,8 +791,7 @@ class Pin(Element):
         return result
 
     def __eq__(self, other):
-        """Compare :class:`Pin` instances"""
-
+        """Compare :class:`Pin` instances."""
         if not isinstance(other, Pin):
             return False
 
@@ -791,8 +800,7 @@ class Pin(Element):
         return False
 
     def __str__(self):
-        """Return :class:`Pin` in KiCAD format"""
-
+        """Return :class:`Pin` in KiCAD format."""
         return Pin.fmt.format(
             self.name,
             self.number,
@@ -811,7 +819,7 @@ class Pin(Element):
 
 
 # pylint: disable=too-many-return-statements,too-many-branches
-def from_str(string):
+def from_str(string, unify=False):
     """Generate elements out of string statements. Used to load a KiCAD symbol file line by line.
 
     >>> element = pykicadlib.symbol.elements.from_str("S 10 10 20 20 0 1 5 N")
@@ -835,7 +843,6 @@ def from_str(string):
     :raises:
         KeyError, ValueError
     """
-
     string = string.strip()
     char = string[0]
     part = shlex.split(string[1:])
