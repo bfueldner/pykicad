@@ -1,16 +1,16 @@
-import setuptools
-import unittest
+"""KiCAD setuptools configuration."""
 
-exec(open('pykicadlib/version.py').read())
+import setuptools
+import pykicadlib.version
 
 with open("README.rst", "r") as file:
-    long_description = file.read()
+    LONG_DESCRIPTION = file.read()
 
 setuptools.setup(
     name="pykicadlib",
-    version=__version__,
+    version=pykicadlib.__version__,
     description="Python KiCAD library parser/generator",
-    long_description=long_description,
+    long_description=LONG_DESCRIPTION,
     keywords="KiCAD symbol footprint device PCB schematic",
     license="MIT",
     author="Benjamin Füldner",

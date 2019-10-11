@@ -11,9 +11,9 @@
 # import pykicadlib.footprint.element
 # import pykicadlib.footprint.footprint
 
-import pykicadlib.symbol.types
-import pykicadlib.symbol.elements   # NOQA
-import pykicadlib.symbol.library
-import pykicadlib.symbol.decorator
+# import pykicadlib.symbol.types
+# import pykicadlib.symbol.elements   # NOQA
+# import pykicadlib.symbol.library
+# import pykicadlib.symbol.decorator
 
 from .version import __version__    # NOQA

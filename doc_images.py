@@ -1,10 +1,11 @@
-import pykicadlib
-
+from pykicadlib.symbol.elements import *
+from pykicadlib.symbol.library import Symbol
+from pykicadlib.config import Symbol as Config
 
 class Generator():
 
     def __init__(self, name):
-        filename = name + pykicadlib.config.Symbol.LIBRARY_EXTENSION
+        filename = name + Config.LIBRARY_EXTENSION
         self.symbol = pykicadlib.symbol.library.Symbol(name, 'T', '', '')
         self.generate()
 

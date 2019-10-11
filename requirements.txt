@@ -1,3 +1,4 @@
+six==1.12.0
 pytest
 pytest-codestyle
 pytest-flake8

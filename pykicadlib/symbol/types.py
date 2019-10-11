@@ -10,8 +10,10 @@
 from enum import Enum
 
 
-class SymbolEnum(Enum):
-    """Symbol enumeration base class.
+# Base classes
+
+class StrEnum(Enum):
+    """Enumeration base class with string representation.
 
     .. automethod:: __str__
     .. automethod:: from_str
@@ -19,7 +21,7 @@ class SymbolEnum(Enum):
     """
 
     def __str__(self):
-        """Return KiCAD value of :class:`SymbolEnum`."""
+        """Return KiCAD value of enum element."""
         return self.value
 
     @classmethod
@@ -39,29 +41,63 @@ class SymbolEnum(Enum):
         raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
 
 
-class Visible(SymbolEnum):
-    """Symbol pin name/number visible"""
+class IntEnum(Enum):
+    """Enumeration base class with integer representation.
 
-    no = 'N'            #: Not visible
-    yes = 'Y'           #: Visible
+    .. automethod:: __str__
+    .. automethod:: from_str
+    .. autodoc-skip-member::
+    """
+
+    def __str__(self):
+        """Return KiCAD value enum element."""
+        return str(self.value)
+
+    @classmethod
+    def from_str(cls, value):
+        """Convert string to enum element.
+
+        :param str value:
+            String with value to convert.
+        :returns:
+            Enum class object.
+        :raises:
+            NotImplementedError
+        """
+        int_value = int(value)
+        for item in cls:
+            if item.value == int_value:
+                return item
+        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
 
 
-class Units(SymbolEnum):
-    """Symbol units swappable or locked"""
+# Symbol
 
-    locked = 'L'        #: Locked
-    swappable = 'F'     #: Swappable
-
-
-class Flag(SymbolEnum):
-    """Flag normal or power symbol"""
+class Flag(StrEnum):
+    """Flag normal or power symbol."""
 
     normal = 'N'        #: Normal symbol
     power = 'P'         #: Power symbol
 
 
-class Field(Enum):
-    """Symbol field type"""
+class Visible(StrEnum):
+    """Symbol pin name/number visible."""
+
+    no = 'N'            #: Not visible
+    yes = 'Y'           #: Visible
+
+
+class Units(StrEnum):
+    """Symbol units swappable or locked."""
+
+    locked = 'L'        #: Locked
+    swappable = 'F'     #: Swappable
+
+
+# Element
+
+class Field(IntEnum):
+    """Symbol field type."""
 
     reference = 0       #: Reference field
     name = 1            #: Name field
@@ -76,61 +112,43 @@ class Field(Enum):
     power = 10          #: Power field
 
     def __str__(self):
-        """Return KiCAD value of :class:`Field`"""
-
+        """Return KiCAD value of :class:`Field`."""
         return str(self.name).title()
 
-    @classmethod
-    def from_str(cls, value):
-        """Convert string to enum element.
 
-        :param str value:
-            String with value to convert.
-        :returns:
-            Enum class object.
-        :raises:
-            NotImplementedError
-        """
+class Fill(StrEnum):
+    """Element fill."""
 
-        int_value = int(value)
-        for item in cls:
-            if item.value == int_value:
-                return item
-        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
+    none = 'N'          #: None
+    foreground = 'F'    #: Foreground
+    background = 'f'    #: Background
 
 
-class Orientation(SymbolEnum):
-    """Field orientation"""
-
-    horizontal = 'H'    #: Horizontal orientation
-    vertical = 'V'      #: Vertical orientation
-
-
-class Visibility(SymbolEnum):
-    """Field visibility"""
-
-    visible = 'V'       #: Visible
-    invisible = 'I'     #: Invisible
-
-
-class HJustify(SymbolEnum):
-    """Field horizontal justify"""
+class HJustify(StrEnum):
+    """Field horizontal justify."""
 
     left = 'L'          #: Left
     center = 'C'        #: Center
     right = 'R'         #: Right
 
 
-class VJustify(SymbolEnum):
-    """Field vertical justify"""
+class Orientation(StrEnum):
+    """Field orientation."""
 
-    top = 'T'           #: Top
-    center = 'C'        #: Center
-    bottom = 'B'        #: Bottom
+    horizontal = 'H'    #: Horizontal orientation
+    vertical = 'V'      #: Vertical orientation
 
 
-class Style(SymbolEnum):
-    """Field style"""
+class Representation(IntEnum):
+    """Symbol representation."""
+
+    both = 0            #: Both
+    normal = 1          #: Normal
+    morgan = 2          #: Morgan
+
+
+class Style(StrEnum):
+    """Field style."""
 
     none = 'NN'         #: None
     italic = 'IN'       #: Italic
@@ -138,83 +156,26 @@ class Style(SymbolEnum):
     italic_bold = 'IB'  #: Italic and Bold
 
 
-class Fill(SymbolEnum):
-    """Element fill"""
+class Visibility(StrEnum):
+    """Field visibility."""
 
-    none = 'N'          #: None
-    foreground = 'F'    #: Foreground
-    background = 'f'    #: Background
-
-
-class Representation(Enum):
-    """Symbol representation"""
-
-    both = 0            #: Both
-    normal = 1          #: Normal
-    morgan = 2          #: Morgan
-
-    def __str__(self):
-        """Return KiCAD value of :class:`Representation`"""
-
-        return str(self.value)
-
-    @classmethod
-    def from_str(cls, value):
-        """Convert string to enum element.
-
-        :param str value:
-            String with value to convert.
-        :returns:
-            Enum class object.
-        :raises:
-            NotImplementedError
-        """
-
-        int_value = int(value)
-        for item in cls:
-            if item.value == int_value:
-                return item
-        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
+    visible = 'V'       #: Visible
+    invisible = 'I'     #: Invisible
 
 
-class Italic(SymbolEnum):
-    """Text element italic"""
+class VJustify(StrEnum):
+    """Field vertical justify."""
 
-    off = 'Normal'      #: Normal
-    on = 'Italic'       #: Italic
-
-
-class Bold(Enum):
-    """Text element bold"""
-
-    off = 0             #: Normal
-    on = 1              #: Bold
-
-    def __str__(self):
-        """Return KiCAD value of :class:`Bold`"""
-        return str(self.value)
-
-    @classmethod
-    def from_str(cls, value):
-        """Convert string to enum element.
-
-        :param str value:
-            String with value to convert.
-        :returns:
-            Enum class object.
-        :raises:
-            NotImplementedError
-        """
-
-        int_value = int(value)
-        for item in cls:
-            if item.value == int_value:
-                return item
-        raise NotImplementedError("'{}' is no element of '{}'".format(value, cls.__name__))
+    top = 'T'           #: Top
+    center = 'C'        #: Center
+    bottom = 'B'        #: Bottom
 
 
-class Direction(SymbolEnum):
-    """2.3.4 Pin direction (flipped in opposition to KiCAD documentation)"""
+# Pin
+
+# Section 2.3.4 in fileformat.pdf
+class Direction(StrEnum):
+    """Pin direction (flipped in opposition to KiCAD documentation)."""
 
     up = 'D'            #: Up
     down = 'U'          #: Down
@@ -232,15 +193,15 @@ class Direction(SymbolEnum):
         :raises:
             NotImplementedError
         """
-
         for item in cls:
             if item.name == name:
                 return item
         raise NotImplementedError("'{}' is no name of '{}'".format(name, cls.__name__))
 
 
-class Electric(SymbolEnum):
-    '''2.3.4 Electric pin type'''
+# Section 2.3.4 in fileformat.pdf
+class Electric(StrEnum):
+    """Electric pin type."""
 
     input = 'I'             #: Input
     output = 'O'            #: Output
@@ -265,16 +226,18 @@ class Electric(SymbolEnum):
         :raises:
             NotImplementedError
         """
-
         for item in cls:
             if item.name == name:
                 return item
         raise NotImplementedError("'{}' is no name of '{}'".format(name, cls.__name__))
 
 
-# Add 'N' before characters, to create an invisible pin
-class Shape(SymbolEnum):
-    '''2.3.4 Pin shape'''
+# Section 2.3.4 in fileformat.pdf
+class Shape(StrEnum):
+    """Pin shape.
+
+    Note: Add 'N' before characters, to create an invisible pin.
+    """
 
     line = ''                   #: Line
     invisible = 'N'             #: Invisible
@@ -298,8 +261,23 @@ class Shape(SymbolEnum):
         :raises:
             NotImplementedError
         """
-
         for item in cls:
             if item.name == name:
                 return item
         raise NotImplementedError("'{}' is no name of '{}'".format(name, cls.__name__))
+
+
+# Text
+
+class Italic(StrEnum):
+    """Text element italic."""
+
+    off = 'Normal'      #: Normal
+    on = 'Italic'       #: Italic
+
+
+class Bold(IntEnum):
+    """Text element bold."""
+
+    off = 0             #: Normal
+    on = 1              #: Bold
